@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "env:check": "node scripts/check-env.mjs",
+    "probe:sources": "node scripts/probe-sources.mjs",
     "verify": "node scripts/verify.mjs",
     "verify:all": "node scripts/verify.mjs --e2e",
     "smoke": "node scripts/smoke-test.mjs",

@@ -11,6 +11,7 @@
 import { NextRequest } from 'next/server'
 import { apiSuccess } from '@/lib/api/response'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
+import { getSourceHealthSummary } from '@/lib/weather/source-tracker'
 
 export async function GET(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') ?? undefined
@@ -63,6 +64,7 @@ export async function GET(request: NextRequest) {
       runtimeUptime: true,
       memoryUsageMb: Math.round(process.memoryUsage().heapUsed / (1024 * 1024)),
     },
+    sources: getSourceHealthSummary(),
   }
 
   return apiSuccess(healthData, {

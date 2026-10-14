@@ -63,6 +63,8 @@ export function isCitySupported(cityId: string): boolean {
   return SUPPORTED_CITIES.includes(cityId.toLowerCase())
 }
 
+export const isValidCityId = isCitySupported
+
 export function listSupportedCities(): string[] {
   return [...SUPPORTED_CITIES]
 }
