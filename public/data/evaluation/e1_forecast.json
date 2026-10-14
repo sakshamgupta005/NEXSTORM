@@ -1,0 +1,29 @@
+{
+  "status": "incomplete",
+  "reason": "pipeline/inputs/districts.geojson is missing. In accordance with Section 5 prerequisites and non-negotiable rules, district boundaries and coordinates must not be invented. Gridded IMD verification requires supplied district polygons.",
+  "experiment": "near-analysis, optimistic (Open-Meteo Historical Forecast / Archive fallback)",
+  "limitations": [
+    "Missing pipeline/inputs/districts.geojson",
+    "Raw IMD binary grids cannot be redistributed under IMD terms",
+    "Coarse model grid (~10-25 km) overstates skill relative to local convective gauge bursts"
+  ],
+  "metricDefinitions": {
+    "bias": "Mean(forecast - observed)",
+    "mae": "Mean(|forecast - observed|)",
+    "pearson_r": "Cov(forecast, observed) / (Std(forecast) * Std(observed))",
+    "pod": "Hits / (Hits + Misses)",
+    "far": "FalseAlarms / (Hits + FalseAlarms)",
+    "csi": "Hits / (Hits + FalseAlarms + Misses)",
+    "frequencyBias": "(Hits + FalseAlarms) / (Hits + Misses)"
+  },
+  "categoricalThresholdsMm": [
+    2.5,
+    15.6,
+    35.5,
+    64.5
+  ],
+  "sampleCounts": {
+    "districtsEvaluated": 0,
+    "totalPairs": 0
+  }
+}

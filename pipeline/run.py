@@ -35,8 +35,16 @@ def run_target(target: str):
             pytest_exe = "pytest"
         subprocess.run([str(pytest_exe), "-c", str(ROOT / "pipeline" / "pytest.ini"), "pipeline/tests/", "-v"], check=True)
     elif target == "eval":
-        print("[EVAL PLACEHOLDER] Stage P4B Model Evaluation is scheduled for later roadmap phases.")
-        print("[EVAL PLACEHOLDER] Validation against observed waterlogging events will be implemented in P4B.")
+        print("[PIPELINE] Running 07_eval_forecast.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "07_eval_forecast.py")], check=True)
+        print("[PIPELINE] Running 08_eval_susceptibility.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "08_eval_susceptibility.py")], check=True)
+        print("[PIPELINE] Running 09_eval_events.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "09_eval_events.py")], check=True)
+        print("[PIPELINE] Running 10_build_replay.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "10_build_replay.py")], check=True)
+        print("[PIPELINE] Running 11_write_summary.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "11_write_summary.py")], check=True)
     else:
         print(f"Unknown target '{target}'. Available targets: data, test, eval")
         sys.exit(1)

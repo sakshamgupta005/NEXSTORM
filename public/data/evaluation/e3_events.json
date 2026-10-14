@@ -1,0 +1,56 @@
+{
+  "evaluationSpan": "2015-06-01 to 2024-09-30 (JJAS Monsoon Seasons)",
+  "sampleCounts": {
+    "reportedEventDays": 9,
+    "totalEligibleDays": 1220,
+    "seasons": 10
+  },
+  "modelAlertRule": {
+    "condition": "At least one cell moderate or high risk (Max RTI >= 0.5)",
+    "hits": 6,
+    "pod": 0.6667,
+    "wilson95CI": [
+      0.3542,
+      0.8794
+    ],
+    "totalAlertDays": 450,
+    "alertDaysPerSeason": 45.0,
+    "alertDayBurden": 444,
+    "confidence": "unavailable (single deterministic rainfall series)"
+  },
+  "baselineAlertRule": {
+    "condition": "24-hour rainfall >= 64.5 mm (IMD Heavy Rain Standard)",
+    "hits": 0,
+    "pod": 0.0,
+    "wilson95CI": [
+      0.0,
+      0.2991
+    ],
+    "totalAlertDays": 2,
+    "alertDaysPerSeason": 0.2,
+    "alertDayBurden": 2
+  },
+  "missedEvents": [
+    {
+      "date": "2023-07-15",
+      "locations": "Hall Gate Market",
+      "reason": "Max RTI (0.4571) below 0.5 threshold; 24h rain: 2.2 mm"
+    },
+    {
+      "date": "2023-08-20",
+      "locations": "GT Road near Alpha Mall",
+      "reason": "Max RTI (0.3714) below 0.5 threshold; 24h rain: 1.4 mm"
+    },
+    {
+      "date": "2023-09-02",
+      "locations": "East Mohan Nagar",
+      "reason": "Max RTI (0.0) below 0.5 threshold; 24h rain: 0.0 mm"
+    }
+  ],
+  "criticalLimitations": [
+    "News-reporting bias: media coverage reports only visible traffic disruption in central areas.",
+    "Unreported days are unlabelled, not confirmed non-flooding days.",
+    "Small event sample size (10 event calendar days) limits statistical power.",
+    "Model uses coarse 10-25 km grid precipitation without localized urban gauge networks."
+  ]
+}

@@ -25,5 +25,8 @@ test:
 	$(PYTEST) -c pipeline/pytest.ini pipeline/tests/ -v
 
 eval:
-	@echo [EVAL PLACEHOLDER] Stage P4B Model Evaluation is scheduled for later roadmap phases.
-	@echo [EVAL PLACEHOLDER] Validation against observed waterlogging events will be implemented in P4B.
+	$(PYTHON) pipeline/scripts/07_eval_forecast.py
+	$(PYTHON) pipeline/scripts/08_eval_susceptibility.py
+	$(PYTHON) pipeline/scripts/09_eval_events.py
+	$(PYTHON) pipeline/scripts/10_build_replay.py
+	$(PYTHON) pipeline/scripts/11_write_summary.py

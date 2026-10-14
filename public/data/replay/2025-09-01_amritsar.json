@@ -1,0 +1,976 @@
+{
+  "id": "2025-09-01_amritsar",
+  "cityId": "amritsar",
+  "eventName": "September 2025 Monsoon Spell (Amritsar)",
+  "dateRange": {
+    "start": "2025-09-01T00:00:00+05:30",
+    "end": "2025-09-03T23:00:00+05:30"
+  },
+  "timezone": "Asia/Kolkata",
+  "units": {
+    "precipitation": "mm",
+    "time": "ISO 8601"
+  },
+  "provenance": {
+    "kind": "replay",
+    "source": "Open-Meteo ERA5-Land Reanalysis Archive",
+    "retrievalUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=31.634&longitude=74.872&start_date=2025-09-01&end_date=2025-09-03&hourly=precipitation&timezone=Asia/Kolkata",
+    "note": "Deterministic historical precipitation replay with golden reference outputs"
+  },
+  "members": null,
+  "hourly": [
+    {
+      "timestamp": "2025-09-01T00:00:00+05:30",
+      "precipitationMm": 2.2,
+      "goldenOutputs": {
+        "medianRti": 0.628571,
+        "rtiBand": "elevated",
+        "classShares": {
+          "low": 0.9219,
+          "moderate": 0.0781,
+          "high": 0.0
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T01:00:00+05:30",
+      "precipitationMm": 14.3,
+      "goldenOutputs": {
+        "medianRti": 4.085714,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T02:00:00+05:30",
+      "precipitationMm": 9.6,
+      "goldenOutputs": {
+        "medianRti": 2.932584,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T03:00:00+05:30",
+      "precipitationMm": 10.1,
+      "goldenOutputs": {
+        "medianRti": 3.820225,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T04:00:00+05:30",
+      "precipitationMm": 7.6,
+      "goldenOutputs": {
+        "medianRti": 3.067416,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T05:00:00+05:30",
+      "precipitationMm": 5.4,
+      "goldenOutputs": {
+        "medianRti": 2.595506,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T06:00:00+05:30",
+      "precipitationMm": 0.2,
+      "goldenOutputs": {
+        "medianRti": 1.483146,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T07:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.104911,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T08:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.107143,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T09:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.109375,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T10:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.111607,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T11:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.113839,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T12:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.116071,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T13:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.118304,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T14:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.120536,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T15:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.122768,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T16:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 1.122768,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T17:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 1.122768,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T18:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 1.122768,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T19:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 1.122768,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T20:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 1.125,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T21:00:00+05:30",
+      "precipitationMm": 0.4,
+      "goldenOutputs": {
+        "medianRti": 1.133929,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T22:00:00+05:30",
+      "precipitationMm": 2.3,
+      "goldenOutputs": {
+        "medianRti": 1.185268,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-01T23:00:00+05:30",
+      "precipitationMm": 1.6,
+      "goldenOutputs": {
+        "medianRti": 1.220982,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T00:00:00+05:30",
+      "precipitationMm": 2.8,
+      "goldenOutputs": {
+        "medianRti": 1.283482,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T01:00:00+05:30",
+      "precipitationMm": 4.5,
+      "goldenOutputs": {
+        "medianRti": 1.383929,
+        "rtiBand": "severe",
+        "classShares": {
+          "low": 0.3223,
+          "moderate": 0.5996,
+          "high": 0.0781
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T02:00:00+05:30",
+      "precipitationMm": 9.0,
+      "goldenOutputs": {
+        "medianRti": 2.571429,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T03:00:00+05:30",
+      "precipitationMm": 7.6,
+      "goldenOutputs": {
+        "medianRti": 2.370787,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T04:00:00+05:30",
+      "precipitationMm": 6.2,
+      "goldenOutputs": {
+        "medianRti": 2.561798,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T05:00:00+05:30",
+      "precipitationMm": 6.0,
+      "goldenOutputs": {
+        "medianRti": 2.224719,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T06:00:00+05:30",
+      "precipitationMm": 1.0,
+      "goldenOutputs": {
+        "medianRti": 2.049107,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T07:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 2.051339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T08:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.051339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T09:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.051339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T10:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.051339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T11:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.051339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T12:00:00+05:30",
+      "precipitationMm": 0.4,
+      "goldenOutputs": {
+        "medianRti": 2.060268,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T13:00:00+05:30",
+      "precipitationMm": 1.8,
+      "goldenOutputs": {
+        "medianRti": 2.100446,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T14:00:00+05:30",
+      "precipitationMm": 3.0,
+      "goldenOutputs": {
+        "medianRti": 2.167411,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T15:00:00+05:30",
+      "precipitationMm": 0.4,
+      "goldenOutputs": {
+        "medianRti": 2.176339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T16:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.176339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T17:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 2.178571,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T18:00:00+05:30",
+      "precipitationMm": 3.2,
+      "goldenOutputs": {
+        "medianRti": 2.25,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T19:00:00+05:30",
+      "precipitationMm": 5.8,
+      "goldenOutputs": {
+        "medianRti": 2.379464,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T20:00:00+05:30",
+      "precipitationMm": 1.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T21:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T22:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-02T23:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T00:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T01:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T02:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 2.401786,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T03:00:00+05:30",
+      "precipitationMm": 3.3,
+      "goldenOutputs": {
+        "medianRti": 2.475446,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T04:00:00+05:30",
+      "precipitationMm": 23.3,
+      "goldenOutputs": {
+        "medianRti": 6.657143,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T05:00:00+05:30",
+      "precipitationMm": 26.4,
+      "goldenOutputs": {
+        "medianRti": 7.542857,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T06:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 5.58427,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T07:00:00+05:30",
+      "precipitationMm": 1.0,
+      "goldenOutputs": {
+        "medianRti": 3.607143,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T08:00:00+05:30",
+      "precipitationMm": 2.1,
+      "goldenOutputs": {
+        "medianRti": 3.654018,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T09:00:00+05:30",
+      "precipitationMm": 0.6,
+      "goldenOutputs": {
+        "medianRti": 3.667411,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T10:00:00+05:30",
+      "precipitationMm": 0.2,
+      "goldenOutputs": {
+        "medianRti": 3.671875,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T11:00:00+05:30",
+      "precipitationMm": 0.2,
+      "goldenOutputs": {
+        "medianRti": 3.676339,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T12:00:00+05:30",
+      "precipitationMm": 0.7,
+      "goldenOutputs": {
+        "medianRti": 3.691964,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T13:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 3.694196,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T14:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 3.696429,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T15:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 3.698661,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T16:00:00+05:30",
+      "precipitationMm": 0.4,
+      "goldenOutputs": {
+        "medianRti": 3.707589,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T17:00:00+05:30",
+      "precipitationMm": 0.1,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T18:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T19:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T20:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T21:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T22:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-03T23:00:00+05:30",
+      "precipitationMm": 0.0,
+      "goldenOutputs": {
+        "medianRti": 3.709821,
+        "rtiBand": "extreme",
+        "classShares": {
+          "low": 0.0,
+          "moderate": 0.3223,
+          "high": 0.6777
+        }
+      }
+    }
+  ],
+  "officialContext": [
+    {
+      "date": "2025-09-03",
+      "agency": "India Meteorological Department (IMD) via Akashvani / News On Air",
+      "alertType": "Orange Alert",
+      "description": "IMD issued an orange alert for heavy to very heavy rainfall across Punjab districts during active monsoon activity.",
+      "sourceUrl": "https://newsonair.gov.in"
+    }
+  ],
+  "summary": {
+    "totalHours": 72,
+    "cumulativePrecipitationMm": 166.2,
+    "max1hPrecipitationMm": 26.4,
+    "peakMedianRti": 7.542857,
+    "peakRtiBand": "extreme"
+  },
+  "disclaimer": "Experimental research prototype. Not an official weather forecast or emergency warning. For official alerts see IMD and NDMA SACHET."
+}

@@ -1,0 +1,1913 @@
+[
+  {
+    "id": "VEC-001",
+    "description": "Zero rainfall - S low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 71,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.1
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-002",
+    "description": "Zero rainfall - S mid",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 71,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-003",
+    "description": "Zero rainfall - S high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 71,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.85
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "high",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-004",
+    "description": "Incomplete history hour 0 (P1h=1.75 -> RTI=0.5 exact boundary)",
+    "inputs": {
+      "series": [
+        1.75,
+        2.0,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 0,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.2
+    },
+    "expected": {
+      "rti": 0.5,
+      "rtiBand": "elevated",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-005",
+    "description": "Incomplete history hour 1",
+    "inputs": {
+      "series": [
+        1.75,
+        2.0,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 1,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.4
+    },
+    "expected": {
+      "rti": 0.571429,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-006",
+    "description": "Incomplete history hour 2",
+    "inputs": {
+      "series": [
+        1.75,
+        2.0,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.7
+    },
+    "expected": {
+      "rti": 0.857143,
+      "rtiBand": "elevated",
+      "sBand": "high",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-007",
+    "description": "RTI just below 0.5 cutoff (0.499 -> none)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.7465,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.499,
+      "rtiBand": "none",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-008",
+    "description": "RTI exact 0.5 cutoff (0.5 -> elevated) S low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.75,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.2
+    },
+    "expected": {
+      "rti": 0.5,
+      "rtiBand": "elevated",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-009",
+    "description": "RTI exact 0.5 cutoff (0.5 -> elevated) S mid",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.75,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.5,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-010",
+    "description": "RTI exact 0.5 cutoff (0.5 -> elevated) S high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.75,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.75
+    },
+    "expected": {
+      "rti": 0.5,
+      "rtiBand": "elevated",
+      "sBand": "high",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-011",
+    "description": "RTI just below 1.0 cutoff (0.999 -> elevated)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.4965,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.999,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-012",
+    "description": "RTI exact 1.0 cutoff (1.0 -> severe) S low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.2
+    },
+    "expected": {
+      "rti": 1.0,
+      "rtiBand": "severe",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-013",
+    "description": "RTI exact 1.0 cutoff (1.0 -> severe) S mid",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.0,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-014",
+    "description": "RTI exact 1.0 cutoff (1.0 -> severe) S high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.8
+    },
+    "expected": {
+      "rti": 1.0,
+      "rtiBand": "severe",
+      "sBand": "high",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-015",
+    "description": "RTI just below 1.5 cutoff (1.499 -> severe)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.2465,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.499,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-016",
+    "description": "RTI exact 1.5 cutoff (1.5 -> extreme) S low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.2
+    },
+    "expected": {
+      "rti": 1.5,
+      "rtiBand": "extreme",
+      "sBand": "low",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-017",
+    "description": "RTI exact 1.5 cutoff (1.5 -> extreme) S mid",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.5,
+      "rtiBand": "extreme",
+      "sBand": "mid",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-018",
+    "description": "RTI exact 1.5 cutoff (1.5 -> extreme) S high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 10,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.9
+    },
+    "expected": {
+      "rti": 1.5,
+      "rtiBand": "extreme",
+      "sBand": "high",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-019",
+    "description": "S just below 0.33 (0.329 -> low)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.625,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.329
+    },
+    "expected": {
+      "rti": 0.75,
+      "rtiBand": "elevated",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-020",
+    "description": "S exact 0.33 boundary (0.33 -> mid)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.625,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.33
+    },
+    "expected": {
+      "rti": 0.75,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-021",
+    "description": "S exact 0.66 boundary (0.66 -> mid)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.625,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.66
+    },
+    "expected": {
+      "rti": 0.75,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-022",
+    "description": "S just above 0.66 (0.661 -> high)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.625,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.661
+    },
+    "expected": {
+      "rti": 0.75,
+      "rtiBand": "elevated",
+      "sBand": "high",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-023",
+    "description": "Severe RTI with S low (0.30)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.3
+    },
+    "expected": {
+      "rti": 1.2,
+      "rtiBand": "severe",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-024",
+    "description": "Severe RTI with S exact 0.33 (mid)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.33
+    },
+    "expected": {
+      "rti": 1.2,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-025",
+    "description": "Severe RTI with S exact 0.66 (mid)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.66
+    },
+    "expected": {
+      "rti": 1.2,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-026",
+    "description": "Severe RTI with S high (0.70)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        4.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.7
+    },
+    "expected": {
+      "rti": 1.2,
+      "rtiBand": "severe",
+      "sBand": "high",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-027",
+    "description": "Extreme RTI with S low (0.25 -> moderate)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        7.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.25
+    },
+    "expected": {
+      "rti": 2.0,
+      "rtiBand": "extreme",
+      "sBand": "low",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-028",
+    "description": "Extreme RTI with S exact 0.33 (mid -> high)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        7.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.33
+    },
+    "expected": {
+      "rti": 2.0,
+      "rtiBand": "extreme",
+      "sBand": "mid",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-029",
+    "description": "Extreme RTI with S exact 0.66 (mid -> high)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        7.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.66
+    },
+    "expected": {
+      "rti": 2.0,
+      "rtiBand": "extreme",
+      "sBand": "mid",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-030",
+    "description": "Extreme RTI with S high (0.85 -> high)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        7.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.85
+    },
+    "expected": {
+      "rti": 2.0,
+      "rtiBand": "extreme",
+      "sBand": "high",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-031",
+    "description": "Trailing 3h accumulation trigger (T3h dominates)",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        4.5,
+        4.5,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 5,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.123596,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-032",
+    "description": "Trailing 24h accumulation trigger (72mm in 24h)",
+    "inputs": {
+      "series": [
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "hourIndex": 23,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.607143,
+      "rtiBand": "extreme",
+      "sBand": "mid",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-033",
+    "description": "Trailing 72h trigger with antecedentMm72h",
+    "inputs": {
+      "series": [
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28
+      ],
+      "hourIndex": 71,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 30.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.119643,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-034",
+    "description": "Trailing 72h without antecedent (falls into none/elevated)",
+    "inputs": {
+      "series": [
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28,
+        0.28
+      ],
+      "hourIndex": 71,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.45,
+      "rtiBand": "none",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-035",
+    "description": "Matrix verification none x low -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.1
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-036",
+    "description": "Matrix verification none x mid -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-037",
+    "description": "Matrix verification none x high -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.8
+    },
+    "expected": {
+      "rti": 0.0,
+      "rtiBand": "none",
+      "sBand": "high",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-038",
+    "description": "Matrix verification elevated x low -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        2.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.1
+    },
+    "expected": {
+      "rti": 0.571429,
+      "rtiBand": "elevated",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-039",
+    "description": "Matrix verification elevated x mid -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        2.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 0.571429,
+      "rtiBand": "elevated",
+      "sBand": "mid",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-040",
+    "description": "Matrix verification elevated x high -> moderate",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        2.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.8
+    },
+    "expected": {
+      "rti": 0.571429,
+      "rtiBand": "elevated",
+      "sBand": "high",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-041",
+    "description": "Matrix verification severe x low -> low",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.1
+    },
+    "expected": {
+      "rti": 1.142857,
+      "rtiBand": "severe",
+      "sBand": "low",
+      "class": "low"
+    }
+  },
+  {
+    "id": "VEC-042",
+    "description": "Matrix verification severe x mid -> moderate",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.142857,
+      "rtiBand": "severe",
+      "sBand": "mid",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-043",
+    "description": "Matrix verification severe x high -> high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        4.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.8
+    },
+    "expected": {
+      "rti": 1.142857,
+      "rtiBand": "severe",
+      "sBand": "high",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-044",
+    "description": "Matrix verification extreme x low -> moderate",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        6.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.1
+    },
+    "expected": {
+      "rti": 1.714286,
+      "rtiBand": "extreme",
+      "sBand": "low",
+      "class": "moderate"
+    }
+  },
+  {
+    "id": "VEC-045",
+    "description": "Matrix verification extreme x mid -> high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        6.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.5
+    },
+    "expected": {
+      "rti": 1.714286,
+      "rtiBand": "extreme",
+      "sBand": "mid",
+      "class": "high"
+    }
+  },
+  {
+    "id": "VEC-046",
+    "description": "Matrix verification extreme x high -> high",
+    "inputs": {
+      "series": [
+        0.0,
+        0.0,
+        6.0,
+        0.0,
+        0.0
+      ],
+      "hourIndex": 2,
+      "thresholds": {
+        "T1h": 3.5,
+        "T3h": 8.9,
+        "T24h": 64.5,
+        "T72h": 44.8
+      },
+      "antecedentMm72h": 0.0,
+      "sValue": 0.8
+    },
+    "expected": {
+      "rti": 1.714286,
+      "rtiBand": "extreme",
+      "sBand": "high",
+      "class": "high"
+    }
+  }
+]

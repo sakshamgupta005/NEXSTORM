@@ -1,0 +1,64 @@
+{
+  "cityId": "amritsar",
+  "configHash": "74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49",
+  "coverage": {
+    "analysisGridCells": 1998,
+    "campusSubGridCells": 699,
+    "city": "Amritsar, Punjab, India",
+    "eventEvaluationSpan": "2015-06-01 to 2024-09-30 (JJAS Monsoon Seasons)",
+    "thresholdCoverageSpan": "2010-06-01 to 2024-09-30 (JJAS Monsoon Seasons)"
+  },
+  "headlineMetrics": {
+    "e1_forecast": {
+      "reason": "pipeline/inputs/districts.geojson is missing. In accordance with Section 5 prerequisites and non-negotiable rules, district boundaries and coordinates must not be invented. Gridded IMD verification requires supplied district polygons.",
+      "status": "incomplete"
+    },
+    "e2_susceptibility": {
+      "binomialExact95CI": [
+        0.2659,
+        0.7873
+      ],
+      "medianHotspotPercentile": 81.93,
+      "rocAuc": 0.5609,
+      "top20PercentHitShare": 0.5333
+    },
+    "e3_events": {
+      "baselineAlertDaysPerSeason": 0.2,
+      "baselinePod": 0.0,
+      "baselineWilson95CI": [
+        0.0,
+        0.2991
+      ],
+      "modelAlertDaysPerSeason": 45.0,
+      "modelPod": 0.6667,
+      "modelWilson95CI": [
+        0.3542,
+        0.8794
+      ]
+    }
+  },
+  "limitations": [
+    "News-reporting bias: media reports focus exclusively on high-visibility arterial corridors and central markets.",
+    "Unlabelled negative examples: non-hotspot cells are unlabelled rather than confirmed non-flooding zones.",
+    "Coarse rainfall grid: ERA5-Land reanalysis (~10-25 km) does not resolve localized hyper-local convective cloudbursts.",
+    "Small sample size: 15 validated historical incident locations and 9 calendar event days constrain inferential power.",
+    "Near-analysis optimism: reanalysis archive series overstates real-time operational lead-time-1 forecast skill.",
+    "Missing or unreachable sources: pipeline/inputs/districts.geojson was absent; gridded IMD verification deferred.",
+    "Incomplete coverage: only reported monsoon events in Amritsar are evaluated.",
+    "Deterministic-only confidence being unavailable: single-series historical archives cannot produce ensemble spreads."
+  ],
+  "modeFlags": {
+    "e1Mode": "incomplete",
+    "e2Mode": "inferential",
+    "e3Mode": "historical_replay_eval",
+    "learnedModelAdopted": false
+  },
+  "nDistinctHotspotCells": 15,
+  "nEvents": 9,
+  "nHotspots": 15,
+  "schemaVersion": "1.0.0",
+  "sensitivity": {
+    "maxCellBandChangeFraction": 0.0911,
+    "perturbationFactor": 0.3
+  }
+}

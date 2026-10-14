@@ -1,0 +1,94 @@
+{
+  "mode": "inferential",
+  "sampleCounts": {
+    "distinctHotspotCells": 15,
+    "totalCityCells": 1998,
+    "evalSampleEvaluated": 165
+  },
+  "top20PercentAnalysis": {
+    "hitsInTop20Percent": 8,
+    "observedHitShare": 0.5333,
+    "binomialExact95CI": [
+      0.2659,
+      0.7873
+    ],
+    "expectedHitShareUnderNull": 0.2
+  },
+  "percentileDistribution": {
+    "medianHotspotPercentile": 81.93,
+    "iqrPercentile": 66.52,
+    "p25": 23.37,
+    "p75": 89.89
+  },
+  "liftCurve": [
+    {
+      "topPercent": 10,
+      "capturedHotspots": 4,
+      "captureRate": 0.2667,
+      "expectedRate": 0.1,
+      "lift": 2.67
+    },
+    {
+      "topPercent": 20,
+      "capturedHotspots": 8,
+      "captureRate": 0.5333,
+      "expectedRate": 0.2,
+      "lift": 2.67
+    },
+    {
+      "topPercent": 30,
+      "capturedHotspots": 8,
+      "captureRate": 0.5333,
+      "expectedRate": 0.3,
+      "lift": 1.78
+    },
+    {
+      "topPercent": 40,
+      "capturedHotspots": 8,
+      "captureRate": 0.5333,
+      "expectedRate": 0.4,
+      "lift": 1.33
+    },
+    {
+      "topPercent": 50,
+      "capturedHotspots": 8,
+      "captureRate": 0.5333,
+      "expectedRate": 0.5,
+      "lift": 1.07
+    },
+    {
+      "topPercent": 70,
+      "capturedHotspots": 11,
+      "captureRate": 0.7333,
+      "expectedRate": 0.7,
+      "lift": 1.05
+    },
+    {
+      "topPercent": 90,
+      "capturedHotspots": 13,
+      "captureRate": 0.8667,
+      "expectedRate": 0.9,
+      "lift": 0.96
+    }
+  ],
+  "aucBaselines": {
+    "frozenSScore": {
+      "rocAuc": 0.5609,
+      "prAuc": 0.1606
+    },
+    "depressionOnly": {
+      "rocAuc": 0.5431
+    },
+    "builtupOnly": {
+      "rocAuc": 0.8658
+    },
+    "randomBaseline": {
+      "rocAuc": 0.5
+    }
+  },
+  "learnedModelComparison": {
+    "adopted": false,
+    "reason": "Frozen S-score baseline preserved. Learned logistic regression across 1km spatial blocks did not exceed the S-score held-out AUC by more than the inter-fold standard deviation. The sample size (15 locations) is treated as exploratory evidence of reported incidents."
+  },
+  "criticalLimitation": "Non-hotspot cells are unlabelled rather than confirmed non-flooding zones. Metrics reflect reported news incident recovery rather than verified hydrological ground truth."
+}
