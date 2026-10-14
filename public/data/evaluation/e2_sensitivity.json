@@ -1,0 +1,147 @@
+{
+  "baselineWeights": {
+    "depression": 0.3,
+    "flatness": 0.1,
+    "builtUp": 0.3,
+    "lowPoint": 0.15,
+    "densityProxy": 0.15
+  },
+  "perturbationFactor": 0.3,
+  "perturbations": {
+    "depression_plus_30": {
+      "feature": "depression",
+      "direction": "plus_30",
+      "weights": {
+        "depression": 0.3578,
+        "flatness": 0.0917,
+        "builtUp": 0.2752,
+        "lowPoint": 0.1376,
+        "densityProxy": 0.1376
+      },
+      "cellsChanged": 119,
+      "fractionChanged": 0.0596
+    },
+    "depression_minus_30": {
+      "feature": "depression",
+      "direction": "minus_30",
+      "weights": {
+        "depression": 0.2308,
+        "flatness": 0.1099,
+        "builtUp": 0.3297,
+        "lowPoint": 0.1648,
+        "densityProxy": 0.1648
+      },
+      "cellsChanged": 123,
+      "fractionChanged": 0.0616
+    },
+    "flatness_plus_30": {
+      "feature": "flatness",
+      "direction": "plus_30",
+      "weights": {
+        "depression": 0.2913,
+        "flatness": 0.1262,
+        "builtUp": 0.2913,
+        "lowPoint": 0.1456,
+        "densityProxy": 0.1456
+      },
+      "cellsChanged": 77,
+      "fractionChanged": 0.0385
+    },
+    "flatness_minus_30": {
+      "feature": "flatness",
+      "direction": "minus_30",
+      "weights": {
+        "depression": 0.3093,
+        "flatness": 0.0722,
+        "builtUp": 0.3093,
+        "lowPoint": 0.1546,
+        "densityProxy": 0.1546
+      },
+      "cellsChanged": 85,
+      "fractionChanged": 0.0425
+    },
+    "builtUp_plus_30": {
+      "feature": "builtUp",
+      "direction": "plus_30",
+      "weights": {
+        "depression": 0.2752,
+        "flatness": 0.0917,
+        "builtUp": 0.3578,
+        "lowPoint": 0.1376,
+        "densityProxy": 0.1376
+      },
+      "cellsChanged": 146,
+      "fractionChanged": 0.0731
+    },
+    "builtUp_minus_30": {
+      "feature": "builtUp",
+      "direction": "minus_30",
+      "weights": {
+        "depression": 0.3297,
+        "flatness": 0.1099,
+        "builtUp": 0.2308,
+        "lowPoint": 0.1648,
+        "densityProxy": 0.1648
+      },
+      "cellsChanged": 131,
+      "fractionChanged": 0.0656
+    },
+    "lowPoint_plus_30": {
+      "feature": "lowPoint",
+      "direction": "plus_30",
+      "weights": {
+        "depression": 0.2871,
+        "flatness": 0.0957,
+        "builtUp": 0.2871,
+        "lowPoint": 0.1866,
+        "densityProxy": 0.1435
+      },
+      "cellsChanged": 136,
+      "fractionChanged": 0.0681
+    },
+    "lowPoint_minus_30": {
+      "feature": "lowPoint",
+      "direction": "minus_30",
+      "weights": {
+        "depression": 0.3141,
+        "flatness": 0.1047,
+        "builtUp": 0.3141,
+        "lowPoint": 0.1099,
+        "densityProxy": 0.1571
+      },
+      "cellsChanged": 182,
+      "fractionChanged": 0.0911
+    },
+    "densityProxy_plus_30": {
+      "feature": "densityProxy",
+      "direction": "plus_30",
+      "weights": {
+        "depression": 0.2871,
+        "flatness": 0.0957,
+        "builtUp": 0.2871,
+        "lowPoint": 0.1435,
+        "densityProxy": 0.1866
+      },
+      "cellsChanged": 56,
+      "fractionChanged": 0.028
+    },
+    "densityProxy_minus_30": {
+      "feature": "densityProxy",
+      "direction": "minus_30",
+      "weights": {
+        "depression": 0.3141,
+        "flatness": 0.1047,
+        "builtUp": 0.3141,
+        "lowPoint": 0.1571,
+        "densityProxy": 0.1099
+      },
+      "cellsChanged": 67,
+      "fractionChanged": 0.0335
+    }
+  },
+  "terrainOverride": {
+    "applied": false,
+    "reason": "std(local_depression) >= 0.8m (sufficient terrain variance)",
+    "std": 1.745
+  }
+}

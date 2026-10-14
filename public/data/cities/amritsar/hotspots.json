@@ -1,0 +1,167 @@
+[
+  {
+    "id": "H-0001",
+    "name": "SSSS Chowk Railway Underpass",
+    "lat": 31.648,
+    "lon": 74.878,
+    "cellId": "A-0590",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/underpass-waterlogging-halts-traffic-at-ssss-chowk",
+    "articleDate": "2023-07-09",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0002",
+    "name": "Hall Gate Market",
+    "lat": 31.631,
+    "lon": 74.876,
+    "cellId": "A-0935",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/monsoon-showers-submerge-hall-gate-market",
+    "articleDate": "2023-07-15",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0003",
+    "name": "Chatiwind Gate Tarn Taran Road",
+    "lat": 31.612,
+    "lon": 74.885,
+    "cellId": "A-1390",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/canal-breach-submerges-chatiwind-localities",
+    "articleDate": "2023-07-18",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0004",
+    "name": "GT Road near Alpha Mall",
+    "lat": 31.618,
+    "lon": 74.918,
+    "cellId": "A-1254",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/heavy-downpour-waterlogs-gt-road-near-alpha-one",
+    "articleDate": "2023-08-20",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0005",
+    "name": "East Mohan Nagar",
+    "lat": 31.619,
+    "lon": 74.898,
+    "cellId": "A-1247",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/low-lying-east-mohan-nagar-faces-waterlogging",
+    "articleDate": "2023-09-02",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0006",
+    "name": "GNDU Main Gate GT Road",
+    "lat": 31.637,
+    "lon": 74.825,
+    "cellId": "A-0816",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/gndu-campus-gate-waterlogging-students-stranded",
+    "articleDate": "2024-07-22",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0007",
+    "name": "Putlighar Main Chowk",
+    "lat": 31.6325,
+    "lon": 74.845,
+    "cellId": "A-0924",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/putlighar-market-flooded-shopkeepers-fume",
+    "articleDate": "2024-07-22",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0008",
+    "name": "Heritage Street Golden Temple Plaza",
+    "lat": 31.6215,
+    "lon": 74.8755,
+    "cellId": "A-1188",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/waterlogging-hits-heritage-street-devotees-inconvenienced",
+    "articleDate": "2024-07-28",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0009",
+    "name": "Majitha Road GND Hospital Approach",
+    "lat": 31.654,
+    "lon": 74.882,
+    "cellId": "A-0454",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/gnd-hospital-approach-waterlogged-patients-hit",
+    "articleDate": "2024-08-01",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0010",
+    "name": "Batala Road Celebration Mall Stretch",
+    "lat": 31.651,
+    "lon": 74.896,
+    "cellId": "A-0504",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/waterlogging-on-batala-road-causes-snarls",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0011",
+    "name": "Crystal Chowk Queens Road",
+    "lat": 31.6375,
+    "lon": 74.871,
+    "cellId": "A-0784",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/queens-road-submerged-after-rain",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0012",
+    "name": "Lawrence Road Chowk",
+    "lat": 31.645,
+    "lon": 74.868,
+    "cellId": "A-0635",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/lawrence-road-waterlogging-causes-traffic-jam",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "intersection"
+  },
+  {
+    "id": "H-0013",
+    "name": "MM Malviya Road",
+    "lat": 31.639,
+    "lon": 74.875,
+    "cellId": "A-0785",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0014",
+    "name": "Ranjit Avenue B-Block",
+    "lat": 31.655,
+    "lon": 74.858,
+    "cellId": "A-0445",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/ranjit-avenue-residents-face-waterlogging-woes",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "street"
+  },
+  {
+    "id": "H-0015",
+    "name": "Taylor Road Civil Lines",
+    "lat": 31.6425,
+    "lon": 74.8715,
+    "cellId": "A-0686",
+    "sourceUrl": "https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged",
+    "articleDate": "2024-08-11",
+    "evidence": "news_report",
+    "precision": "street"
+  }
+]

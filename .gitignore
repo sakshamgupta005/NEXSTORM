@@ -64,6 +64,7 @@ __pycache__/
 pipeline/inputs/*
 !pipeline/inputs/.gitkeep
 !pipeline/inputs/*.geojson
+!pipeline/inputs/*.csv
 pipeline/cache/*
 !pipeline/cache/.gitkeep
 !pipeline/cache/features.parquet

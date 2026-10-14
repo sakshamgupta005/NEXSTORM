@@ -52,3 +52,15 @@ This ledger documents all raw geospatial datasets used to generate the analysis 
 - **Full SHA-256 Checksum:** `b1b57c408895c894015745f4252a63f4f989382b170690646d77535ad5712860`
 - **Technical Notes / Scope:** Roads (14,855 segments), building footprints (452), and waterways (9) buffered by 500m.
 
+
+## 5. Open-Meteo ERA5-Land Reanalysis Archive
+- **Source Name:** Open-Meteo Historical Weather API (ERA5-Land reanalysis model grid)
+- **URL / Official Page:** https://archive-api.open-meteo.com/v1/archive
+- **Retrieval Date:** 2026-10-14
+- **Licence:** Creative Commons Attribution 4.0 International (CC BY 4.0) / Copernicus ECMWF Licence
+- **Licence URL:** https://open-meteo.com/en/terms
+- **Checksum (SHA-256):** `c5fec009b1c1a892abf4e668d4c700a51837edfd96cf15b9e40cdc31d943c5a1`
+- **Acquisition Method:** Downloaded via HTTP API, cached at `pipeline/cache/open_meteo_archive_jjas.json`
+- **Native Resolution / CRS:** ~10-25 km grid / WGS84 point query (31.634 N, 74.872 E)
+- **Coverage:** Hourly precipitation for June-September (JJAS) from 2010 through 2024 (43,920 hours)
+- **Restrictions / Uncertainty:** Coarse reanalysis grid model; does not represent localized rain gauge extremes.

@@ -176,10 +176,15 @@ def compute_features_for_grid(
         bldg_matches = list(bldgs_sindex.intersection(geom.bounds))
         if bldg_matches:
             intersecting_bldgs = bldgs_gdf.iloc[bldg_matches].intersection(geom)
+            valid_bldgs = intersecting_bldgs[~intersecting_bldgs.is_empty]
+            bldg_count = len(valid_bldgs)
             bldg_area = intersecting_bldgs.area.sum()
             bldg_density = min(1.0, bldg_area / area_m2)
+            mean_bldg_area = (bldg_area / bldg_count) if bldg_count > 0 else 0.0
         else:
+            bldg_count = 0
             bldg_density = 0.0
+            mean_bldg_area = 0.0
 
         # Roads
         road_matches = list(roads_sindex.intersection(geom.bounds))
@@ -242,6 +247,8 @@ def compute_features_for_grid(
             "flat_fraction": round(float(flat_frac), 2),
             "builtup_fraction": round(float(builtup_fraction), 2),
             "building_density": round(float(bldg_density), 4),
+            "building_count": int(bldg_count),
+            "mean_building_area": round(float(mean_bldg_area), 2),
             "road_density": round(float(road_density), 2),
             "nearest_named_road": nearest_road_name,
             "dist_to_named_road_m": round(dist_to_named_road, 1) if dist_to_named_road is not None else None,

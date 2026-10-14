@@ -16,6 +16,10 @@ data:
 	$(PYTHON) pipeline/scripts/00_fetch_static.py
 	$(PYTHON) pipeline/scripts/01_build_grid.py
 	$(PYTHON) pipeline/scripts/02_features.py
+	$(PYTHON) pipeline/scripts/03_susceptibility.py
+	$(PYTHON) pipeline/scripts/04_hotspots.py
+	$(PYTHON) pipeline/scripts/05_thresholds.py
+	$(PYTHON) pipeline/scripts/06_freeze_config.py
 
 test:
 	$(PYTEST) -c pipeline/pytest.ini pipeline/tests/ -v

@@ -1,0 +1,77 @@
+{
+  "id": "amritsar",
+  "name": "Amritsar",
+  "bbox": [
+    74.8,
+    31.575,
+    74.935,
+    31.685
+  ],
+  "gridSizeM": 250,
+  "cellCount": 1998,
+  "weights": {
+    "depression": 0.3,
+    "flatness": 0.1,
+    "builtUp": 0.3,
+    "lowPoint": 0.15,
+    "densityProxy": 0.15
+  },
+  "terrainOverride": {
+    "applied": false,
+    "reason": "std(local_depression) >= 0.8m (sufficient terrain variance)",
+    "std": 1.745
+  },
+  "sBandCutoffs": [
+    0.33,
+    0.66
+  ],
+  "rtiBandCutoffs": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "matrix": [
+    [
+      "low",
+      "low",
+      "low"
+    ],
+    [
+      "low",
+      "low",
+      "moderate"
+    ],
+    [
+      "low",
+      "moderate",
+      "high"
+    ],
+    [
+      "moderate",
+      "high",
+      "high"
+    ]
+  ],
+  "thresholds": {
+    "T1h": 3.5,
+    "T3h": 8.9,
+    "T24h": 64.5,
+    "T72h": 44.8,
+    "provisional": false,
+    "derivedFrom": "Open-Meteo ERA5-Land Reanalysis & Archive (10-25 km grid)",
+    "span": "2010-06-01 to 2024-09-30 (JJAS Monsoon Seasons)"
+  },
+  "displayThreshold": 0.4,
+  "confidenceCutoffs": [
+    0.8,
+    0.5
+  ],
+  "sources": [
+    "OpenStreetMap (ODbL 1.0)",
+    "Copernicus DEM GLO-30 (Copernicus Open Access)",
+    "ESA WorldCover 2021 (CC BY 4.0)",
+    "Open-Meteo ERA5-Land Reanalysis Archive (CC BY 4.0)"
+  ],
+  "version": "1.0.0",
+  "configHash": "74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49"
+}
