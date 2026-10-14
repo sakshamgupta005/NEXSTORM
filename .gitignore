@@ -49,3 +49,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# python virtual environments & bytecode
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# osmnx root cache
+/cache/
+
+# pipeline large downloads and cache (preserving required features.parquet deliverable and boundaries)
+pipeline/inputs/*
+!pipeline/inputs/.gitkeep
+!pipeline/inputs/*.geojson
+pipeline/cache/*
+!pipeline/cache/.gitkeep
+!pipeline/cache/features.parquet
+

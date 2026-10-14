@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "gndu_campus",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "bbox_north": 31.6456612, "bbox_south": 31.6307678, "bbox_east": 74.8306725, "bbox_west": 74.814539, "place_id": 245380487, "osm_type": "way", "osm_id": 537950488, "lat": 31.6393173, "lon": 74.8227292, "class": "amenity", "type": "university", "place_rank": 30, "importance": 0.35172595316180599, "addresstype": "amenity", "name": "Guru Nanak Dev University", "display_name": "Guru Nanak Dev University, Amritsar Bypass Road Flyover, Kala Ghanupur, Amritsar I Tahsil, Amritsar, Punjab, 143005, India" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 74.814539, 31.6361984 ], [ 74.8151613, 31.6345724 ], [ 74.8157406, 31.633732 ], [ 74.8158592, 31.6335521 ], [ 74.8184917, 31.6338432 ], [ 74.8183891, 31.6342944 ], [ 74.8189532, 31.6343526 ], [ 74.8208335, 31.6328099 ], [ 74.821089, 31.6307678 ], [ 74.8306725, 31.6317201 ], [ 74.8290873, 31.6434692 ], [ 74.8232723, 31.6456612 ], [ 74.8225427, 31.6444739 ], [ 74.8210192, 31.6433595 ], [ 74.8156849, 31.6431142 ], [ 74.8156417, 31.6421615 ], [ 74.81571, 31.6421596 ], [ 74.8159698, 31.6421521 ], [ 74.8175373, 31.6421074 ], [ 74.8176052, 31.6421054 ], [ 74.8175877, 31.6407345 ], [ 74.815692, 31.6406446 ], [ 74.81593, 31.63799 ], [ 74.8159552, 31.6375503 ], [ 74.814539, 31.6361984 ] ] ] } }
+]
+}
