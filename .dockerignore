@@ -1,0 +1,33 @@
+# Dependencies & version control
+node_modules
+.git
+.gitignore
+.github
+
+# Build outputs & cache
+.next
+out
+build
+dist
+*.tsbuildinfo
+
+# Environment variables & secrets
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# Testing & coverage
+tests
+test-results
+playwright-report
+coverage
+
+# IDE & OS
+.vscode
+.idea
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

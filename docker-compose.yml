@@ -1,0 +1,24 @@
+# Docker Compose - Local & Production Emulation
+#
+# References:
+# - Docker Compose Specification (https://github.com/docker/compose)
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hackathon-starter-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
