@@ -71,17 +71,19 @@ export default async function HomePage() {
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link href="/city/amritsar">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                Launch Amritsar Risk Map
+              </Button>
+            </Link>
             {user ? (
               <Link href="/dashboard">
-                <Button>Open Dashboard</Button>
+                <Button variant="outline">Open Dashboard</Button>
               </Link>
             ) : (
               <>
                 <Link href="/login">
-                  <Button>Sign In</Button>
-                </Link>
-                <Link href="/signup">
-                  <Button variant="outline">Sign Up</Button>
+                  <Button variant="outline">Sign In</Button>
                 </Link>
                 <Link href="/dashboard">
                   <Button variant="ghost">Test Dashboard Route</Button>

@@ -12,10 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
+
 export const metadata: Metadata = {
-  title: "Hackathon Starter — Production-Ready Foundation",
+  title: "NEXSTORM — AI Heavy-Rainfall & Urban Waterlogging Early Warning",
   description:
-    "Reusable, full-stack foundation powered by Next.js App Router, Supabase Auth, Tailwind CSS, and strict TypeScript.",
+    "AI-powered heavy-rainfall forecasting and urban waterlogging early-warning system for Indian cities (BuildFest 2.0 PS-18).",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
 };
 
@@ -31,6 +33,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans">
+        <DisclaimerBanner />
         {children}
       </body>
     </html>
