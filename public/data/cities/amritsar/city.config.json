@@ -1,0 +1,26 @@
+{
+  "id": "amritsar",
+  "name": "Amritsar",
+  "state": "Punjab",
+  "country": "India",
+  "center": [
+    31.634,
+    74.872
+  ],
+  "bbox": {
+    "minLat": 31.55,
+    "maxLat": 31.72,
+    "minLng": 74.8,
+    "maxLng": 74.95
+  },
+  "gridSizeM": 250,
+  "thresholds": {
+    "T1h": 25,
+    "T3h": 50,
+    "T24h": 64.5,
+    "T72h": 120,
+    "provisional": true
+  },
+  "synthetic": true,
+  "disclaimer": "DEMO DATA — Bounding box, grid susceptibility, and thresholds are synthetic research placeholders. Not official flood or municipal survey data."
+}

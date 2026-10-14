@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Hackathon Starter Smoke Tests', () => {
   test('Landing page renders properly with key sections and CTAs', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveTitle(/Hackathon Starter/i)
+    await expect(page).toHaveTitle(/NEXSTORM|Hackathon Starter/i)
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
       /Hackathon Starter Foundation/i
     )
