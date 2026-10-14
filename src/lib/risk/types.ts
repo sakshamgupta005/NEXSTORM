@@ -67,3 +67,38 @@ export interface ScenarioResult {
   }
   provenance: Provenance[]
 }
+
+export interface TimelineHour {
+  hourIndex: number
+  timestamp?: string
+  rtiP10: number | null
+  rtiP50: number
+  rtiP90: number | null
+  band: RtiBand
+  classShare: {
+    low: number
+    moderate: number
+    high: number
+  }
+}
+
+export interface GridRiskResult {
+  hourIndex: number
+  timestamp?: string
+  cells: CellRisk[]
+  classDistribution: {
+    low: number
+    moderate: number
+    high: number
+  }
+  classShare: {
+    low: number
+    moderate: number
+    high: number
+  }
+  medianRti: number
+  band: RtiBand
+  confidence: Confidence
+  hasEnsemble: boolean
+}
+

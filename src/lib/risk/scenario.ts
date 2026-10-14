@@ -6,9 +6,11 @@ import { z } from 'zod'
 import { getCityConfig, getCitySusceptibility, isCitySupported } from '../city/registry'
 import {
   createDerivedRiskProvenance,
+  createDerivedSusceptibilityProvenance,
   createSimulatedRainfallProvenance,
-  createSyntheticSusceptibilityProvenance,
 } from '../provenance'
+
+
 import { classDistribution } from './distribution'
 import { riskClass, sBand } from './matrix'
 import { computeRti, rollingSum, rtiBand } from './rti'
@@ -135,8 +137,12 @@ export function calculateScenarioRisk(input: ScenarioInput): ScenarioResult {
 
   const provenance = [
     createSimulatedRainfallProvenance(),
-    createSyntheticSusceptibilityProvenance(),
-    createDerivedRiskProvenance(),
+    createDerivedSusceptibilityProvenance(cityConfig.configHash),
+    createDerivedRiskProvenance(
+      cityConfig.thresholds.provisional
+        ? 'PROVISIONAL — Relative waterlogging risk estimate based on provisional thresholds.'
+        : 'Relative waterlogging risk estimate based on frozen configuration matrix.'
+    ),
   ]
 
   return {

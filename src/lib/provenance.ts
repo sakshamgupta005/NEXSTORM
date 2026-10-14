@@ -1,5 +1,8 @@
 import type { Provenance } from './risk/types'
 
+export const PERMANENT_DISCLAIMER =
+  'Experimental research prototype. Not an official weather forecast or emergency warning. For official alerts see IMD and NDMA SACHET.'
+
 /**
  * Creates standardized provenance descriptor for simulated rainfall scenarios.
  */
@@ -25,13 +28,26 @@ export function createSyntheticSusceptibilityProvenance(source: string = 'NEXSTO
 }
 
 /**
+ * Creates standardized provenance descriptor for verified susceptibility grid with configHash.
+ */
+export function createDerivedSusceptibilityProvenance(configHash: string, source: string = 'susceptibility'): Provenance {
+  return {
+    kind: 'derived',
+    source,
+    fetchedAt: new Date().toISOString(),
+    note: configHash,
+  }
+}
+
+/**
  * Creates standardized provenance descriptor for relative risk calculation.
  */
-export function createDerivedRiskProvenance(): Provenance {
+export function createDerivedRiskProvenance(note: string = 'Relative waterlogging risk estimate based on frozen configuration matrix.'): Provenance {
   return {
     kind: 'derived',
     source: 'NEXSTORM Multi-Window RTI & Risk Matrix Engine v1.0',
     fetchedAt: new Date().toISOString(),
-    note: 'DEMO DATA — Relative waterlogging risk estimate based on provisional thresholds.',
+    note,
   }
 }
+

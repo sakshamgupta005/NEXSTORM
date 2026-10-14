@@ -83,6 +83,47 @@ export function computeRti(
 }
 
 /**
+ * Computes RTI values across the entire series in a single optimized pass.
+ */
+export function computeRtiSeries(
+  member: number[],
+  thresholds: RtiThresholds,
+  antecedentMm72h: number = 0
+): number[] {
+  if (
+    !thresholds ||
+    thresholds.T1h <= 0 ||
+    thresholds.T3h <= 0 ||
+    thresholds.T24h <= 0 ||
+    thresholds.T72h <= 0
+  ) {
+    throw new Error('All RTI thresholds (T1h, T3h, T24h, T72h) must be positive numbers')
+  }
+
+  if (typeof antecedentMm72h !== 'number' || !Number.isFinite(antecedentMm72h) || antecedentMm72h < 0) {
+    throw new Error('antecedentMm72h must be a finite non-negative number')
+  }
+
+  const p1 = rollingSum(member, 1)
+  const p3 = rollingSum(member, 3)
+  const p24 = rollingSum(member, 24)
+  const p72 = rollingSum(member, 72)
+
+  const n = member.length
+  const result: number[] = new Array(n)
+
+  for (let i = 0; i < n; i++) {
+    const r1 = p1[i] / thresholds.T1h
+    const r3 = p3[i] / thresholds.T3h
+    const r24 = p24[i] / thresholds.T24h
+    const r72 = (p72[i] + antecedentMm72h) / thresholds.T72h
+    result[i] = Math.round(Math.max(r1, r3, r24, r72) * 1e6) / 1e6
+  }
+
+  return result
+}
+
+/**
  * Maps RTI value to its categorical rainfall intensity band.
  * - < 0.5: none
  * - < 1.0: elevated
@@ -98,3 +139,4 @@ export function rtiBand(rti: number): RtiBand {
   if (rti < 1.5) return 'severe'
   return 'extreme'
 }
+

@@ -78,29 +78,60 @@ describe('Scenario & Risk Route Handlers', () => {
       const json = await res.json()
       expect(json.success).toBe(true)
       expect(json.data.rainfall.derived.maxMm1h).toBe(40)
+      expect(json.data.cells.length).toBeGreaterThan(1000)
     })
 
-    it('returns HTTP 501 for unreleased live mode', async () => {
+    it('processes live mode using weather adapter without crashing', async () => {
       const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=live'
       const req = new NextRequest(url, { method: 'GET' })
 
       const res = await handleRiskGet(req)
-      expect(res.status).toBe(501)
+      // If network is offline and no snapshot exists, 503 DEGRADED_NO_SNAPSHOT, else 200 OK
+      expect([200, 503]).toContain(res.status)
       const json = await res.json()
-      expect(json.success).toBe(false)
-      expect(json.error.code).toBe('NOT_IMPLEMENTED')
-      expect(json.error.message).toContain('not yet implemented')
+      if (res.status === 200) {
+        expect(json.success).toBe(true)
+        expect(json.data.mode).toBe('live')
+        expect(json.data.timeline.length).toBeGreaterThan(0)
+      } else {
+        expect(json.success).toBe(false)
+        expect(json.error.code).toBe('DEGRADED_NO_SNAPSHOT')
+      }
     })
 
-    it('returns HTTP 501 for unreleased replay mode', async () => {
-      const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=replay'
+    it('processes replay mode with correct provenance and confidence', async () => {
+      const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=replay&event=2025-09-01_amritsar&t=0'
       const req = new NextRequest(url, { method: 'GET' })
 
       const res = await handleRiskGet(req)
-      expect(res.status).toBe(501)
+      expect(res.status).toBe(200)
+      const json = await res.json()
+      expect(json.success).toBe(true)
+      expect(json.data.mode).toBe('replay')
+      expect(json.data.selectedHour.confidence).toBe('unavailable')
+    })
+
+    it('returns HTTP 400 for invalid mode parameter', async () => {
+      const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=invalid_mode'
+      const req = new NextRequest(url, { method: 'GET' })
+
+      const res = await handleRiskGet(req)
+      expect(res.status).toBe(400)
       const json = await res.json()
       expect(json.success).toBe(false)
-      expect(json.error.code).toBe('NOT_IMPLEMENTED')
+      expect(json.error.code).toBe('INVALID_MODE')
+    })
+
+    it('returns HTTP 400 for path traversal in event parameter', async () => {
+      const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=replay&event=../../etc/passwd'
+      const req = new NextRequest(url, { method: 'GET' })
+
+      const res = await handleRiskGet(req)
+      expect(res.status).toBe(400)
+      const json = await res.json()
+      expect(json.success).toBe(false)
+      expect(json.error.code).toBe('INVALID_EVENT_PARAM')
     })
   })
 })
+
