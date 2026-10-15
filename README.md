@@ -106,7 +106,36 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 | `p13-routing` | **Done** | Flood-aware origin-to-destination routing, A* pathfinding on 28,418 nodes and 37,924 edges, route comparison |
 | `p14-trust` | **Done** | Evidence quality & provenance audit, moderator token hardening, reporter privacy salt-hashing |
 | `p15-final` | **Done** | System integration, lazy-loading payload optimization (-8.87 MB), verified demo readiness |
-| `p16-polish` | **Done** | Complete frontend visual polish & design-system overhaul, clean tokens, watermark-free OSM tiles, WCAG AA typography & contrast, responsive validation (Desktop, Tablet, Mobile) |
+| `p16-polish` | **Done** | Complete frontend visual polish & design-system overhaul, clean tokens, watermark-free OSM tiles, WCAG AA typography & contrast |
+| `p17-truth` | **Done** | Data truth audit, capability truth matrix, strict scientific degradation boundaries |
+| `p18-backtest` | **Done** | 14-year ERA5-Land reanalysis backtesting engine against 15 historical Tribune event records |
+| `p19-evidence` | **Done** | Historical event evidence dossier, Wilson confidence intervals, spatial tolerance checks |
+| `p20-alerts` | **Done** | Multi-channel alert subsystem (SMS, email, webhooks), fail-closed rate limiters, subscriber repository |
+| `p21-canary` | **Done** | Production deployment readiness, dry-run canary preflight, security review, runtime kill-switch |
+| `p22-spatial-audit` | **Done** | Deep spatial audit, boundary proximity analysis, miss dissection, LOSEO cross-validation |
+| `p23-multi-city` | **Done** | Dynamic multi-city registry, Jalandhar exploratory bootstrap, isolated city alert repos |
+| `p24-geovalidation` | **Done** | Independent geospatial audit, machine-readable `quality_report.json`, cross-city non-equivalence proof |
+| `p25-terrain-evidence` | **Done** | Ingested physical Copernicus DEM & ESA WorldCover for Jalandhar, reconstructed 10-record incident inventory, defensible evaluation workflow, `evidence_insufficient` gate enforcement |
+
+---
+
+## 5. Multi-City Architecture & Governance
+
+NEXSTORM supports dynamic multi-city discovery via `src/lib/city/registry.ts`, with isolated data directories in `public/data/cities/{city_id}/`.
+
+| City ID | Name & Bounds | Primary Role | Readiness State | Alert Permissions |
+| :--- | :--- | :--- | :--- | :--- |
+| **`amritsar`** | $31.50^\circ–31.75^\circ\text{ N}, 74.75^\circ–75.05^\circ\text{ E}$ | Reference Baseline (Calibrated) | `pilot_eligible` | Opt-in canary evaluation only |
+| **`jalandhar`** | $31.28^\circ–31.38^\circ\text{ N}, 75.52^\circ–75.66^\circ\text{ E}$ | Secondary Pilot (Physical Terrain) | `evidence_insufficient` | **Strictly Suppressed (Fail-Closed)** |
+
+### Readiness State Machine
+Cities advance through a strict 6-stage gate:
+1. `configuration_only`: Valid metadata schema & bounding box.
+2. `data_bootstrapped`: Valid metric analysis grid in target UTM CRS.
+3. `model_generated`: Physical terrain & land cover features computed; passes technical integrity audit (`quality_report.json`).
+4. `evidence_insufficient`: Model generated, but city lacks sub-daily telemetry or municipal records. **Live alerts fail-closed.**
+5. `evaluation_ready`: $\ge 5$ independent verified storms with documented detection and spatial matching.
+6. `pilot_eligible`: Localized calibration complete, municipal authorization recorded, operator sign-off granted.
 
 ---
 
@@ -176,7 +205,7 @@ npm run start
 
 ---
 
-## 6. Verification & Automated Test Commands
+## 7. Verification & Automated Test Commands
 
 Run the full testing and quality audit suite:
 
@@ -187,22 +216,22 @@ npm run typecheck
 # 2. ESLint Code Quality (zero errors, zero warnings)
 npm run lint
 
-# 3. Vitest Unit, Component, and Integration Tests (96 test suites, 926 tests)
+# 3. Vitest Unit, Component, and Integration Tests (103 test suites, 1,031 tests)
 npm test
 
-# 4. Next.js Production Build Verification (compiles all 27 routes)
+# 4. Next.js Production Build Verification (compiles 33 routes)
 npm run build
 
 # 5. Playwright E2E Browser Smoke Tests
 npm run test:e2e
 
-# 6. (Optional) Python Geospatial Pipeline Test Suite (38 tests)
+# 6. Python Geospatial Pipeline & Quality Audit Test Suite (9 tests)
 .venv\Scripts\python.exe -m pytest pipeline/tests/ -v
 ```
 
 ---
 
-## 7. API Reference
+## 8. API Reference
 
 | Endpoint | Method | Description |
 |---|---|---|
@@ -222,7 +251,7 @@ npm run test:e2e
 
 ---
 
-## 8. Permanent Governance & Safety Guardrails
+## 9. Permanent Governance & Safety Guardrails
 
 - **Mandatory Permanent Disclaimer**: Prominently displayed across all application headers, modals, and API payloads:
   > *"RESEARCH PROTOTYPE — DEMO DATA: NEXSTORM provides experimental relative waterlogging risk estimates based on simulated rainfall and synthetic placeholder susceptibility data. It does NOT provide verified street-level flood predictions, measured observations, or official emergency warnings. Consult IMD, NDMA, and local municipal disaster authorities for official emergency advisories."*
@@ -232,7 +261,7 @@ npm run test:e2e
 
 ---
 
-## 9. Verified Known Limitations
+## 10. Verified Known Limitations
 
 1. **Surface Susceptibility vs Underground Hydraulics**: Static susceptibility captures macro-topographic pooling potential; it does not simulate storm sewer pipe diameters, catch-basin clogging, or pump discharge rates.
 2. **Road Network Restrictions**: Road graph edges in `road_graph.json` are bidirectional due to OpenStreetMap GeoPackage limitations; lane-level one-way restrictions and turn bans are unmodeled.
@@ -242,7 +271,7 @@ npm run test:e2e
 
 ---
 
-## 10. License & Attributions
+## 11. License & Attributions
 
 Research and hackathon prototype developed for BuildFest 2.0 (Problem Statement PS-18).  
 Data sources: Open-Meteo (CC BY 4.0), OpenStreetMap (ODbL), Copernicus DEM GLO-30 (European Space Agency), Google Open Buildings V3, ESA WorldCover 2021.

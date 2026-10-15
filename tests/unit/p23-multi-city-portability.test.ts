@@ -116,7 +116,7 @@ describe('P23 — City Readiness State Machine', () => {
 
     const incidentCheck = readiness.checks.find((c) => c.id === 'incident_evidence')
     expect(incidentCheck?.passed).toBe(false)
-    expect(incidentCheck?.message).toContain('No incidents_inventory.json found')
+    expect(incidentCheck?.message).toContain('lacks historical ground-truth')
   })
 
   it('evaluates non-existent city as configuration_only', () => {

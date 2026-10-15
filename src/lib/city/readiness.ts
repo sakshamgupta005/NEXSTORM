@@ -163,6 +163,37 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
     })
   }
 
+  // Gate 3b: Geospatial Data Quality & Observability Audit
+  const qualityReportPath = path.join(cityDir, 'quality_report.json')
+  if (fs.existsSync(qualityReportPath)) {
+    try {
+      const qReport = JSON.parse(fs.readFileSync(qualityReportPath, 'utf-8'))
+      if (qReport?.auditVerdict?.technicalIntegrityPassed === true) {
+        checks.push({
+          id: 'quality_report_audit',
+          name: 'Geospatial Data Quality Audit Passed',
+          passed: true,
+          message: `Quality audit passed with 0 fatal errors (${qReport.auditVerdict.warningCount || 0} warnings, calibration status: ${qReport.auditVerdict.calibrationStatus})`,
+        })
+      } else {
+        checks.push({
+          id: 'quality_report_audit',
+          name: 'Geospatial Data Quality Audit Passed',
+          passed: false,
+          message: `Quality audit failed with ${qReport?.auditVerdict?.fatalErrorCount || 1} fatal errors: ${(qReport?.fatalErrors || []).join(', ')}`,
+        })
+        isModelValid = false
+      }
+    } catch {
+      checks.push({
+        id: 'quality_report_audit',
+        name: 'Geospatial Data Quality Audit Passed',
+        passed: false,
+        message: 'quality_report.json unparseable or malformed',
+      })
+    }
+  }
+
   // Gate 4: Ground Truth Incident Evidence Depth
   const inventoryPath = path.join(cityDir, 'incidents_inventory.json')
   let hasSufficientEvidence = false
@@ -182,8 +213,13 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
           )
         )
 
-        // Requirement: At least 5 distinct documented rainfall storms to avoid tiny-sample overfitting
-        if (distinctStorms.size >= 5) {
+        // Requirement: At least 5 distinct documented rainfall storms to avoid tiny-sample overfitting.
+        // Amritsar is the locally calibrated reference baseline with 7 storms across 13 municipal hotspots.
+        // Secondary pilots with preliminary media reporting (source_reported) require city-specific
+        // calibration and municipal ground telemetry before advancing beyond evidence_insufficient.
+        const isCalibratedBaseline = normId === 'amritsar'
+
+        if (distinctStorms.size >= 5 && isCalibratedBaseline) {
           hasSufficientEvidence = true
           checks.push({
             id: 'incident_evidence',
@@ -192,12 +228,20 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
             message: `Verified incident inventory present (${validRainfall.length} locations across ${distinctStorms.size} distinct storms)`,
           })
           determinedState = 'evaluation_ready'
+        } else if (distinctStorms.size >= 5) {
+          checks.push({
+            id: 'incident_evidence',
+            name: 'Historical Incident Ground Truth Available',
+            passed: false,
+            message: `Preliminary journalistic evidence inventory present (${validRainfall.length} locations across ${distinctStorms.size} storms, source_reported), but lacks historical ground-truth waterlogging data from independent field gauges or municipal registers`,
+          })
+          determinedState = 'evidence_insufficient'
         } else {
           checks.push({
             id: 'incident_evidence',
             name: 'Historical Incident Ground Truth Available',
             passed: false,
-            message: `Insufficient historical incidents (${distinctStorms.size} storms < 5 storm threshold); cannot validate model skill`,
+            message: `Insufficient historical incidents (${distinctStorms.size} storms < 5 storm threshold); lacks historical ground-truth waterlogging data to validate model skill`,
           })
           determinedState = 'evidence_insufficient'
         }

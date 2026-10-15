@@ -95,15 +95,22 @@ export async function runAlertDispatch(options: DispatchOptions = {}): Promise<D
 
     summary.matchedSubscribers++
 
-    // 3b. Rollout Permissions & Kill Switch
-    const rolloutCheck = isDeliveryPermittedForSubscriber(sub, rolloutMode)
-    let isSuppressed = !rolloutCheck.permitted
-    let suppressionReason = rolloutCheck.reason
+    // 3b. City Readiness & Evidence Insufficiency Gate (Hard Stop for uncalibrated cities)
+    let isSuppressed = false
+    let suppressionReason = ''
 
-    // 3c. City Readiness & Evidence Insufficiency Gate
-    if (!isSuppressed && (readiness.determinedState === 'evidence_insufficient' || readiness.determinedState === 'configuration_only')) {
+    if (readiness.determinedState === 'evidence_insufficient' || readiness.determinedState === 'configuration_only') {
       isSuppressed = true
       suppressionReason = `Suppressed: City '${cityId}' readiness state is '${readiness.determinedState}'; operational alerts disabled.`
+    }
+
+    // 3c. Rollout Permissions & Kill Switch
+    if (!isSuppressed) {
+      const rolloutCheck = isDeliveryPermittedForSubscriber(sub, rolloutMode)
+      if (!rolloutCheck.permitted) {
+        isSuppressed = true
+        suppressionReason = rolloutCheck.reason
+      }
     }
 
     // 3d. Quiet Hours Evaluation

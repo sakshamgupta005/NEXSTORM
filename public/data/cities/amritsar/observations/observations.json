@@ -660,12 +660,12 @@
     "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
-    "id": "OBS-20261015-90159a4b",
+    "id": "OBS-20261015-2ab2eb3d",
     "schemaVersion": "1.0.0",
     "cityId": "amritsar",
-    "createdAt": "2026-10-15T19:55:25.847Z",
-    "submittedAt": "2026-10-15T19:55:25.847Z",
-    "observedAt": "2026-10-15T19:50:25.845Z",
+    "createdAt": "2026-10-15T21:14:21.618Z",
+    "submittedAt": "2026-10-15T21:14:21.618Z",
+    "observedAt": "2026-10-15T21:09:21.616Z",
     "coordinates": {
       "lat": 31.634,
       "lng": 74.872
@@ -699,17 +699,17 @@
     "freshness": {
       "isStale": false,
       "isExpired": false,
-      "expiresAt": "2026-10-16T19:50:25.845Z"
+      "expiresAt": "2026-10-16T21:09:21.616Z"
     },
     "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
   },
   {
-    "id": "OBS-20261015-0bc4b1b1",
+    "id": "OBS-20261015-a337ac6c",
     "schemaVersion": "1.0.0",
     "cityId": "amritsar",
-    "createdAt": "2026-10-15T19:55:25.847Z",
-    "submittedAt": "2026-10-15T19:55:25.847Z",
-    "observedAt": "2026-10-15T19:50:25.847Z",
+    "createdAt": "2026-10-15T21:14:21.619Z",
+    "submittedAt": "2026-10-15T21:14:21.619Z",
+    "observedAt": "2026-10-15T21:09:21.619Z",
     "coordinates": {
       "lat": 31.51,
       "lng": 74.72
@@ -743,7 +743,7 @@
     "freshness": {
       "isStale": false,
       "isExpired": false,
-      "expiresAt": "2026-10-16T19:50:25.847Z"
+      "expiresAt": "2026-10-16T21:09:21.619Z"
     },
     "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
   }

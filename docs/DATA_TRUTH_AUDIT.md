@@ -214,3 +214,23 @@ To prevent treating multiple reports from one storm as independent samples and a
 3. **Stormwater Drainage Infrastructure:** Evaluated and **documented as an access barrier**. Municipal storm sewer network GIS layers remain restricted within the municipal corporation.
 4. **Multi-Scale Area Normalization:** Implemented. Corrected building density calculation for the 50m GNDU campus grid by normalizing by cell area ratio (25x) when ranking against the 250m city reference distribution.
 
+---
+
+## 8. Jalandhar Physical Terrain Ingestion & Evidence Truth Audit (P25 Audit)
+
+### 1. Ingestion of Physical Geospatial Datasets
+During P25, all coordinate-decay proxies (`np.exp(-3.5 * dist_to_center)`) and synthetic linear slope gradients (`alluvial_slope`) introduced in the exploratory prototype were systematically replaced with genuine physical raster and vector datasets:
+- **Copernicus DEM GLO-30 (30m):** Acquired from AWS S3 Open Data COG (`Copernicus_DSM_COG_10_N31_00_E075_00_DEM.tif`). Cropped to Jalandhar AOI $[75.50, 31.26, 75.68, 31.40]$ (`public/data/cities/jalandhar/rasters/dem.tif`, 1.3 MB, $648 \times 504$ pixels, SHA256: `9f6da96f6cf86fc24b8d...`). Physical elevation range: $227.3\,\text{m}$ to $258.3\,\text{m}$ MSL.
+- **ESA WorldCover 2021 v200 (10m):** Acquired from AWS S3 Open Data COG (`ESA_WorldCover_10m_2021_v200_N30E075_Map.tif`). Cropped to Jalandhar AOI (`public/data/cities/jalandhar/rasters/worldcover.tif`, 3.6 MB, $2,160 \times 1,680$ pixels, SHA256: `7e161005a963caec82a9...`). Built-up Class 50 pixels represent 34.5% of the AOI.
+- **OpenStreetMap Vectors:** Ingested 17,358 real road and waterway segments (`pipeline/cache/jalandhar/osm_features.gpkg`, SHA256: `6c7bc56f140d393693e5...`). Because building footprints are sparse in Jalandhar OSM ($< 100$ footprints), building density was explicitly supplemented using 10m ESA WorldCover Built-up pixels rather than falsely assuming zero urban density.
+
+### 2. Hydrological Topography Decision
+Jalandhar lies on a flat alluvial plain with only $31\,\text{m}$ relief across $147\,\text{km}^2$. Applying standard D8 flow accumulation creates severe parallel channel artifacts across flat pixels. Instead, a multi-scale Topographic Position Index (TPI, 750m focal window) was computed. Depressions where $\text{elev} < \mu_{750\text{m}}$ represent genuine physical water collection pockets.
+
+### 3. Historical Incident Reconstruction & Limitations
+- **10 Traceable Incidents Reconstructed:** Reconstructed from archival news reporting (*The Tribune* / *Hindustan Times* 2022–2024).
+- **1 Excluded Record:** `EXCL-JAL-2023-08-05-EFFLUENT-SPILL` was excluded with documented rationale (chemical/industrial effluent spill without rain).
+- **9 Valid Incidents Across 5 Storms:** Deduplicated into 5 discrete storm events (`STORM-JAL-2023-07-09`, `STORM-JAL-2023-07-22`, `STORM-JAL-2024-07-03`, `STORM-JAL-2024-07-27`, `STORM-JAL-2024-08-11`).
+- **Evidence Ceiling & Non-Promotion:** All records are categorized as `source_reported` (secondary journalistic evidence). Because Jalandhar lacks municipal complaint registers or sub-daily rain gauges, it remains strictly categorized as `readinessState: "evidence_insufficient"`, suppressing live alerts. False Alarm Rate (FAR), Specificity, and ROC-AUC are strictly withheld due to unobserved negative space.
+
+

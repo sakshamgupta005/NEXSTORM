@@ -26,22 +26,24 @@
     "featuresFile": "computed_features",
     "checksums": {
       "grid.geojson": "57dcdc528fdc3992bb1409ab15e8ff18bbabf8033b8f49e6a911637d6bfee053",
-      "susceptibility.geojson": "1506f3b200a1e2d6f8bd64fd480a0e1b9f0d4136312ca447fee0270f09e72264",
-      "city.config.json": "2189ac696ea3d4b4689552d3727543eaebf5ce882ca07d9726c1f7c6e05c50d5"
+      "susceptibility.geojson": "11f5615b545c9be10268fda63beab0f73699e13703cf985da9e5d920127d3633",
+      "city.config.json": "5c39f95a29c5de70fce50342d2d9c3ff0b017e9a438901f5376a043bb2970971",
+      "incidents_inventory.json": "b1daa6f0932c6f6f76702bb20650877c442a2354c5314365579e26914618a0b8",
+      "physical_sources.json": "e1eb1c6137cf1fc27869a5dc319a3c226ba75d1290efc4a5d4743f04b3218a45"
     }
   },
   "featureDistributionSummary": {
-    "meanSusceptibility": 0.4557,
-    "stdSusceptibility": 0.0828,
-    "lowBandPercent": 4.33,
-    "midBandPercent": 93.16,
-    "highBandPercent": 2.51
+    "meanSusceptibility": 0.4437,
+    "stdSusceptibility": 0.1505,
+    "lowBandPercent": 24.51,
+    "midBandPercent": 66.48,
+    "highBandPercent": 9.01
   },
   "evidenceAudit": {
-    "incidentCount": 0,
-    "rainfallStormCount": 0,
-    "hasHistoricalEvidence": false,
-    "evidenceAssessment": "No historical waterlogging incident inventory available. Susceptibility map is suitable for internal exploratory analysis only; strictly prohibited from live public alerts."
+    "incidentCount": 10,
+    "rainfallStormCount": 5,
+    "hasHistoricalEvidence": true,
+    "evidenceAssessment": "10 historical waterlogging incidents from The Tribune and Hindustan Times archives (2022-2024) deduplicated into 5 independent storm events. In accordance with zero-fabrication standards, newspaper reports represent secondary journalistic evidence (source_reported) and do not substitute for direct rain gauge telemetry or official municipal complaint logs. Jalandhar remains in evidence_insufficient status with live alert dispatch prohibited."
   },
   "operationalPolicy": {
     "isPilotEligible": false,
@@ -54,9 +56,10 @@
     ]
   },
   "warnings": [
-    "City 'jalandhar' does not possess validated ground-truth flood incident data.",
-    "Susceptibility scores are purely relative within this municipal bounding box.",
-    "Amritsar POD/FAR metrics MUST NOT be attributed to this geography."
+    "Jalandhar features derived from genuine Copernicus DEM and ESA WorldCover rasters.",
+    "Incident inventory based on journalistic reports (source_reported); independent field verification required.",
+    "Susceptibility scores are purely relative within this municipal Area of Interest (AOI).",
+    "Amritsar calibrated metrics MUST NOT be attributed to this geography."
   ],
   "passedChecks": [
     "BBOX_GEOGRAPHIC_BOUNDS_VALID",

@@ -190,3 +190,79 @@ export interface CityReadinessEvaluation {
     totalCount: number
   }
 }
+
+export interface CityQualityReport {
+  reportVersion: string
+  generatedAt: string
+  cityId: string
+  cityName: string
+  auditVerdict: {
+    technicalIntegrityPassed: boolean
+    calibrationStatus: 'calibrated' | 'uncalibrated_exploratory'
+    readinessState: CityReadinessState
+    fatalErrorCount: number
+    warningCount: number
+    evidenceLimitationCount: number
+  }
+  fatalErrors: string[]
+  warnings: string[]
+  evidenceLimitations: string[]
+  passedChecks: string[]
+  gridAudit: {
+    cellCount: number
+    crs: string
+    metricCellArea: {
+      expectedAreaM2: number
+      minAreaM2: number
+      maxAreaM2: number
+      meanAreaM2: number
+      areaStdM2: number
+    }
+    spatialBoundsWgs84: [number, number, number, number]
+    crsEvaluation: string
+    boundaryType: string
+    edgeCellHandling: string
+  }
+  featureAudit: {
+    featureCount: number
+    susceptibilityStats: {
+      min: number
+      max: number
+      mean: number
+      std: number
+      p25: number
+      p50: number
+      p75: number
+    }
+    bandDistributionPercent: {
+      low: number
+      mid: number
+      high: number
+    }
+    componentFeatures: Record<
+      string,
+      {
+        min: number
+        max: number
+        mean: number
+        std: number
+      }
+    >
+    dataOrigin: {
+      sourceType: string
+      provenanceNote: string
+      isPhysicallySampled: boolean
+    }
+  }
+  evidenceAudit: {
+    incidentCount: number
+    validRainfallIncidents: number
+    distinctStormEvents: number
+    hasHistoricalEvidence: boolean
+  }
+  crossCityComparability: {
+    role: string
+    crossCityScoreEquivalence: string
+    isTransferredWithoutCalibration: boolean
+  }
+}

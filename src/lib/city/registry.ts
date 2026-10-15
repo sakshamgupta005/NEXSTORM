@@ -11,6 +11,7 @@ export * from './types'
 import type {
   CityBootstrapManifest,
   CityConfig,
+  CityQualityReport,
   HotspotRecord,
   SusceptibilityGeoJson,
 } from './types'
@@ -20,6 +21,7 @@ const configCache: Record<string, CityConfig> = {}
 const geoJsonCache: Record<string, SusceptibilityGeoJson> = {}
 const hotspotCache: Record<string, HotspotRecord[]> = {}
 const manifestCache: Record<string, CityBootstrapManifest | null> = {}
+const qualityReportCache: Record<string, CityQualityReport | null> = {}
 
 // Runtime registered cities (for test isolation and synthetic fixture testing)
 const runtimeConfigs: Record<string, CityConfig> = {}
@@ -46,6 +48,7 @@ export function clearCityCache(cityId?: string): void {
     delete geoJsonCache[norm]
     delete hotspotCache[norm]
     delete manifestCache[norm]
+    delete qualityReportCache[norm]
     delete runtimeConfigs[norm]
     delete runtimeGeoJsons[norm]
   } else {
@@ -53,6 +56,7 @@ export function clearCityCache(cityId?: string): void {
     for (const k of Object.keys(geoJsonCache)) delete geoJsonCache[k]
     for (const k of Object.keys(hotspotCache)) delete hotspotCache[k]
     for (const k of Object.keys(manifestCache)) delete manifestCache[k]
+    for (const k of Object.keys(qualityReportCache)) delete qualityReportCache[k]
     for (const k of Object.keys(runtimeConfigs)) delete runtimeConfigs[k]
     for (const k of Object.keys(runtimeGeoJsons)) delete runtimeGeoJsons[k]
   }
@@ -360,6 +364,41 @@ export function getCityManifest(cityId: string): CityBootstrapManifest | null {
     return manifest
   } catch {
     manifestCache[normalized] = null
+    return null
+  }
+}
+
+export function getCityQualityReport(cityId: string): CityQualityReport | null {
+  const normalized = (cityId || '').toLowerCase()
+  if (!isCitySupported(normalized)) {
+    return null
+  }
+
+  if (qualityReportCache[normalized] !== undefined) {
+    return qualityReportCache[normalized]
+  }
+
+  const filePath = path.join(
+    process.cwd(),
+    'public',
+    'data',
+    'cities',
+    normalized,
+    'quality_report.json'
+  )
+
+  if (!fs.existsSync(filePath)) {
+    qualityReportCache[normalized] = null
+    return null
+  }
+
+  try {
+    const content = fs.readFileSync(filePath, 'utf-8')
+    const report = JSON.parse(content) as CityQualityReport
+    qualityReportCache[normalized] = report
+    return report
+  } catch {
+    qualityReportCache[normalized] = null
     return null
   }
 }

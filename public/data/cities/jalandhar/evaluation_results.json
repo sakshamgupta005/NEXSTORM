@@ -1,0 +1,311 @@
+{
+  "evaluationVersion": "1.0.0",
+  "evaluatedAt": "2026-10-15T20:58:45.542342+00:00",
+  "cityId": "jalandhar",
+  "status": "exploratory_pre_calibration",
+  "scientificCaveat": "Susceptibility scores are based on genuine Copernicus DEM, ESA WorldCover, and OSM data. However, sample size (N=9 incidents, 5 storm events) is exploratory and derived from journalistic media reports. In strict adherence to the governing directive, Jalandhar remains evidence_insufficient until official municipal waterlogging complaint logs and sub-daily rain gauge telemetry are integrated.",
+  "sampleSize": {
+    "totalArchivalRecords": 10,
+    "includedRainfallIncidents": 9,
+    "excludedNonRainfallIncidents": 1,
+    "independentStormEvents": 5,
+    "distinctHotspotLocations": 7
+  },
+  "incidentLevelMetrics": {
+    "sampleCount": 9,
+    "meanSusceptibilityScore": 0.6134,
+    "detectedAtMidThresholdCount": 9,
+    "podAtMidThreshold": 1.0,
+    "detectedAtHighThresholdCount": 2,
+    "podAtHighThreshold": 0.2222
+  },
+  "stormLevelMetrics": {
+    "independentStormCount": 5,
+    "detectedStormCountMid": 5,
+    "stormLevelDetectionRate": 1.0,
+    "storms": [
+      {
+        "stormEventId": "STORM-JAL-2023-07-09",
+        "incidentCount": 2,
+        "reportedLocations": [
+          "Damoria Railway Underbridge",
+          "120 Feet Road / Basti Guzan Corridor"
+        ],
+        "cells": [
+          "J-1048",
+          "J-1411"
+        ],
+        "maxSusceptibilityScore": 0.8038,
+        "isDetectedAtMidThreshold": true,
+        "isDetectedAtHighThreshold": true
+      },
+      {
+        "stormEventId": "STORM-JAL-2023-07-22",
+        "incidentCount": 2,
+        "reportedLocations": [
+          "Damoria Railway Underbridge",
+          "Ladowali Road Stretch"
+        ],
+        "cells": [
+          "J-1048",
+          "J-1429"
+        ],
+        "maxSusceptibilityScore": 0.6423,
+        "isDetectedAtMidThreshold": true,
+        "isDetectedAtHighThreshold": false
+      },
+      {
+        "stormEventId": "STORM-JAL-2024-07-03",
+        "incidentCount": 2,
+        "reportedLocations": [
+          "Preet Nagar / Sodal Road Railway Underpass",
+          "120 Feet Road / Basti Guzan / Gazi Gullan"
+        ],
+        "cells": [
+          "J-0842",
+          "J-1411"
+        ],
+        "maxSusceptibilityScore": 0.8038,
+        "isDetectedAtMidThreshold": true,
+        "isDetectedAtHighThreshold": true
+      },
+      {
+        "stormEventId": "STORM-JAL-2024-07-27",
+        "incidentCount": 2,
+        "reportedLocations": [
+          "Football Chowk & Company Bagh",
+          "Burlton Park Basin Stretch"
+        ],
+        "cells": [
+          "J-1259",
+          "J-0832"
+        ],
+        "maxSusceptibilityScore": 0.6343,
+        "isDetectedAtMidThreshold": true,
+        "isDetectedAtHighThreshold": false
+      },
+      {
+        "stormEventId": "STORM-JAL-2024-08-11",
+        "incidentCount": 1,
+        "reportedLocations": [
+          "Damoria Railway Underbridge"
+        ],
+        "cells": [
+          "J-1048"
+        ],
+        "maxSusceptibilityScore": 0.6423,
+        "isDetectedAtMidThreshold": true,
+        "isDetectedAtHighThreshold": false
+      }
+    ]
+  },
+  "negativeSpaceAudit": {
+    "falseAlarmRate": "WITHHELD (Zero confirmed flood-free negative log records)",
+    "specificity": "WITHHELD (Absence of journalistic reporting on unobserved days does not prove lack of waterlogging)",
+    "rocAuc": "WITHHELD (Evaluating ROC-AUC on positive-only journalistic presence generates ungrounded statistical artifacts)",
+    "rationale": "Unlabelled days and unmentioned cells are classified as 'unknown' rather than negative. Computing false alarm rates without exhaustive municipal ground logging would violate zero-fabrication directives."
+  },
+  "exploratoryLeaveOneOutCrossValidation": {
+    "folds": [
+      {
+        "fold": 1,
+        "heldOutStorm": "STORM-JAL-2023-07-09",
+        "heldOutIncidentCount": 2,
+        "heldOutMaxScore": 0.8038,
+        "detectedAtMid": true
+      },
+      {
+        "fold": 2,
+        "heldOutStorm": "STORM-JAL-2023-07-22",
+        "heldOutIncidentCount": 2,
+        "heldOutMaxScore": 0.6423,
+        "detectedAtMid": true
+      },
+      {
+        "fold": 3,
+        "heldOutStorm": "STORM-JAL-2024-07-03",
+        "heldOutIncidentCount": 2,
+        "heldOutMaxScore": 0.8038,
+        "detectedAtMid": true
+      },
+      {
+        "fold": 4,
+        "heldOutStorm": "STORM-JAL-2024-07-27",
+        "heldOutIncidentCount": 2,
+        "heldOutMaxScore": 0.6343,
+        "detectedAtMid": true
+      },
+      {
+        "fold": 5,
+        "heldOutStorm": "STORM-JAL-2024-08-11",
+        "heldOutIncidentCount": 1,
+        "heldOutMaxScore": 0.6423,
+        "detectedAtMid": true
+      }
+    ],
+    "foldDetectionRate": 1.0,
+    "exploratoryNotice": "Sample size (5 folds) is too small for statistical generalization; provided solely for stability auditing."
+  },
+  "matchedIncidents": [
+    {
+      "incidentId": "INC-JAL-2023-001",
+      "stormEventId": "STORM-JAL-2023-07-09",
+      "name": "Damoria Railway Underbridge",
+      "articleDate": "2023-07-10",
+      "cellId": "J-1048",
+      "coordinates": [
+        75.56905,
+        31.33528
+      ],
+      "susceptibilityScore": 0.6423,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.6906,
+      "f_builtUp": 0.8863,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2023-002",
+      "stormEventId": "STORM-JAL-2023-07-09",
+      "name": "120 Feet Road / Basti Guzan Corridor",
+      "articleDate": "2023-07-10",
+      "cellId": "J-1411",
+      "coordinates": [
+        75.54857,
+        31.3203
+      ],
+      "susceptibilityScore": 0.8038,
+      "susceptibilityBand": "high",
+      "f_depression": 0.9805,
+      "f_builtUp": 0.6855,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": true
+    },
+    {
+      "incidentId": "INC-JAL-2023-003",
+      "stormEventId": "STORM-JAL-2023-07-22",
+      "name": "Damoria Railway Underbridge",
+      "articleDate": "2023-07-23",
+      "cellId": "J-1048",
+      "coordinates": [
+        75.56905,
+        31.33528
+      ],
+      "susceptibilityScore": 0.6423,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.6906,
+      "f_builtUp": 0.8863,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2023-004",
+      "stormEventId": "STORM-JAL-2023-07-22",
+      "name": "Ladowali Road Stretch",
+      "articleDate": "2023-07-23",
+      "cellId": "J-1429",
+      "coordinates": [
+        75.595,
+        31.32
+      ],
+      "susceptibilityScore": 0.4051,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.4904,
+      "f_builtUp": 0.5028,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2024-006",
+      "stormEventId": "STORM-JAL-2024-07-03",
+      "name": "Preet Nagar / Sodal Road Railway Underpass",
+      "articleDate": "2024-07-04",
+      "cellId": "J-0842",
+      "coordinates": [
+        75.585,
+        31.345
+      ],
+      "susceptibilityScore": 0.5011,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.816,
+      "f_builtUp": 0.6196,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2024-007",
+      "stormEventId": "STORM-JAL-2024-07-03",
+      "name": "120 Feet Road / Basti Guzan / Gazi Gullan",
+      "articleDate": "2024-07-04",
+      "cellId": "J-1411",
+      "coordinates": [
+        75.54857,
+        31.3203
+      ],
+      "susceptibilityScore": 0.8038,
+      "susceptibilityBand": "high",
+      "f_depression": 0.9805,
+      "f_builtUp": 0.6855,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": true
+    },
+    {
+      "incidentId": "INC-JAL-2024-008",
+      "stormEventId": "STORM-JAL-2024-07-27",
+      "name": "Football Chowk & Company Bagh",
+      "articleDate": "2024-07-28",
+      "cellId": "J-1259",
+      "coordinates": [
+        75.56612,
+        31.32623
+      ],
+      "susceptibilityScore": 0.4453,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.1477,
+      "f_builtUp": 0.8649,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2024-009",
+      "stormEventId": "STORM-JAL-2024-07-27",
+      "name": "Burlton Park Basin Stretch",
+      "articleDate": "2024-07-28",
+      "cellId": "J-0832",
+      "coordinates": [
+        75.55974,
+        31.34422
+      ],
+      "susceptibilityScore": 0.6343,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.938,
+      "f_builtUp": 0.367,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    },
+    {
+      "incidentId": "INC-JAL-2024-010",
+      "stormEventId": "STORM-JAL-2024-08-11",
+      "name": "Damoria Railway Underbridge",
+      "articleDate": "2024-08-11",
+      "cellId": "J-1048",
+      "coordinates": [
+        75.56905,
+        31.33528
+      ],
+      "susceptibilityScore": 0.6423,
+      "susceptibilityBand": "mid",
+      "f_depression": 0.6906,
+      "f_builtUp": 0.8863,
+      "isDetectedAtMidThreshold": true,
+      "isDetectedAtHighThreshold": false
+    }
+  ],
+  "excludedIncidents": [
+    {
+      "incidentId": "INC-JAL-2023-005",
+      "name": "Kala Sangha Nullah Industrial Outfall",
+      "reason": "Non-rainfall industrial effluent spill; dry-weather industrial pollution event, not pluvial storm waterlogging."
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "cityId": "jalandhar",
+  "ingestedAt": "2026-10-15T20:53:46.738916+00:00",
+  "aoi": {
+    "configuredBbox": [
+      75.52,
+      31.28,
+      75.66,
+      31.38
+    ],
+    "bufferedBounds": [
+      75.5,
+      31.26,
+      75.68,
+      31.4
+    ],
+    "isOfficialAdministrativeBoundary": false,
+    "boundaryType": "rectangular_aoi_box",
+    "notes": "Buffered by 0.02 deg for focal neighborhood and edge continuity."
+  },
+  "datasets": {
+    "copernicus_dem_glo30": {
+      "source": "Copernicus DEM GLO-30 (European Space Agency / AWS Open Data Registry)",
+      "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N31_00_E075_00_DEM/Copernicus_DSM_COG_10_N31_00_E075_00_DEM.tif",
+      "license": "Open Data under Copernicus Licence",
+      "nativeResolution": "30m",
+      "crs": "EPSG:4326",
+      "stats": {
+        "width": 648,
+        "height": 504,
+        "crs": "EPSG:4326",
+        "res_deg": [
+          0.0002777777777777778,
+          0.0002777777777777778
+        ],
+        "min_elev_m": 227.31556701660156,
+        "max_elev_m": 258.2943115234375,
+        "mean_elev_m": 238.32020568847656,
+        "sha256": "9f6da96f019b67436f34bbd47dd26a9183cd722e0a756d21e8d666bb7b1a6683"
+      }
+    },
+    "esa_worldcover_2021": {
+      "source": "ESA WorldCover 2021 v200 (European Space Agency / AWS Open Data Registry)",
+      "url": "https://esa-worldcover.s3.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N30E075_Map.tif",
+      "license": "CC-BY 4.0",
+      "nativeResolution": "10m",
+      "crs": "EPSG:4326",
+      "stats": {
+        "width": 2160,
+        "height": 1680,
+        "crs": "EPSG:4326",
+        "res_deg": [
+          8.333333333333333e-05,
+          8.333333333333333e-05
+        ],
+        "classes": {
+          "10": 414831,
+          "20": 25755,
+          "30": 121735,
+          "40": 1798918,
+          "50": 1252443,
+          "60": 14752,
+          "80": 313,
+          "90": 53
+        },
+        "builtup_percent": 34.513971560846564,
+        "sha256": "7e161005bfdf398172c38a259187a375ded4f39868cc40df6338a56d729f7c92"
+      }
+    },
+    "openstreetmap_vectors": {
+      "source": "OpenStreetMap Contributors via Overpass API / OSMnx",
+      "license": "ODbL 1.0",
+      "crs": "EPSG:4326",
+      "stats": {
+        "road_count": 17358,
+        "waterway_count": 0,
+        "building_count": 0,
+        "building_coverage_status": "sparse_or_unmapped",
+        "building_coverage_note": "OSM building footprints in Jalandhar are largely unmapped (<100 footprints). In accordance with Phase 2 requirements, missing data is represented explicitly and NOT treated as low density. Urban density is rigorously derived from ESA WorldCover 2021 10m Built-up raster pixels (Class 50).",
+        "sha256": "6c7bc56ffa35bab8c1b0dea16ac759650e131a9cd143a3660592a56453adca0d"
+      }
+    }
+  }
+}

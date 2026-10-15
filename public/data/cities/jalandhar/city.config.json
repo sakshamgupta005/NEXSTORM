@@ -29,8 +29,8 @@
   },
   "terrainOverride": {
     "applied": false,
-    "reason": "Standard terrain variance std=0.083",
-    "std": 0.083
+    "reason": "Physical Copernicus DEM terrain variance std=0.1505",
+    "std": 0.1505
   },
   "sBandCutoffs": [
     0.33,
@@ -84,11 +84,11 @@
     "Open-Meteo ERA5-Land Reanalysis (CC BY 4.0)"
   ],
   "provenance": {
-    "demSource": "Copernicus DEM GLO-30",
-    "landCoverSource": "ESA WorldCover 2021",
-    "osmSource": "OpenStreetMap 2024 Extracts",
+    "demSource": "Copernicus DEM GLO-30 (30m)",
+    "landCoverSource": "ESA WorldCover 2021 v200 (10m)",
+    "osmSource": "OpenStreetMap 2024 Extracts (17,358 roads)",
     "weatherSource": "Open-Meteo Numerical Weather API",
-    "incidentSource": "Pending ground-truth municipal logging",
+    "incidentSource": "10 archival records from The Tribune/HT (2022-2024); 5 storm events; evidence_insufficient pending sub-daily gauge telemetry and MCJ complaint logs",
     "bootstrappedAt": "2026-10-15T19:40:53.976833+00:00"
   },
   "operationalStatus": {

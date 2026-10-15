@@ -1,0 +1,119 @@
+{
+  "reportVersion": "1.0.0",
+  "generatedAt": "2026-10-15T21:03:30.458437+00:00",
+  "cityId": "amritsar",
+  "cityName": "Amritsar",
+  "auditVerdict": {
+    "technicalIntegrityPassed": true,
+    "calibrationStatus": "calibrated",
+    "readinessState": "evaluation_ready",
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "evidenceLimitationCount": 0
+  },
+  "fatalErrors": [],
+  "warnings": [],
+  "evidenceLimitations": [],
+  "passedChecks": [
+    "CANONICAL_CONFIG_HASH_VERIFIED",
+    "FEATURE_WEIGHTS_NORMALIZED",
+    "BOUNDING_BOX_VALID",
+    "POLYGON_GEOMETRIES_VALID",
+    "CELL_IDS_UNIQUE_AND_STABLE",
+    "METRIC_CELL_AREA_CONSISTENT",
+    "UTM_ZONE_43N_CRS_CARTOGRAPHICALLY_VALID",
+    "OFFICIAL_MUNICIPAL_PERIMETER_VERIFIED",
+    "EDGE_CELL_HANDLING_AUDITED",
+    "GRID_FEATURE_COUNT_1_TO_1_ALIGNED",
+    "SUSCEPTIBILITY_BOUNDS_VALID_0_TO_1",
+    "ALL_REQUIRED_FEATURE_LAYERS_PRESENT",
+    "PHYSICAL_DATASET_PROVENANCE_VERIFIED",
+    "COORDINATE_PROXIES_SUCCESSFULLY_REPLACED",
+    "STATISTICALLY_VIABLE_HISTORICAL_EVIDENCE_AVAILABLE"
+  ],
+  "gridAudit": {
+    "cellCount": 1998,
+    "crs": "EPSG:4326",
+    "metricCellArea": {
+      "expectedAreaM2": 62500,
+      "minAreaM2": 62500.0,
+      "maxAreaM2": 62500.0,
+      "meanAreaM2": 62500.0,
+      "areaStdM2": 0.0
+    },
+    "spatialBoundsWgs84": [
+      74.7997,
+      31.5742,
+      74.9341,
+      31.6848
+    ],
+    "crsEvaluation": "EPSG:32643 is appropriate for study area (74.80\u00b0E to 74.93\u00b0E, central meridian 75.0\u00b0E, scale distortion < 0.05%).",
+    "boundaryType": "official_municipal_perimeter",
+    "edgeCellHandling": "full_cell_centroid_inclusion_with_edge_overhang"
+  },
+  "featureAudit": {
+    "featureCount": 1998,
+    "susceptibilityStats": {
+      "min": 0.0,
+      "max": 1.0,
+      "mean": 0.4225,
+      "std": 0.1697,
+      "p25": 0.2979,
+      "p50": 0.4108,
+      "p75": 0.5329
+    },
+    "bandDistributionPercent": {
+      "low": 32.23,
+      "mid": 59.96,
+      "high": 7.81
+    },
+    "componentFeatures": {
+      "f_depression": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.5,
+        "std": 0.2889
+      },
+      "f_flatness": {
+        "min": 0.013,
+        "max": 1.0,
+        "mean": 0.5,
+        "std": 0.2886
+      },
+      "f_builtUp": {
+        "min": 0.2604,
+        "max": 0.9638,
+        "mean": 0.5,
+        "std": 0.1813
+      },
+      "f_lowPoint": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.1206,
+        "std": 0.3258
+      },
+      "f_density": {
+        "min": 0.0,
+        "max": 0.5139,
+        "mean": 0.2213,
+        "std": 0.064
+      }
+    },
+    "dataOrigin": {
+      "sourceType": "physical_raster_and_vector",
+      "provenanceNote": "Derived from Copernicus DEM GLO-30 30m raster, ESA WorldCover 2021 10m raster, and OpenStreetMap vector layers with road network topology.",
+      "isPhysicallySampled": true
+    }
+  },
+  "evidenceAudit": {
+    "incidentCount": 15,
+    "validRainfallIncidents": 13,
+    "distinctStormEvents": 7,
+    "hasHistoricalEvidence": true
+  },
+  "crossCityComparability": {
+    "role": "reference_baseline",
+    "crossCityScoreEquivalence": "Baseline scores are locally calibrated against 13 municipal inundation hotspots across 7 verified storms. Scores represent localized percentile susceptibility within Amritsar's terrain.",
+    "isTransferredWithoutCalibration": false
+  }
+}
