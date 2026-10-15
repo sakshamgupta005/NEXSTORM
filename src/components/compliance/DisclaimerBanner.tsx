@@ -12,10 +12,12 @@ export function DisclaimerBanner() {
       <div className="container mx-auto max-w-7xl flex items-start sm:items-center gap-2.5">
         <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" />
         <p className="leading-relaxed">
-          <strong className="font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300 mr-1.5">
+          <strong className="font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-300 mr-2">
             Research Prototype — DEMO DATA:
           </strong>
-          NEXSTORM provides experimental relative waterlogging risk estimates based on simulated rainfall and synthetic placeholder susceptibility data. It does NOT provide verified street-level flood predictions, measured observations, or official emergency warnings. Consult IMD, NDMA, and local municipal disaster authorities for official emergency advisories.
+          <span>
+            NEXSTORM provides experimental relative waterlogging risk estimates based on simulated rainfall and synthetic placeholder susceptibility data. It does NOT provide verified street-level flood predictions, measured observations, or official emergency warnings. Consult IMD, NDMA, and local municipal disaster authorities for official emergency advisories.
+          </span>
         </p>
       </div>
     </aside>

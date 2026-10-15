@@ -1,40 +1,42 @@
 /* ==========================================================================
-   NEXSTORM — Architectural Neumorphic Design System (Solid Colors, No Gradients)
+   NEXSTORM — High-Precision Geospatial Intelligence Design System
    ========================================================================== */
 
 :root {
-  /* Pristine Light Architectural Atmosphere (Solid Colors, No Gradients) */
-  --bg-color: #f5f8fb;
-  --card-bg: #f5f8fb;
-  --card-bg-subtle: #ffffff;
+  /* Restrained, Clean Light Canvas */
+  --bg-color: #f6f8fc;
+  --card-bg: #ffffff;
+  --card-bg-subtle: #f8fafc;
+  --card-border: #e2e8f0;
   
-  /* Executive High-Contrast Premium Typography */
-  --text-primary: #090e17;     /* Deep Onyx Obsidian */
+  /* High-Contrast Typographic Hierarchy */
+  --text-primary: #0f172a;     /* Deep Slate Main */
   --text-heading-blue: #1d4ed8;/* Royal Cobalt Accent */
-  --text-secondary: #1e293b;   /* Architectural Slate */
-  --text-muted: #334155;       /* Crisp Mineral Slate */
-  --text-subtle: #64748b;      /* Cool Titanium */
+  --text-secondary: #334155;   /* Supporting Slate */
+  --text-muted: #64748b;       /* Muted Slate */
+  --text-subtle: #94a3b8;      /* Subtle Neutral */
   
-  /* Solid Brand Accents */
-  --brand-blue: #2563eb;       /* Solid Cobalt */
+  /* Accessible Semantic Brand Accents */
+  --brand-blue: #1d4ed8;       /* Primary Action Blue */
   --brand-dark-blue: #1e3a8a;  /* Deep Navy */
-  --brand-emerald: #047857;    /* Solid Emerald */
-  --brand-amber: #b45309;      /* Solid Amber */
-  --brand-rose: #be123c;       /* Solid Crimson */
+  --brand-emerald: #15803d;    /* Low-Risk Accessible Green */
+  --brand-amber: #92400e;      /* Moderate-Risk Accessible Amber */
+  --brand-rose: #b91c1c;       /* High-Risk Accessible Red */
 
-  /* Precision Tactile Neumorphic Shadow Tokens for Crisp Light Canvas */
-  --shadow-light: #ffffff;
-  --shadow-dark: #d5dfea;
-  --shadow-darker: #c3d0df;
+  /* Modern Subtle Elevation & Shadow Tokens */
+  --shadow-light: rgba(255, 255, 255, 0.9);
+  --shadow-dark: rgba(15, 23, 42, 0.05);
+  --shadow-darker: rgba(15, 23, 42, 0.1);
   
-  --card-shadow: 14px 14px 32px var(--shadow-dark), -14px -14px 32px var(--shadow-light);
-  --btn-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light);
-  --btn-pressed: inset 2.5px 2.5px 5px var(--shadow-dark), inset -2.5px -2.5px 5px var(--shadow-light);
-  --pill-inset: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 4px 14px -2px rgba(15, 23, 42, 0.04);
+  --card-shadow-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(15, 23, 42, 0.08);
+  --btn-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --btn-pressed: 0 0 0 2px rgba(29, 78, 216, 0.18);
+  --pill-inset: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
 
   /* Modern Architectural Fonts */
   --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono-tag: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono-tag: 'Space Grotesk', -apple-system, BlinkMacSystemFont, monospace;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -173,39 +175,41 @@ body.light-premium {
 .nav-item {
   color: var(--text-muted);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
-  padding: 9px 20px;
-  border-radius: 999px;
-  border: none;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.18s ease-in-out;
 }
 
 .nav-item:hover {
   color: var(--text-primary);
+  background-color: rgba(241, 245, 249, 0.8);
 }
 
 .nav-item.active-nav {
   color: var(--brand-blue);
-  background-color: var(--card-bg);
-  box-shadow: var(--btn-pressed);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(29, 78, 216, 0.06);
 }
 
-/* Neumorphic Live Status Button */
+/* Modern Button Primitives */
 .btn-neumorphic {
-  background-color: var(--card-bg);
+  background-color: #ffffff;
   color: var(--text-secondary);
   font-family: var(--font-body);
   font-size: 13.5px;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid #cbd5e1;
   border-radius: 9999px;
   cursor: pointer;
   box-shadow: var(--btn-shadow);
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.18s ease-in-out;
   outline: none;
   display: inline-flex;
   align-items: center;
@@ -214,8 +218,10 @@ body.light-premium {
 }
 
 .btn-live-status {
-  padding: 10px 22px;
+  padding: 8px 18px;
   color: #065f46;
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
 }
 
 .pulse-indicator {
@@ -223,18 +229,20 @@ body.light-premium {
   height: 8px;
   border-radius: 50%;
   background-color: var(--brand-emerald);
-  box-shadow: 0 0 6px var(--brand-emerald);
+  box-shadow: 0 0 6px rgba(21, 128, 61, 0.4);
 }
 
 .btn-neumorphic:hover {
-  transform: translateY(-1.5px);
-  box-shadow: 8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+  transform: translateY(-1px);
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  box-shadow: 0 3px 8px -1px rgba(15, 23, 42, 0.08);
 }
 
 .btn-neumorphic:active {
-  transform: translateY(0.5px);
-  box-shadow: var(--btn-pressed);
-  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(0);
+  background-color: #f1f5f9;
+  box-shadow: none;
 }
 
 /* ==========================================================================
@@ -443,12 +451,12 @@ body.light-premium {
 
 .hero-heading {
   font-family: var(--font-display);
-  font-size: 64px;
-  line-height: 1.06;
+  font-size: clamp(34px, 4.2vw, 54px);
+  line-height: 1.12;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -2px;
-  margin-bottom: 24px;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
 }
 
 .heading-accent {
@@ -456,24 +464,26 @@ body.light-premium {
 }
 
 .hero-lead {
-  font-size: 18px;
-  line-height: 1.7;
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.65;
   color: var(--text-muted);
-  max-width: 620px;
-  margin-bottom: 34px;
+  max-width: 640px;
+  margin-bottom: 28px;
 }
 
 /* Single Sleek Premium Element (Replacing Bulky Left Cards) */
 .hero-single-pill {
   background-color: var(--card-bg);
-  box-shadow: var(--pill-inset);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 9999px;
-  padding: 10px 22px;
+  padding: 8px 18px;
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
+  margin-bottom: 32px;
+  max-width: 100%;
   align-self: flex-start;
 }
 
@@ -482,12 +492,12 @@ body.light-premium {
   height: 9px;
   border-radius: 50%;
   background-color: var(--brand-emerald);
-  box-shadow: 0 0 8px var(--brand-emerald);
+  box-shadow: 0 0 8px rgba(21, 128, 61, 0.4);
 }
 
 .pill-primary-tag {
   font-family: var(--font-mono-tag);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--brand-blue);
 }
@@ -498,17 +508,18 @@ body.light-premium {
 }
 
 .pill-sub-info {
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
 /* Buttons Row */
 .hero-button-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 56px;
+  gap: 14px;
+  margin-bottom: 44px;
 }
 
 /* Solid Primary Button */
@@ -582,20 +593,21 @@ body.light-premium {
   width: 100%;
 }
 
-/* Neumorphic Card Base (Clean, Solid, No Gradients) */
+/* Clean Modern Card Surface */
 .neuro-card {
   background-color: var(--card-bg);
-  border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
-  padding: 34px 38px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 26px 30px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .neuro-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 20px 20px 42px var(--shadow-dark), -20px -20px 42px var(--shadow-light);
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: var(--card-shadow-hover);
 }
 
 .visualizer-card {
@@ -855,26 +867,27 @@ body.light-premium {
 }
 
 .building-item, .route-choice-card {
-  background-color: var(--card-bg);
-  box-shadow: var(--btn-shadow);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 16px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
   text-align: left;
   cursor: pointer;
   width: 100%;
-  transition: all 0.22s ease;
+  transition: all 0.18s ease-in-out;
 }
 
 .building-item:hover, .route-choice-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+  transform: translateY(-1px);
+  border-color: #93c5fd;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
 }
 
 .building-item.active-building, .route-choice-card.active-route {
-  box-shadow: var(--btn-pressed);
-  border-color: rgba(37, 99, 235, 0.45);
-  background-color: #e9f0f8;
+  border-color: #1d4ed8;
+  background-color: #f8faff;
+  box-shadow: 0 0 0 1.5px #1d4ed8, 0 4px 12px -2px rgba(29, 78, 216, 0.1);
 }
 
 .item-name {
@@ -1638,29 +1651,63 @@ body.light-premium {
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    padding: 16px 0 12px 0;
+  }
+
   .nav-container {
-    padding: 0 20px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
   }
   
   .nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
     gap: 4px;
+    padding: 4px 0;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   }
 
   .nav-item {
     padding: 6px 12px;
     font-size: 13px;
+    white-space: nowrap;
   }
   
   .page-wrapper {
-    padding: 32px 20px 80px 20px;
+    padding: 20px 16px 60px 16px;
+  }
+
+  .hero-image-banner {
+    padding: 32px 20px 40px 20px;
+    border-radius: 20px;
+    margin-bottom: 48px;
   }
   
   .hero-heading {
-    font-size: 42px;
+    font-size: 36px;
+  }
+
+  .hero-button-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .hero-button-row > * {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
   
   .metrics-row {
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 20px;
   }
   
   .metric-number {
@@ -1683,9 +1730,9 @@ body.light-premium {
   }
 
   .timeline-marker {
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
   }
 }
 
@@ -1693,12 +1740,16 @@ body.light-premium {
   .central-telemetry-inner {
     flex-direction: column;
     gap: 14px;
-    border-radius: 20px;
-    padding: 18px 24px;
+    border-radius: 16px;
+    padding: 16px 20px;
     width: 100%;
   }
   .telemetry-sep-divider {
     width: 40px;
     height: 1px;
+  }
+  .demo-modal-card {
+    padding: 24px 18px;
+    border-radius: 20px;
   }
 }

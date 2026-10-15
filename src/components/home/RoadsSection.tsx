@@ -37,9 +37,9 @@ export function RoadsSection() {
           </div>
           <h2 className="sub-section-heading">Dynamic Road Inundation &amp; Routing Map</h2>
           <p className="sub-section-desc">
-            Compare alternative travel corridors across the metropolitan network. Route vectors
-            illuminate dynamically on the map, exposing submerged underpass traps and guiding
-            vehicles onto elevated flood-safe trajectories.
+            Compare alternative travel corridors across the metropolitan network. Route trajectories
+            illustrate modeled waterlogging exposure, identifying low-lying underpasses and lower-exposure
+            arterial alternatives.
           </p>
         </div>
 
@@ -93,11 +93,11 @@ export function RoadsSection() {
                       <strong className="text-sm font-bold text-emerald-800">
                         Route A: Amritsar Bypass Elevated Flyover
                       </strong>
-                      <span className="risk-badge badge-low">Recommended Safe</span>
+                      <span className="risk-badge badge-low">Lower Modeled Exposure</span>
                     </div>
                     <div className="flex justify-between text-xs text-slate-500 mt-2">
-                      <span>15.6 km • 22 mins</span>
-                      <span className="text-emerald-700 font-bold">Minimal Waterlogging (6%)</span>
+                      <span>15.6 km • ~31 mins (30 km/h baseline)</span>
+                      <span className="text-emerald-700 font-bold">Exposure Score: 0.14 (Low)</span>
                     </div>
                   </button>
 
@@ -111,11 +111,11 @@ export function RoadsSection() {
                       <strong className="text-sm font-bold text-rose-800">
                         Route B: GT Road via Rego Bridge Sump
                       </strong>
-                      <span className="risk-badge badge-high">High Inundation Trap</span>
+                      <span className="risk-badge badge-high">High Inundation Risk</span>
                     </div>
                     <div className="flex justify-between text-xs text-slate-500 mt-2">
-                      <span>11.2 km • +40 min delay</span>
-                      <span className="text-rose-700 font-bold">Underpass Sump Hazard (88%)</span>
+                      <span>11.2 km • ~22 mins (+ unmodeled flood delay)</span>
+                      <span className="text-rose-700 font-bold">Exposure Score: 0.88 (Avoid)</span>
                     </div>
                   </button>
                 </div>
@@ -137,16 +137,16 @@ export function RoadsSection() {
                   }}
                   title="Click to jump to underpass on map"
                 >
-                  <div className="hazard-dot dot-critical"></div>
+                  <div className="hazard-dot dot-warning"></div>
                   <div className="flex-1">
                     <div className="text-xs font-bold text-slate-900">
                       Rego Bridge Railway Underpass Sump
                     </div>
                     <div className="text-[11px] text-slate-500">
-                      Historical severe water accumulation basin (&gt;45cm water trap)
+                      Historical severe water accumulation basin (topographic depression)
                     </div>
                   </div>
-                  <span className="risk-badge badge-high">CRITICAL</span>
+                  <span className="risk-badge badge-high">WARNING</span>
                 </div>
 
                 <div className="segment-pill">
@@ -159,7 +159,7 @@ export function RoadsSection() {
                       Restricted discharge into canal outfall, curb overflow likely
                     </div>
                   </div>
-                  <span className="risk-badge badge-med">WARNING</span>
+                  <span className="risk-badge badge-med">WATCH</span>
                 </div>
               </div>
             </div>
@@ -178,8 +178,8 @@ export function RoadsSection() {
                     id="currentRouteTitle"
                   >
                     {isSafe
-                      ? 'CORRIDOR: ROUTE A (AMRITSAR ELEVATED BYPASS)'
-                      : 'CORRIDOR: ROUTE B (REGO BRIDGE UNDERPASS SUMP)'}
+                      ? 'CORRIDOR: ROUTE A (LOWER EXPOSURE ALIGNMENT)'
+                      : 'CORRIDOR: ROUTE B (HIGH EXPOSURE DEPRESSION)'}
                   </span>
                 </div>
                 <div className="map-layer-pills">
@@ -187,13 +187,13 @@ export function RoadsSection() {
                     className={`layer-pill ${isSafe ? 'active-layer' : ''} cursor-pointer`}
                     onClick={() => setActiveRoute('safe')}
                   >
-                    <span className="pill-swatch swatch-safe"></span> Route A Safe Corridor
+                    <span className="pill-swatch swatch-safe"></span> Route A (Lower Exposure)
                   </span>
                   <span
                     className={`layer-pill ${!isSafe ? 'active-layer' : ''} cursor-pointer`}
                     onClick={() => setActiveRoute('hazardous')}
                   >
-                    <span className="pill-swatch swatch-hazard"></span> Route B Sump Trap
+                    <span className="pill-swatch swatch-hazard"></span> Route B (High Risk Sump)
                   </span>
                 </div>
               </div>
@@ -215,12 +215,12 @@ export function RoadsSection() {
                         }`}
                         id="roadHudCode"
                       >
-                        {isSafe ? 'RECOMMENDED ROUTE: A' : 'CRITICAL FLOOD HAZARD: ROUTE B'}
+                        {isSafe ? 'RECOMMENDED: ROUTE A (CAUTION)' : 'ADVISORY: ROUTE B (AVOID)'}
                       </span>
                       <h4 className="text-base font-bold text-slate-900" id="roadHudTitle">
                         {isSafe
-                          ? 'Northern Bypass & Elevated Highway'
-                          : 'Rego Bridge Underpass Sump & GT Road'}
+                          ? 'Northern Bypass & Elevated Alignment'
+                          : 'Rego Bridge Underpass & GT Road'}
                       </h4>
                     </div>
                     <div className="text-right">
@@ -230,7 +230,7 @@ export function RoadsSection() {
                         }`}
                         id="roadHudScore"
                       >
-                        {isSafe ? '94' : '22'}
+                        {isSafe ? '14' : '88'}
                         <span className="text-xs text-slate-400 font-normal">/100</span>
                       </span>
                       <span
@@ -239,7 +239,7 @@ export function RoadsSection() {
                         }`}
                         id="roadHudSafetyLabel"
                       >
-                        {isSafe ? 'High Safety Confidence' : 'Severe Inundation Trap'}
+                        {isSafe ? 'Low Modeled Exposure' : 'High Inundation Exposure'}
                       </span>
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export function RoadsSection() {
                     <div>
                       <span className="text-[10px] text-slate-500 block">Travel Time</span>
                       <strong className="text-xs text-slate-900" id="roadHudTime">
-                        {isSafe ? '22 mins (Clear)' : '+40 min Delay (Trapped)'}
+                        {isSafe ? '~31 mins (30 km/h baseline)' : '~22 mins (+ unmodeled delay)'}
                       </strong>
                     </div>
                     <div>
@@ -266,7 +266,7 @@ export function RoadsSection() {
                         }`}
                         id="roadHudSinks"
                       >
-                        {isSafe ? '0 on Trajectory' : '2 Sump Traps (>45cm)'}
+                        {isSafe ? '0 on Trajectory' : '1 Severe Sump (>45cm)'}
                       </strong>
                     </div>
                   </div>
@@ -277,8 +277,8 @@ export function RoadsSection() {
                     </span>
                     <span className="text-xs text-slate-700" id="roadHudAdvisory">
                       {isSafe
-                        ? 'Traverses northern elevated bypass embankment slope (+1.2%), completely bypassing flash water accumulation at Rego Bridge.'
-                        : 'Descends into Rego Bridge railway underpass bowl where storm runoff converges from Hall Gate. Vehicle stalling and complete road submergence expected.'}
+                        ? 'Traverses elevated bypass alignment (+1.2% gradient), avoiding the low-lying topographic depression at Rego Bridge.'
+                        : 'Descends into Rego Bridge railway underpass depression where storm runoff converges from Hall Gate. Significant historical accumulation recorded.'}
                     </span>
                   </div>
                 </div>
@@ -299,21 +299,21 @@ export function RoadsSection() {
               <div className="insight-grid">
                 <div className="insight-stat">
                   <span className="insight-stat-value text-rose-700">4</span>
-                  <span className="insight-stat-label">Active Underpass Sump Traps</span>
+                  <span className="insight-stat-label">Historical Underpass Sumps</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-rose-500" style={{ width: '35%' }}></div>
                   </div>
                 </div>
                 <div className="insight-stat">
-                  <span className="insight-stat-value text-amber-700">14,853</span>
-                  <span className="insight-stat-label">Monitored Road Segments</span>
+                  <span className="insight-stat-value text-amber-700">14,855</span>
+                  <span className="insight-stat-label">Modeled Road Segments</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-amber-500" style={{ width: '60%' }}></div>
                   </div>
                 </div>
                 <div className="insight-stat">
                   <span className="insight-stat-value text-emerald-700">3</span>
-                  <span className="insight-stat-label">Elevated Safe Corridors</span>
+                  <span className="insight-stat-label">Low-Exposure Arterials</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-emerald-500" style={{ width: '45%' }}></div>
                   </div>
@@ -323,9 +323,9 @@ export function RoadsSection() {
                 <span className="text-slate-500">Sources:</span>
                 <span className="text-blue-700 font-semibold">OSM Road Network</span>
                 <span className="insight-dot">&bull;</span>
-                <span className="text-emerald-700 font-semibold">Municipal Drainage Maps</span>
+                <span className="text-emerald-700 font-semibold">Copernicus 30m DEM</span>
                 <span className="insight-dot">&bull;</span>
-                <span className="text-indigo-700 font-semibold">Historical Incident Data</span>
+                <span className="text-indigo-700 font-semibold">Historical Incident Archive</span>
               </div>
             </div>
           </div>

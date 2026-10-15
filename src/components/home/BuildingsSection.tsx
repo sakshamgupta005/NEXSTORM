@@ -34,14 +34,14 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     baseGradient: -1.9,
     gradientText: '-1.9% Sump Basin',
     baseElevation: 226.8,
-    drain: 'Severe Choke',
+    drain: 'Depression Sink',
     drainClass: 'text-rose-700',
     flowText:
-      'Surface sheetflow descending into Hall Bazaar low-elevation depression. Historic brick storm ducts operating at full surcharge.',
-    velocity: '2.84 m/s',
-    drainCap: '88%',
-    actionStatus: 'Dispatched',
-    statusMsg: 'Amritsar Municipal Corporation active dewatering deployed at Hall Gate basin',
+      'Surface sheetflow descends into Hall Bazaar low-elevation depression (226.8m MSL). Subsurface drainage hydraulics unmodeled.',
+    velocity: '1,420 m²',
+    drainCap: 's = 0.88',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Copernicus DEM 30m topographic depression. Plinth elevation & indoor depth unmodeled.',
   },
   'heritage-street': {
     key: 'heritage-street',
@@ -60,11 +60,11 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drain: 'Moderate Sump',
     drainClass: 'text-amber-700',
     flowText:
-      'Paved pedestrian corridor channels sheetflow along lateral gutters toward Katra Ahluwalia subterranean detention duct.',
-    velocity: '1.65 m/s',
-    drainCap: '65%',
-    actionStatus: 'Monitoring',
-    statusMsg: 'Subterranean detention chambers opened at Town Hall interchange',
+      'Paved pedestrian corridor channels sheetflow along lateral gutters toward historic walled city depression.',
+    velocity: '2,150 m²',
+    drainCap: 's = 0.62',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Pedestrian corridor aligned with historic Katra Ahluwalia terrain depression.',
   },
   'mall-road': {
     key: 'mall-road',
@@ -75,19 +75,19 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     zoom: 17,
     sink: [31.6408, 74.871],
     baseScore: 28,
-    risk: 'Low Hazard',
+    risk: 'Low Exposure',
     riskClass: 'text-emerald-700',
     baseGradient: 1.4,
     gradientText: '+1.4% Crowned Axis',
     baseElevation: 232.1,
-    drain: 'High-Flow Trunk',
+    drain: 'Crowned Slope',
     drainClass: 'text-emerald-700',
     flowText:
-      'Positive road crown rapidly conveys rainfall away from storefronts into Court Road high-flow storm trunk with outfall to circular drain.',
-    velocity: '1.10 m/s',
-    drainCap: '42%',
-    actionStatus: 'Standby',
-    statusMsg: 'Automated monitoring active; storm pumps on standby',
+      'Positive road crown rapidly conveys rainfall away from storefronts toward circular drainage outfall.',
+    velocity: '980 m²',
+    drainCap: 's = 0.28',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Elevated road crown conveys runoff away from building foundations.',
   },
   'ranjit-avenue': {
     key: 'ranjit-avenue',
@@ -98,19 +98,19 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     zoom: 17,
     sink: [31.6575, 74.8525],
     baseScore: 16,
-    risk: 'Minimal Risk',
+    risk: 'Low Exposure',
     riskClass: 'text-emerald-700',
     baseGradient: 2.2,
     gradientText: '+2.2% Engineered Ridge',
     baseElevation: 234.6,
-    drain: 'Permeable Bioswales',
+    drain: 'Engineered Ridge',
     drainClass: 'text-emerald-700',
     flowText:
-      'Modern planned sector engineered with permeable perimeter swales and detention park basins sloping away from building foundations.',
-    velocity: '0.62 m/s',
-    drainCap: '24%',
-    actionStatus: 'Green',
-    statusMsg: 'Bioswales actively absorbing runoff; zero municipal pumping required',
+      'Modern planned sector engineered with positive grading sloping away from building foundations.',
+    velocity: '1,850 m²',
+    drainCap: 's = 0.16',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Modern planned sector with high relative ground elevation (234.6m MSL).',
   },
 }
 
@@ -185,9 +185,9 @@ export function BuildingsSection() {
           </div>
           <h2 className="sub-section-heading">Geospatial Building Exposure Map</h2>
           <p className="sub-section-desc">
-            Click any location under <strong>Critical Hotspot Structures</strong>. The map
-            automatically navigates to that single focused area. Click directly on the map to drop
-            dynamic risk nodes with animated vector arrows and real-time exposure telemetry.
+            Select any location under <strong>Critical Hotspot Structures</strong> to inspect modeled
+            catchment exposure, or click directly on the map to inspect spatial coordinates and localized
+            terrain depressions.
           </p>
         </div>
 
@@ -284,8 +284,9 @@ export function BuildingsSection() {
                 Amritsar Scientific Integrity Protocol
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                NEXSTORM couples Copernicus 30m DEM elevation sinks with Amritsar Municipal
-                Corporation trunk drainage maps. Sump backwater levels are computed deterministically.
+                NEXSTORM couples Copernicus 30m DEM elevation sinks with 360,252 Google Open
+                Buildings footprints. Indoor flood depth, plinth elevations, and underground pipe
+                hydraulics are unmodeled to maintain strict scientific honesty.
               </p>
             </div>
           </div>
@@ -397,7 +398,7 @@ export function BuildingsSection() {
                     <span className="telemetry-metric-val text-slate-900" id="centralQPeak">
                       {area.velocity}
                     </span>
-                    <span className="telemetry-metric-label text-slate-500">Runoff Velocity</span>
+                    <span className="telemetry-metric-label text-slate-500">Metric Footprint Area</span>
                   </div>
 
                   <div className="telemetry-sep-divider"></div>
@@ -406,16 +407,16 @@ export function BuildingsSection() {
                     <span className="telemetry-metric-val text-amber-700" id="centralDrainCap">
                       {area.drainCap}
                     </span>
-                    <span className="telemetry-metric-label text-slate-500">Drain Surcharge</span>
+                    <span className="telemetry-metric-label text-slate-500">Catchment Susceptibility</span>
                   </div>
 
                   <div className="telemetry-sep-divider"></div>
 
                   <div className="telemetry-metric-unit">
-                    <span className="telemetry-metric-val text-emerald-700" id="centralActionStatus">
+                    <span className="telemetry-metric-val text-slate-700" id="centralActionStatus">
                       {area.actionStatus}
                     </span>
-                    <span className="telemetry-metric-label text-slate-500">Mitigation Squad</span>
+                    <span className="telemetry-metric-label text-slate-500">Subsurface Hydraulics</span>
                   </div>
                 </div>
 
@@ -435,27 +436,27 @@ export function BuildingsSection() {
                 <span className="insight-icon">📊</span>
                 <div>
                   <span className="meta-tag text-indigo-700">BUILDING EXPOSURE SYNTHESIS</span>
-                  <h4 className="insight-title">Structural Risk Distribution — Amritsar Metropolitan</h4>
+                  <h4 className="insight-title">Macro-Catchment Exposure Distribution — Amritsar Hotspots</h4>
                 </div>
               </div>
               <div className="insight-grid">
                 <div className="insight-stat">
                   <span className="insight-stat-value text-rose-700">3,214</span>
-                  <span className="insight-stat-label">High-Risk Structures</span>
+                  <span className="insight-stat-label">High-Exposure Footprints</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-rose-500" style={{ width: '26%' }}></div>
                   </div>
                 </div>
                 <div className="insight-stat">
                   <span className="insight-stat-value text-amber-700">5,842</span>
-                  <span className="insight-stat-label">Moderate-Risk Structures</span>
+                  <span className="insight-stat-label">Moderate-Exposure Footprints</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-amber-500" style={{ width: '47%' }}></div>
                   </div>
                 </div>
                 <div className="insight-stat">
                   <span className="insight-stat-value text-emerald-700">3,424</span>
-                  <span className="insight-stat-label">Low-Risk Structures</span>
+                  <span className="insight-stat-label">Low-Exposure Footprints</span>
                   <div className="insight-bar">
                     <div className="insight-bar-fill bg-emerald-500" style={{ width: '27%' }}></div>
                   </div>

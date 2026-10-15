@@ -58,12 +58,11 @@ export function RoadMapCanvas({ activeRoute, focusHazardTrigger }: RoadMapCanvas
       preferCanvas: true,
     })
 
-    // CartoDB Positron tiles for clean road network display
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // OpenStreetMap clean standard tiles (reliable, no API key watermark)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     }).addTo(map)
 
     L.control.zoom({ position: 'topright' }).addTo(map)
@@ -92,7 +91,7 @@ export function RoadMapCanvas({ activeRoute, focusHazardTrigger }: RoadMapCanvas
       .bindPopup('<b>Destination:</b> Sri Guru Ram Dass Jee International Airport (ATQ)')
       .addTo(map)
 
-    // Hazard Pin (Rego Bridge)
+    // Hazard Pin (Rego Bridge Underpass)
     const hazardMarker = L.marker(UNDERPASS_SUMP_POINT, {
       icon: L.divIcon({
         className: 'custom-hazard-pin',
@@ -102,7 +101,7 @@ export function RoadMapCanvas({ activeRoute, focusHazardTrigger }: RoadMapCanvas
       }),
     })
       .bindPopup(
-        '<b>CRITICAL HAZARD:</b> Rego Bridge Railway Underpass Sump (&gt;45cm water accumulation trap)'
+        '<b>UNDERPASS CHOKEPOINT:</b> Rego Bridge Railway Underpass Sump (Historical Waterlogging Hotspot)'
       )
       .addTo(map)
     hazardMarkerRef.current = hazardMarker

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { Layers, Building2, Route, ArrowRight, ArrowUpRight, CheckCircle2, Play } from 'lucide-react'
 import type { TabKey } from './FrontendNavbar'
 
 interface OverviewSectionProps {
@@ -9,7 +10,7 @@ interface OverviewSectionProps {
 }
 
 export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
-  // Interactive Hazard Precipitation Coupling Slider
+  // Interactive Hazard Precipitation Coupling Slider (Scenario Simulation)
   const [hazardPct, setHazardPct] = useState<number>(78)
 
   const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -19,14 +20,14 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
     setHazardPct(pct)
   }
 
-  let hazardBadgeText = 'Severe Storm Alert'
-  let hazardBadgeStyle = { color: '#92400e', backgroundColor: '#fef3c7' }
+  let hazardBadgeText = 'Severe Storm Stress Test'
+  let hazardBadgeStyle = { color: '#92400e', backgroundColor: '#fef3c7', borderColor: '#fde68a' }
   if (hazardPct <= 35) {
-    hazardBadgeText = 'Dry Ground Conditions'
-    hazardBadgeStyle = { color: '#065f46', backgroundColor: '#d1fae5' }
+    hazardBadgeText = 'Dry Baseline Test'
+    hazardBadgeStyle = { color: '#166534', backgroundColor: '#dcfce7', borderColor: '#bbf7d0' }
   } else if (hazardPct <= 70) {
-    hazardBadgeText = 'Moderate Surface Runoff'
-    hazardBadgeStyle = { color: '#b45309', backgroundColor: '#fed7aa' }
+    hazardBadgeText = 'Heavy Rainfall Stress Test'
+    hazardBadgeStyle = { color: '#9a3412', backgroundColor: '#ffedd5', borderColor: '#fed7aa' }
   }
 
   return (
@@ -45,11 +46,11 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
               <h1 className="hero-heading">
                 Urban Flood Risk<br />
                 <span className="heading-accent">Engineered for Reality</span>
-                <span className="sr-only">Hackathon Starter Foundation</span>
+                <span className="sr-only">NEXSTORM Urban Resilience System</span>
               </h1>
 
               <p className="hero-lead">
-                Traditional weather apps report broad city-wide rainfall averages that fail to
+                Traditional weather forecasts report broad city-wide rainfall averages that fail to
                 identify which streets become impassable or which basements face inundation.
                 NEXSTORM executes deterministic spatial matching across real elevation contours,
                 rainfall intensity, and drainage infrastructure.
@@ -57,53 +58,53 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
 
               <div className="hero-single-pill">
                 <div className="beacon-pulse-dot"></div>
-                <span className="pill-primary-tag">Live Spatial Coupling</span>
+                <span className="pill-primary-tag">Operational Coupling</span>
                 <span className="pill-dot-sep">&bull;</span>
                 <span className="pill-sub-info">
-                  Amritsar Pilot Grid &bull; Copernicus 30m DEM Sinks &bull; ERA5 Stream Synced
+                  Amritsar 250m Grid &bull; Copernicus 30m DEM Sinks &bull; Verified Historical Replay
                 </span>
               </div>
 
               <div className="hero-button-row">
                 <button
                   type="button"
-                  className="btn-solid-primary"
+                  className="btn-solid-primary cursor-pointer"
                   id="exploreBuildingsCta"
                   onClick={() => onSwitchTab('buildings')}
                 >
                   <span>Inspect Building Exposure</span>
-                  <span className="btn-arrow">&rarr;</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
                 <button
                   type="button"
-                  className="btn-neumorphic btn-secondary-action"
+                  className="btn-neumorphic btn-secondary-action cursor-pointer"
                   id="exploreRoadsCta"
                   onClick={() => onSwitchTab('roads')}
                 >
                   <span>Evaluate Road Routes</span>
-                  <span className="play-icon">▶</span>
+                  <Play className="w-3.5 h-3.5 ml-1 fill-current" />
                 </button>
                 <Link
                   href="/city/amritsar"
-                  className="btn-neumorphic px-5 py-3 text-xs font-bold text-slate-800 hover:text-blue-700 transition flex items-center gap-1.5"
+                  className="btn-neumorphic px-5 py-3 text-xs font-bold text-slate-800 hover:text-blue-700 transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Launch 250m Grid Console</span>
-                  <span className="text-blue-600">&nearr;</span>
+                  <ArrowUpRight className="w-4 h-4 text-blue-600" />
                 </Link>
               </div>
 
               {/* Differentiated Color Metrics Row */}
               <div className="metrics-row">
                 <div className="metric-block">
-                  <span className="metric-number text-slate-900">17,961+</span>
+                  <span className="metric-number text-slate-900">360,252+</span>
                   <span className="metric-caption text-blue-700 font-semibold">
                     Mapped Urban Footprints
                   </span>
                 </div>
                 <div className="metric-block">
-                  <span className="metric-number text-emerald-800">250m²</span>
+                  <span className="metric-number text-emerald-800">1,998</span>
                   <span className="metric-caption text-emerald-700 font-semibold">
-                    Continuous Grid Cells
+                    Amritsar 250m Grid Cells
                   </span>
                 </div>
                 <div className="metric-block">
@@ -115,30 +116,17 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
               </div>
             </section>
 
-            {/* Right: Neumorphic Floating Visualizer Cards */}
+            {/* Right: Modern Telemetry Cards */}
             <section
               className="hero-right-visualizer"
               aria-label="Live Model Telemetry Cards"
             >
               <div className="visualizer-cards-stack">
                 {/* Card 1: Topographical Elevation Layer */}
-                <div className="neuro-card visualizer-card float-anim-1">
+                <div className="neuro-card visualizer-card">
                   <div className="card-header-flex">
                     <div className="icon-square-box">
-                      <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#2563eb"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                      </svg>
+                      <Layers className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
                       <span className="meta-tag text-blue-700">LAYER 01: TERRAIN HYDROLOGY</span>
@@ -150,7 +138,7 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
                   <div className="card-content-block">
                     <div className="data-indicator-row">
                       <span className="indicator-title text-slate-600">
-                        Identified Topographic Depressions
+                        Topographic Depressions in Amritsar
                       </span>
                       <span className="indicator-highlight text-blue-700 font-bold">
                         14 Verified Catchment Sinks
@@ -161,22 +149,22 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
                   </div>
                 </div>
 
-                {/* Card 2: Dynamic Hazard Slider Card */}
-                <div className="neuro-card visualizer-card float-anim-2">
+                {/* Card 2: Dynamic Scenario Stress Test Slider */}
+                <div className="neuro-card visualizer-card">
                   <div className="flex justify-between items-baseline mb-3">
                     <div>
                       <span className="meta-tag text-indigo-700">
-                        LAYER 02: DYNAMIC PRECIPITATION COUPLING
+                        SCENARIO SIMULATOR: PRECIPITATION TEST
                       </span>
                       <div className="hazard-readout text-slate-900" id="hazardVal">
                         {hazardPct.toFixed(1)}%
                       </div>
                       <span className="readout-label text-slate-500">
-                        Storm Hazard Severity Coefficient
+                        Simulated Hyetograph Intensity
                       </span>
                     </div>
                     <span
-                      className="status-chip chip-warning"
+                      className="status-chip chip-warning border px-2.5 py-1 rounded-full text-xs font-bold"
                       id="hazardRiskBadge"
                       style={hazardBadgeStyle}
                     >
@@ -200,9 +188,9 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
                   </div>
 
                   <div className="track-scale">
-                    <span className="text-emerald-700 font-medium">0 mm/hr (Dry)</span>
-                    <span className="text-amber-700 font-medium">35 mm/hr (Heavy Rain)</span>
-                    <span className="text-rose-700 font-medium">80 mm/hr (Cloudburst)</span>
+                    <span className="text-emerald-700 font-medium text-xs">0 mm/h (Dry Baseline)</span>
+                    <span className="text-amber-700 font-medium text-xs">35 mm/h (Heavy Rain)</span>
+                    <span className="text-rose-700 font-medium text-xs">80 mm/h (Cloudburst)</span>
                   </div>
                 </div>
 
@@ -225,15 +213,15 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
                   </div>
                   <ul className="evidence-bullets-list">
                     <li>
-                      <span className="bullet-check text-emerald-700 font-bold">✓</span>
-                      <span className="text-slate-600">
-                        Spatial overlap between urban roads &amp; low-elevation sinks
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="text-slate-600 text-xs">
+                        Spatial intersection between road corridors &amp; low-elevation sinks
                       </span>
                     </li>
                     <li>
-                      <span className="bullet-check text-blue-700 font-bold">✓</span>
-                      <span className="text-slate-600">
-                        Strict separation of static hazard, geographic exposure &amp; vulnerability
+                      <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                      <span className="text-slate-600 text-xs">
+                        Strict separation of static hazard, geographic exposure &amp; physical vulnerability
                       </span>
                     </li>
                   </ul>
@@ -260,50 +248,56 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
           <div className="three-pillars-grid">
             {/* Pillar A */}
             <div className="neuro-card pillar-card">
-              <div className="pillar-icon">🗺</div>
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 mb-4">
+                <Layers className="w-5 h-5" />
+              </div>
               <h3 className="pillar-title text-slate-900">Pillar A — Area Susceptibility</h3>
-              <p className="pillar-body text-slate-600">
+              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
                 Combines Copernicus DEM terrain slope, low-lying depression indices, and historical
                 waterlogging hotspots into a persistent susceptibility grid across metropolitan
                 zones. Distinguishes baseline vulnerability from dynamic weather hazard.
               </p>
-              <div className="pillar-footer">
-                <span className="text-slate-500">Resolution: 250m² grid</span>
+              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
+                <span className="text-slate-500">Resolution: 250m grid (1,998 cells)</span>
                 <span className="text-blue-700 font-bold">&bull; Verified DEM</span>
               </div>
             </div>
 
             {/* Pillar B */}
             <div className="neuro-card pillar-card">
-              <div className="pillar-icon">🏛</div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mb-4">
+                <Building2 className="w-5 h-5" />
+              </div>
               <h3 className="pillar-title text-slate-900">
                 Pillar B — Building Footprint Exposure
               </h3>
-              <p className="pillar-body text-slate-600">
+              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
                 Evaluates individual structure polygons against localized terrain depressions and
-                drainage outfall capacity. Explicitly reports missing physical vulnerability data to
-                eliminate false precision.
+                macro-catchment overlap in UTM 43N. Explicitly avoids fabricating plinth heights or
+                indoor damage to maintain scientific honesty.
               </p>
-              <div className="pillar-footer">
-                <span className="text-slate-500">Coverage: 17,961+ structures</span>
-                <span className="text-emerald-700 font-bold">&bull; Footprint Vectors</span>
+              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
+                <span className="text-slate-500">Coverage: 360,252 structures</span>
+                <span className="text-emerald-700 font-bold">&bull; Google Open Buildings</span>
               </div>
             </div>
 
             {/* Pillar C */}
             <div className="neuro-card pillar-card">
-              <div className="pillar-icon">🛣</div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 mb-4">
+                <Route className="w-5 h-5" />
+              </div>
               <h3 className="pillar-title text-slate-900">
                 Pillar C — Road Inundation &amp; Routing
               </h3>
-              <p className="pillar-body text-slate-600">
+              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
                 Associates connected road network segments with terrain elevation sinks and
-                underpass sumps. Provides flood-aware navigation that reroutes transit away from
-                waterlogged corridors before vehicles become trapped.
+                underpass sumps. Computes sub-2ms A* flood-aware route comparison prioritizing lower
+                modeled exposure corridors.
               </p>
-              <div className="pillar-footer">
-                <span className="text-slate-500">Network: 14,853 segments</span>
-                <span className="text-indigo-700 font-bold">&bull; Flood Routing</span>
+              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
+                <span className="text-slate-500">Network: 14,853 segments (28,418 nodes)</span>
+                <span className="text-indigo-700 font-bold">&bull; A* Pathfinding</span>
               </div>
             </div>
           </div>
@@ -312,3 +306,4 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
     </main>
   )
 }
+

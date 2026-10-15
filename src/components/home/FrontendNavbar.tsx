@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { Droplets } from 'lucide-react'
 
 export type TabKey = 'overview' | 'buildings' | 'roads' | 'about'
 
@@ -35,8 +36,8 @@ export function FrontendNavbar({
           <div className="logo-wrapper">
             <svg
               className="logo-mark"
-              width="40"
-              height="40"
+              width="38"
+              height="38"
               viewBox="0 0 40 40"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -98,50 +99,52 @@ export function FrontendNavbar({
                 type="button"
                 className={`nav-item ${activeTab === 'about' ? 'active-nav' : ''}`}
                 data-tab="about"
+                aria-label="About Us"
                 onClick={() => onSelectTab('about')}
               >
-                About Us
+                About
               </button>
             </li>
           </ul>
         </nav>
 
         {/* Actions Group */}
-        <div className="nav-actions flex items-center gap-3">
+        <div className="nav-actions flex items-center gap-2.5">
           {onOpenReportModal && (
             <button
               type="button"
               onClick={onOpenReportModal}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 transition"
-              title="Submit verified citizen ground truth"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 transition shadow-sm cursor-pointer"
+              title="Submit verified citizen waterlogging observation"
             >
-              <span>💧</span>
-              <span>Report Flood</span>
+              <Droplets className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden sm:inline">Report Waterlogging</span>
+              <span className="sm:hidden">Report</span>
             </button>
           )}
 
           <button
             type="button"
-            className="btn-neumorphic btn-live-status"
+            className="btn-neumorphic btn-live-status cursor-pointer"
             id="liveStatusBtn"
             onClick={onOpenStatusModal}
-            title="Inspect operational pipeline & sensor data streams"
+            title="Inspect operational pipeline & data stream health"
           >
             <span className="pulse-indicator"></span>
-            <span>Live Pipeline Status</span>
+            <span className="text-xs font-semibold">Live Pipeline Status</span>
           </button>
 
           {/* Discreet auth links for platform sign-in */}
-          <div className="hidden md:flex items-center gap-2 pl-2 border-l border-slate-300">
+          <div className="hidden lg:flex items-center gap-1.5 pl-2 border-l border-slate-200">
             <Link
               href="/login"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 py-1"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 py-1 rounded-md hover:bg-slate-100 transition"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="text-xs font-semibold text-blue-700 hover:text-blue-900 px-2 py-1"
+              className="text-xs font-semibold text-blue-700 hover:text-blue-900 px-2 py-1 rounded-md hover:bg-blue-50 transition"
             >
               Sign Up
             </Link>
@@ -151,3 +154,4 @@ export function FrontendNavbar({
     </header>
   )
 }
+

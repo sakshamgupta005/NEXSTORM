@@ -33,6 +33,8 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
   const navItems = [
+    { title: '3-Pillar Experience', href: '/', icon: Droplets },
+    { title: '250m Grid Console', href: '/city/amritsar', icon: MapPin },
     { title: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { title: 'Analytics Demo', href: '/dashboard/analytics', icon: BarChart3 },
     { title: 'Localization & a11y', href: '/dashboard/localization', icon: Languages },
@@ -46,7 +48,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   const userEmail = user?.email ?? 'dev@example.com'
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="flex min-h-screen bg-[#f6f8fc] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans light-premium">
       {/* Mobile Menu Backdrop */}
       {mobileMenuOpen && (
         <div
@@ -62,11 +64,29 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
         }`}
       >
         <div className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6">
-          <Link href="/dashboard" className="flex items-center space-x-2.5 font-bold tracking-tight">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-              <Rocket className="h-4 w-4" />
+          <Link href="/" className="flex items-center space-x-2.5 font-bold tracking-tight">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shadow-sm shrink-0">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2" y="2" width="36" height="36" rx="10" fill="#0f172a" />
+                <path
+                  d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
+                  stroke="#94a3b8"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+                <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
+                <circle cx="20" cy="20" r="2.8" fill="#2563eb" />
+              </svg>
             </div>
-            <span className="text-base">Hackathon<span className="text-blue-600 dark:text-blue-400">Starter</span></span>
+            <span className="text-base font-display font-extrabold text-slate-900 dark:text-white">
+              NEXSTORM<span className="text-blue-600">.</span>
+            </span>
           </Link>
           <button
             onClick={() => setMobileMenuOpen(false)}

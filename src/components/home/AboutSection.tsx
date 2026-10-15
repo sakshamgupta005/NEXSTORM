@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { Sparkles } from 'lucide-react'
 import type { TabKey } from './FrontendNavbar'
 
 interface AboutSectionProps {
@@ -13,8 +14,8 @@ export function AboutSection({ onSwitchTab }: AboutSectionProps) {
       <div className="page-wrapper max-w-5xl mx-auto">
         {/* About Header Card */}
         <div className="neuro-card p-12 flex flex-col gap-8 text-center">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl shadow-inner text-blue-700 font-bold">
-            ⚡
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
+            <Sparkles className="w-8 h-8 text-blue-700" />
           </div>
 
           <div>
@@ -123,14 +124,13 @@ export function AboutSection({ onSwitchTab }: AboutSectionProps) {
                 <span className="timeline-phase-tag text-emerald-700">SPATIAL MATCHING</span>
                 <h4 className="timeline-title">Urban Feature Overlay &amp; Intersection</h4>
                 <p className="timeline-desc">
-                  OSM building footprints and road network segments are spatially intersected with
-                  identified terrain depressions. Each structure receives a proximity score to the
-                  nearest verified catchment sink.
+                  Over 360,000 Google Open Buildings footprints and 14,855 road segments are
+                  spatially intersected with identified terrain depressions and susceptibility grids.
                 </p>
                 <div className="timeline-tech-badges">
-                  <span className="tech-badge">OSM Overpass API</span>
+                  <span className="tech-badge">Google Open Buildings V3</span>
                   <span className="tech-badge">Spatial Join</span>
-                  <span className="tech-badge">PostGIS</span>
+                  <span className="tech-badge">GeoPandas / Shapely</span>
                 </div>
               </div>
             </div>
@@ -166,12 +166,12 @@ export function AboutSection({ onSwitchTab }: AboutSectionProps) {
                 <h4 className="timeline-title">Ground-Truth Cross-Verification</h4>
                 <p className="timeline-desc">
                   Computed risk scores are cross-referenced against verified historical
-                  waterlogging incident reports, municipal pump station deployment logs, and
-                  community-submitted observations to calibrate confidence levels.
+                  waterlogging incident archives, news reports, and community-submitted observations
+                  to calibrate confidence levels.
                 </p>
                 <div className="timeline-tech-badges">
                   <span className="tech-badge">Historical Incidents</span>
-                  <span className="tech-badge">Municipal Records</span>
+                  <span className="tech-badge">Ground Truth Archive</span>
                   <span className="tech-badge">Community Reports</span>
                 </div>
               </div>
@@ -186,15 +186,14 @@ export function AboutSection({ onSwitchTab }: AboutSectionProps) {
                 <span className="timeline-phase-tag text-blue-700">DELIVERY</span>
                 <h4 className="timeline-title">Real-Time Civic Intelligence Dashboard</h4>
                 <p className="timeline-desc">
-                  Processed risk assessments are rendered on interactive geospatial maps with
-                  dynamic probe nodes, animated vector flows, and live telemetry — enabling
-                  municipal teams and citizens to make informed decisions before, during, and
-                  after storm events.
+                  Processed risk assessments are rendered on interactive maps with building dossiers,
+                  scenario hyetograph controls, and flood-aware route comparison — enabling informed
+                  civic resilience before and during storm events.
                 </p>
                 <div className="timeline-tech-badges">
                   <span className="tech-badge">Leaflet.js</span>
-                  <span className="tech-badge">Live Telemetry</span>
-                  <span className="tech-badge">Dynamic HUD</span>
+                  <span className="tech-badge">Routing Engine</span>
+                  <span className="tech-badge">Dynamic Dossiers</span>
                 </div>
               </div>
             </div>

@@ -72,12 +72,11 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
       preferCanvas: true,
     })
 
-    // Clean modern Light Carto basemap tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // OpenStreetMap clean standard tiles (reliable, no API key watermark)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     }).addTo(map)
 
     L.control.zoom({ position: 'topright' }).addTo(map)

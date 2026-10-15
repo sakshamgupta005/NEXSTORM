@@ -166,7 +166,7 @@ export function HealthDiagnosticsModal({ isOpen, onClose }: HealthDiagnosticsMod
                   <span>OSM Urban Roads &amp; Google Open Buildings</span>
                 </div>
                 <span className="text-emerald-700 font-bold">
-                  17,961 Buildings • 14,853 Road Segments
+                  360,252 Footprints • 14,855 Segments (28,418 Nodes)
                 </span>
               </div>
 
