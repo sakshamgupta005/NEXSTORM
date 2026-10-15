@@ -8,7 +8,7 @@ import { apiError, apiSuccess } from '@/lib/api/response'
 import { observationService } from '@/lib/observations/service'
 import { verifyObservationSchema } from '@/lib/validations/observation'
 
-const ADMIN_SECRET = process.env.OBSERVATION_MODERATOR_KEY || 'nexstorm_authorized_reviewer_2026'
+const ADMIN_SECRET = process.env.OBSERVATION_MODERATOR_KEY
 
 export async function PATCH(
   req: NextRequest,
@@ -27,11 +27,16 @@ export async function PATCH(
     const authHeader = req.headers.get('authorization')
     const token = authHeader?.replace(/^Bearer\s+/i, '').trim()
 
-    // Accept valid secret, development reviewer token, or test token
-    const isAuthorized =
-      token === ADMIN_SECRET ||
-      token === 'dev-reviewer' ||
-      token === 'test-moderator-token'
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    // In production, strictly require configured OBSERVATION_MODERATOR_KEY
+    let isAuthorized = false
+    if (ADMIN_SECRET && token === ADMIN_SECRET) {
+      isAuthorized = true
+    } else if (!isProduction) {
+      // Allow development and automated test tokens in non-production environments only
+      isAuthorized = token === 'dev-reviewer' || token === 'test-moderator-token'
+    }
 
     if (!isAuthorized) {
       return apiError('Unauthorized: Authorized reviewer token required for observation verification.', {

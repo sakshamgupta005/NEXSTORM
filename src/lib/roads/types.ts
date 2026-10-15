@@ -127,6 +127,7 @@ export interface CandidateRouteInput {
   routeId: string
   name?: string
   description?: string
+  mode?: 'shortest' | 'lower_exposure' | 'balanced' | 'custom'
   segmentIds?: string[]
   coordinates?: [number, number][]
 }
@@ -134,9 +135,15 @@ export interface CandidateRouteInput {
 export interface CandidateRouteEvaluation {
   routeId: string
   name: string
+  mode?: 'shortest' | 'lower_exposure' | 'balanced' | 'custom'
   totalDistanceKm: number
   totalDistanceMeters: number
+  estimatedTimeMinutes: number
+  speedBaselineKmh: number
+  travelTimeDisclaimer: string
   matchedSegmentsCount: number
+  unknownRiskDistanceM: number
+  unknownRiskFraction: number
   exposureByClass: {
     high: number
     moderate: number
@@ -146,7 +153,12 @@ export interface CandidateRouteEvaluation {
   activeObservationCount: number
   compositePenaltyScore: number
   recommendation: 'recommended' | 'caution' | 'avoid'
+  explanation?: string
   segments: RouteSegmentExposure[]
+  geometry?: {
+    type: 'LineString'
+    coordinates: [number, number][]
+  }
 }
 
 export interface RouteComparisonResult {
@@ -157,3 +169,32 @@ export interface RouteComparisonResult {
   }
   rankedRoutes: CandidateRouteEvaluation[]
 }
+
+export interface RoutingPlanRequest {
+  cityId?: string
+  origin: [number, number] // [lng, lat]
+  destination: [number, number] // [lng, lat]
+  originName?: string
+  destinationName?: string
+}
+
+export interface RoutingPlanResult {
+  cityId: string
+  origin: {
+    coordinates: [number, number]
+    name: string
+    snappedNodeId: number
+    snapDistanceM: number
+  }
+  destination: {
+    coordinates: [number, number]
+    name: string
+    snappedNodeId: number
+    snapDistanceM: number
+  }
+  routes: CandidateRouteEvaluation[]
+  comparison: RouteComparisonResult
+  scientificCaveat: string
+  speedAssumptionNotice: string
+}
+

@@ -14,6 +14,7 @@ import {
   X,
   Layers,
   Info,
+  Building,
 } from 'lucide-react'
 import { RISK_COLORS } from '@/components/map/Legend'
 
@@ -254,6 +255,67 @@ export function CellDetailPanel({
                 </p>
               </div>
             )}
+
+            {/* Building Footprint Exposure (Stage P12) */}
+            <div className="space-y-1.5 pt-1">
+              <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Building className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Building Footprint Exposure</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Google Open Buildings V3
+                </span>
+              </div>
+
+              {explanation.buildingExposure ? (
+                <div className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850/60 space-y-2 text-xs">
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                      <div className="text-[10px] text-slate-500">Footprints</div>
+                      <div className="text-sm font-extrabold font-mono text-indigo-600 dark:text-indigo-400">
+                        {explanation.buildingExposure.buildingCount}
+                      </div>
+                    </div>
+                    <div className="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                      <div className="text-[10px] text-slate-500">Total Area</div>
+                      <div className="text-xs font-extrabold font-mono text-slate-800 dark:text-slate-200">
+                        {Math.round(explanation.buildingExposure.totalFootprintAreaM2).toLocaleString()} m²
+                      </div>
+                    </div>
+                    <div className="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                      <div className="text-[10px] text-slate-500">Mean Area</div>
+                      <div className="text-xs font-extrabold font-mono text-slate-800 dark:text-slate-200">
+                        {Math.round(explanation.buildingExposure.meanFootprintAreaM2)} m²
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] pt-0.5">
+                    <span className="text-slate-600 dark:text-slate-400">Catchment Exposure Tier:</span>
+                    <Badge
+                      className={
+                        explanation.buildingExposure.exposureCategory === 'high_catchment'
+                          ? 'bg-rose-600 text-white text-[10px]'
+                          : explanation.buildingExposure.exposureCategory === 'moderate_catchment'
+                            ? 'bg-amber-500 text-slate-950 text-[10px]'
+                            : 'bg-blue-600 text-white text-[10px]'
+                      }
+                    >
+                      {explanation.buildingExposure.exposureCategory.replace(/_/g, ' ').toUpperCase()}
+                    </Badge>
+                  </div>
+
+                  <p className="text-[10px] text-slate-400 italic">
+                    * {explanation.buildingExposure.scientificCaveat}
+                  </p>
+                </div>
+              ) : (
+                <div className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 text-slate-500 text-[11px]">
+                  No building footprints indexed inside this grid cell.
+                </div>
+              )}
+            </div>
 
             {/* Scientific Limitations for this Cell */}
             <div className="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400">

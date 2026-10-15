@@ -74,7 +74,10 @@ NEXSTORM Architecture
 | `p9-ingest` | **Done** | Ingested 360,252 Google Open Buildings V3 footprints, metric areas in UTM 43N, cell index, prepared 14,853 roads with 26,155 topological nodes |
 | `p10-observations` | **Done** | Ground-truth observations & community reporting evidence layer, corroboration clustering, verification moderation, privacy hashing |
 | `p11-roads` | **Done** | Amritsar road-segment risk assessment, multi-cell spatial intersections, underpass chokepoint tags, dynamic observation elevation, and route flood exposure comparison |
-| `p12-buildings` | **Roadmap** | Building-level exposure assessment, terrain elevation differentials, plinth risk, and footprint hazard inspection |
+| `p12-buildings` | **Done** | Building-level exposure assessment, multi-cell footprint intersections, area-weighted susceptibility, viewport API, and footprint visualization |
+| `p13-routing` | **Done** | Flood-aware origin-to-destination routing, A* pathfinding on 28,418 noded vertices and 37,924 edges, multi-candidate risk comparison, and map visualization |
+| `p14-trust` | **Done** | Evidence quality & provenance audit, moderator token hardening, reporter privacy salt-hashing, and dynamic observation elevation |
+| `p15-final` | **Done** | System integration, lazy-loading payload optimization (-8.87 MB), 936 passing tests, verified demo readiness verdict |
 
 ---
 
@@ -114,14 +117,17 @@ npm run typecheck
 # Lint check (zero errors, zero warnings)
 npm run lint
 
-# Run Vitest test suite (80 test files, 784 tests)
+# Run Vitest test suite (93 test files, 890 tests)
 npm test
 
 # Build production bundle with Next.js Turbopack
 npm run build
 
-# Run Playwright E2E browser smoke tests
+# Run Playwright E2E browser smoke tests (8 tests)
 npm run test:e2e
+
+# Run Python geospatial pipeline test suite (38 tests)
+.venv\Scripts\python.exe -m pytest pipeline/tests/ -v
 ```
 
 ---
@@ -137,7 +143,10 @@ npm run test:e2e
 | `/api/evaluation?cityId=amritsar` | `GET` | Serves offline pipeline evaluation summary verified against frozen configuration hash. |
 | `/api/official-alerts?state=Punjab` | `GET` | Normalized NDMA SACHET CAP alert feed for official flood/weather advisories. |
 | `/api/observations?cityId=amritsar` | `GET`, `POST` | Query filtered observations or submit a community report with rate-limiting and spatial snapping. |
-| `/api/observations/[id]/verify` | `PATCH` | Authorized moderation endpoint to independently verify or reject community reports. |
+| `/api/buildings?cityId=amritsar` | `GET` | Viewport-bounded building footprint query with metric areas and multi-cell susceptibility. |
+| `/api/roads/risk?cityId=amritsar` | `GET` | Road segment risk query with bounding box, highway classification, and underpass filters. |
+| `/api/roads/route-compare` | `POST` | Multi-candidate route flood exposure evaluation and safety ranking. |
+| `/api/roads/plan` | `GET`, `POST` | Origin-to-destination flood-aware route planning with A* pathfinding and candidate comparison. |
 | `/api/health` | `GET` | Operational health probe with system memory, uptime, and cache statuses. |
 
 ---
@@ -150,6 +159,15 @@ npm run test:e2e
 
 ---
 
-## 8. License
+## 8. Verified Known Limitations
+1. **Surface Susceptibility vs Underground Hydraulics**: Static susceptibility captures surface accumulation potential from topography and land cover; it does not model subsurface storm sewer capacity or predict physical flood water depths in centimeters.
+2. **Road Network Geometry & One-Ways**: Road graph edges in `routing_graph.json` are bidirectional due to OpenStreetMap GeoPackage limitations; lane-level one-way restrictions and turn bans are unmodeled.
+3. **Routing Travel Times**: Candidate route durations are computed using an assumed 30 km/h baseline velocity without dynamic traffic congestion integration.
+4. **Building Catchment Exposure**: Footprint exposure measures terrain macro-catchment intersection ($m^2$); it does not assess plinth heights, interior inundation, or structural integrity.
+5. **Observation Persistence**: Citizen observations persist locally in `public/data/cities/amritsar/observations/observations.json`. High-concurrency production deployments require PostgreSQL/Supabase backing.
+
+---
+
+## 9. License
 Research and hackathon prototype developed for BuildFest 2.0 (PS-18).
 Data sources: Open-Meteo (CC BY 4.0), OpenStreetMap (ODbL), Copernicus DEM GLO-30, ESA WorldCover 2021.

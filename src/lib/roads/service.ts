@@ -392,6 +392,7 @@ export class RoadRiskService {
       let totalDistanceMeters = 0
       let moderateRiskDistanceM = 0
       let highRiskDistanceM = 0
+      let unknownRiskDistanceM = 0
       let underpassCountOnRoute = 0
       let activeReportsOnRoute = 0
 
@@ -409,6 +410,10 @@ export class RoadRiskService {
           highRiskDistanceM += seg.lengthM
         } else if (evaluated.dynamicRiskClass === 'moderate') {
           moderateRiskDistanceM += seg.lengthM
+        }
+
+        if (seg.unmatchedFraction > 0.5 || seg.primaryCellId === 'UNMATCHED') {
+          unknownRiskDistanceM += seg.lengthM
         }
 
         if (seg.isUnderpass) {
@@ -438,30 +443,60 @@ export class RoadRiskService {
 
       const highRatio = highRiskDistanceM / totalDistanceMeters
       const modRatio = moderateRiskDistanceM / totalDistanceMeters
-      const lowRatio = Math.max(0, 1.0 - highRatio - modRatio)
+      const unknownRatio = unknownRiskDistanceM / totalDistanceMeters
+      const lowRatio = Math.max(0, 1.0 - highRatio - modRatio - unknownRatio)
 
       // Composite Risk Penalty Score (0 to 100)
+      // High susceptibility exposure (up to 50 pts) + Moderate (up to 25 pts)
       const basePenalty = highRatio * 50 + modRatio * 25
+      // Active field observations (up to 30 pts)
       const reportPenalty = Math.min(30, activeReportsOnRoute * 15)
+      // Severe structural depression trap (underpasses up to 20 pts)
       const underpassPenalty = Math.min(20, underpassCountOnRoute * 10)
+      // Missing hazard evidence penalty (up to 15 pts) - missing data is not safe
+      const unknownPenalty = Math.min(15, unknownRatio * 15)
+
       const compositePenaltyScore = Math.min(
         100,
-        Math.round(basePenalty + reportPenalty + underpassPenalty)
+        Math.round(basePenalty + reportPenalty + underpassPenalty + unknownPenalty)
       )
 
       let recommendation: 'recommended' | 'caution' | 'avoid' = 'recommended'
       if (compositePenaltyScore >= 50 || underpassCountOnRoute > 0 || highRatio > 0.3) {
         recommendation = 'avoid'
-      } else if (compositePenaltyScore >= 20 || modRatio > 0.3) {
+      } else if (compositePenaltyScore >= 20 || modRatio > 0.3 || unknownRatio > 0.4) {
         recommendation = 'caution'
       }
+
+      const totalDistKm = Math.round((totalDistanceMeters / 1000) * 100) / 100
+      // 30 km/h baseline velocity: minutes = (distanceKm / 30) * 60 = distanceKm * 2
+      const estimatedTimeMinutes = Math.round((totalDistKm / 30) * 60 * 10) / 10
+
+      // Formulate clear, concise explanation
+      const factors: string[] = []
+      if (underpassCountOnRoute > 0) factors.push(`${underpassCountOnRoute} underpass bottleneck(s)`)
+      if (highRatio > 0) factors.push(`${Math.round(highRatio * 100)}% high-susceptibility corridor`)
+      if (modRatio > 0) factors.push(`${Math.round(modRatio * 100)}% moderate-susceptibility corridor`)
+      if (activeReportsOnRoute > 0) factors.push(`${activeReportsOnRoute} active report(s)`)
+      if (unknownRatio > 0.2) factors.push(`${Math.round(unknownRatio * 100)}% unknown coverage`)
+
+      const explanation = factors.length > 0
+        ? `Exposure penalty ${compositePenaltyScore}/100 driven by: ${factors.join(', ')}.`
+        : `Minimal modeled hazard exposure across ${totalDistKm} km corridor.`
 
       evaluatedRoutes.push({
         routeId: cand.routeId,
         name: cand.name || cand.routeId,
+        mode: cand.mode,
         totalDistanceMeters: Math.round(totalDistanceMeters * 10) / 10,
-        totalDistanceKm: Math.round((totalDistanceMeters / 1000) * 100) / 100,
+        totalDistanceKm: totalDistKm,
+        estimatedTimeMinutes,
+        speedBaselineKmh: 30,
+        travelTimeDisclaimer:
+          'Estimated travel time uses an uncalibrated 30 km/h urban baseline without live traffic or signal delays.',
         matchedSegmentsCount: segmentExposures.length,
+        unknownRiskDistanceM: Math.round(unknownRiskDistanceM * 10) / 10,
+        unknownRiskFraction: Math.round(unknownRatio * 100) / 100,
         exposureByClass: {
           high: Math.round(highRatio * 100) / 100,
           moderate: Math.round(modRatio * 100) / 100,
@@ -471,7 +506,14 @@ export class RoadRiskService {
         activeObservationCount: activeReportsOnRoute,
         compositePenaltyScore,
         recommendation,
+        explanation,
         segments: segmentExposures,
+        geometry: cand.coordinates
+          ? {
+              type: 'LineString',
+              coordinates: cand.coordinates,
+            }
+          : undefined,
       })
     }
 

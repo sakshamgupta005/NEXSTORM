@@ -170,9 +170,31 @@ export function Legend({ classShare, activeLayer = 'risk' }: LegendProps) {
         </div>
       )}
 
-      <p className="text-[10px] text-slate-400 leading-tight">
-        *Risk classes represent relative modelled risk, not measured flood depth or elevation in cm. Combining static susceptibility (s) with event Rainfall Threshold Index (RTI).
-      </p>
+      <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400">
+        <div className="font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+          NEXSTORM Evidence Semantics:
+        </div>
+        <ul className="space-y-1 pl-1 list-none">
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Susceptibility (s):</strong> Static terrain runoff accumulation potential [0, 1] based on DEM slope and WorldCover imperviousness.
+          </li>
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Rainfall-Triggered Risk:</strong> Continuous matrix output of $s$ + precipitation accumulation ($RTI$). Not measured flood depth.
+          </li>
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Building Exposure:</strong> Spatial overlap of footprints with macro-catchments. Does NOT model plinth elevation, basement presence, or structural damage.
+          </li>
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Road Corridors & Routing:</strong> Topological network risk with underpass recognition. Assumes uncalibrated 30 km/h baseline without live traffic.
+          </li>
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Community Reports:</strong> Citizen submissions. Corroborated reports indicate multiple citizen reports; verified records require authorized moderation.
+          </li>
+          <li>
+            <strong className="text-slate-700 dark:text-slate-200">Unknown State:</strong> Missing, stale, or unmatched evidence is explicitly flagged as unknown, never assumed safe.
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }

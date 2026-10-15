@@ -7,88 +7,106 @@ import {
   AlertTriangle,
   Info,
   Navigation,
+  MapPin,
+  Clock,
+  ArrowRight,
+  Compass,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import type { RouteComparisonResult } from '@/lib/roads/types'
+import type { CandidateRouteEvaluation, RoutingPlanResult } from '@/lib/roads/types'
 
 interface RoadRiskPanelProps {
   cityId: string
-  onSelectRoad?: (roadId: string) => void
+  onSelectRoute?: (route: CandidateRouteEvaluation | null) => void
+  activeRouteId?: string | null
 }
 
-// Sample candidate routes in Amritsar for testing route exposure scoring
-const SAMPLE_ROUTES = [
-  {
-    routeId: 'route-gt-road',
-    name: 'Route 1: Grand Trunk Road Corridor (Arterial)',
-    description: 'Elevated arterial route connecting Amritsar Cantt to Court Rd',
-    coordinates: [
-      [74.838, 31.632],
-      [74.851, 31.634],
-      [74.868, 31.635],
-      [74.885, 31.636],
-      [74.898, 31.638],
-    ] as [number, number][],
-  },
-  {
-    routeId: 'route-railway-underpass',
-    name: 'Route 2: Railway Colony via Low-lying Underpass',
-    description: 'Low-elevation route crossing railway underpass with known drainage bottlenecks',
-    coordinates: [
-      [74.862, 31.621],
-      [74.869, 31.627],
-      [74.872, 31.631],
-      [74.876, 31.635],
-    ] as [number, number][],
-  },
-  {
-    routeId: 'route-circular-road',
-    name: 'Route 3: Walled City Circular Road',
-    description: 'Peripheral bypass around historic walled city with variable drainage',
-    coordinates: [
-      [74.871, 74.872],
-      [74.878, 31.625],
-      [74.882, 31.622],
-      [74.889, 31.623],
-    ] as [number, number][],
-  },
+interface Landmark {
+  id: string
+  name: string
+  coords: [number, number] // [lng, lat]
+}
+
+const AMRITSAR_LANDMARKS: Landmark[] = [
+  { id: 'golden-temple', name: 'Golden Temple (Harmandir Sahib)', coords: [74.8765, 31.62] },
+  { id: 'railway-station', name: 'Amritsar Railway Station', coords: [74.8655, 31.634] },
+  { id: 'gndu', name: 'Guru Nanak Dev University (GNDU)', coords: [74.825, 31.638] },
+  { id: 'ssss-chowk', name: 'SSSS Chowk / Batala Road (Underpass)', coords: [74.898, 31.645] },
+  { id: 'mall-road', name: 'Mall Road / Lawrence Road', coords: [74.881, 31.641] },
+  { id: 'hall-gate', name: 'Hall Gate (Walled City Entrance)', coords: [74.875, 31.628] },
+  { id: 'cantt', name: 'Amritsar Cantonment', coords: [74.838, 31.632] },
 ]
 
-export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
-  const [isComparing, setIsComparing] = useState(false)
-  const [comparisonResult, setComparisonResult] = useState<RouteComparisonResult | null>(null)
-  const [compareError, setCompareError] = useState<string | null>(null)
+export function RoadRiskPanel({
+  cityId,
+  onSelectRoute,
+  activeRouteId = null,
+}: RoadRiskPanelProps) {
+  const [originId, setOriginId] = useState<string>('mall-road')
+  const [destId, setDestId] = useState<string>('ssss-chowk')
+  const [isPlanning, setIsPlanning] = useState(false)
+  const [planResult, setPlanResult] = useState<RoutingPlanResult | null>(null)
+  const [planError, setPlanError] = useState<string | null>(null)
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(activeRouteId)
 
-  const handleRunComparison = async () => {
-    setIsComparing(true)
-    setCompareError(null)
+  const handlePlanRoutes = async () => {
+    setIsPlanning(true)
+    setPlanError(null)
+
+    const origin = AMRITSAR_LANDMARKS.find((l) => l.id === originId)
+    const destination = AMRITSAR_LANDMARKS.find((l) => l.id === destId)
+
+    if (!origin || !destination) {
+      setPlanError('Please select valid origin and destination locations.')
+      setIsPlanning(false)
+      return
+    }
+
+    if (origin.id === destination.id) {
+      setPlanError('Origin and destination cannot be the same location.')
+      setIsPlanning(false)
+      return
+    }
 
     try {
-      const res = await fetch('/api/roads/route-compare', {
+      const res = await fetch('/api/roads/plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cityId,
-          routes: SAMPLE_ROUTES.map((r) => ({
-            routeId: r.routeId,
-            name: r.name,
-            coordinates: r.coordinates,
-          })),
+          origin: origin.coords,
+          destination: destination.coords,
+          originName: origin.name,
+          destinationName: destination.name,
         }),
       })
 
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error || 'Failed to compare routes')
+        throw new Error(data.error || 'Failed to calculate flood-aware routes')
       }
 
       const data = await res.json()
-      setComparisonResult(data.data)
+      const result = data.data as RoutingPlanResult
+      setPlanResult(result)
+
+      // Automatically select the safest/recommended route on the map
+      if (result.routes.length > 0) {
+        const primary = result.routes[0]
+        setSelectedRouteId(primary.routeId)
+        onSelectRoute?.(primary)
+      }
     } catch (err) {
-      setCompareError(err instanceof Error ? err.message : 'Unknown error during route comparison')
+      setPlanError(err instanceof Error ? err.message : 'Unknown routing error')
+      setPlanResult(null)
     } finally {
-      setIsComparing(false)
+      setIsPlanning(false)
     }
+  }
+
+  const handleSelectCandidate = (route: CandidateRouteEvaluation) => {
+    setSelectedRouteId(route.routeId)
+    onSelectRoute?.(route)
   }
 
   return (
@@ -101,13 +119,13 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <span>Road-Segment Risk & Routing</span>
+              <span>Origin-to-Destination Flood Router</span>
               <Badge variant="outline" className="text-[10px] font-mono border-orange-500/40 text-orange-600">
-                P11
+                P13
               </Badge>
             </h3>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Multi-cell grid intersection & flood exposure scoring
+              A* pathfinding with multi-cell risk penalties & underpass avoidance
             </p>
           </div>
         </div>
@@ -116,75 +134,116 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
       {/* Network Stats Card */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
         <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-100 dark:border-slate-800">
-          <div className="text-[10px] text-slate-500">Total Segments</div>
-          <div className="text-sm font-extrabold font-mono text-slate-800 dark:text-slate-200">14,853</div>
+          <div className="text-[10px] text-slate-500">Connected Nodes</div>
+          <div className="text-sm font-extrabold font-mono text-slate-800 dark:text-slate-200">28,418</div>
         </div>
         <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-100 dark:border-slate-800">
-          <div className="text-[10px] text-slate-500">Major Corridors</div>
-          <div className="text-sm font-extrabold font-mono text-orange-600 dark:text-orange-400">773</div>
+          <div className="text-[10px] text-slate-500">Routing Edges</div>
+          <div className="text-sm font-extrabold font-mono text-orange-600 dark:text-orange-400">37,924</div>
         </div>
         <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-100 dark:border-slate-800">
           <div className="text-[10px] text-slate-500">Tagged Underpasses</div>
           <div className="text-sm font-extrabold font-mono text-purple-600 dark:text-purple-400">5</div>
         </div>
         <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-100 dark:border-slate-800">
-          <div className="text-[10px] text-slate-500">Graph Nodes</div>
-          <div className="text-sm font-extrabold font-mono text-blue-600 dark:text-blue-400">26,155</div>
+          <div className="text-[10px] text-slate-500">Urban Baseline</div>
+          <div className="text-sm font-extrabold font-mono text-blue-600 dark:text-blue-400">30 km/h</div>
         </div>
       </div>
 
-      {/* Scientific Note */}
-      <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-850/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
-        <div className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-          <Info className="w-3.5 h-3.5 text-blue-500" />
-          <span>Multi-Cell Spatial Weighting</span>
+      {/* Origin & Destination Selector Form */}
+      <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-850/80 border border-slate-200 dark:border-slate-800 space-y-3">
+        <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+          <Compass className="w-3.5 h-3.5 text-blue-500" />
+          <span>Plan Route in Amritsar</span>
         </div>
-        <p>
-          Road segments crossing multiple 250m cells preserve exact length fractions in each cell. Subsegment risk is not collapsed into a single nearest-cell lookup.
-        </p>
-      </div>
 
-      {/* Candidate Route Comparison Tool */}
-      <div className="space-y-3 pt-1">
-        <div className="flex items-center justify-between">
-          <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-            <Navigation className="w-3.5 h-3.5 text-orange-500" />
-            <span>Route Flood Exposure Comparison</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          {/* Origin */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-emerald-500" />
+              <span>Origin (Start)</span>
+            </label>
+            <select
+              value={originId}
+              onChange={(e) => setOriginId(e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs"
+            >
+              {AMRITSAR_LANDMARKS.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Destination */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-rose-500" />
+              <span>Destination (End)</span>
+            </label>
+            <select
+              value={destId}
+              onChange={(e) => setDestId(e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs"
+            >
+              {AMRITSAR_LANDMARKS.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="flex items-center justify-between pt-1">
+          <div className="text-[10px] text-slate-500 italic flex items-center gap-1">
+            <Clock className="w-3 h-3 text-slate-400" />
+            <span>Assumes 30 km/h baseline velocity (uncalibrated traffic)</span>
           </div>
 
           <button
             type="button"
-            onClick={handleRunComparison}
-            disabled={isComparing}
-            className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white transition shadow-xs flex items-center gap-1 cursor-pointer"
+            onClick={handlePlanRoutes}
+            disabled={isPlanning}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white transition shadow-xs flex items-center gap-1.5 cursor-pointer"
           >
-            {isComparing ? 'Evaluating...' : 'Compare 3 Sample Routes'}
+            <Navigation className="w-3.5 h-3.5" />
+            <span>{isPlanning ? 'Routing...' : 'Calculate Routes'}</span>
           </button>
         </div>
+      </div>
 
-        {compareError && (
-          <div className="p-2 rounded bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-1.5">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>{compareError}</span>
+      {planError && (
+        <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-1.5">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>{planError}</span>
+        </div>
+      )}
+
+      {/* Candidate Routes List */}
+      {planResult ? (
+        <div className="space-y-3 pt-1">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span>Candidate Routes ({planResult.routes.length}):</span>
+            <span className="text-[11px] text-slate-500 font-normal">
+              Click a card to inspect on map
+            </span>
           </div>
-        )}
 
-        {/* Results */}
-        {comparisonResult ? (
-          <div className="space-y-2.5 pt-1">
-            <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-              Ranked by Flood Safety (Safest to Highest Risk):
-            </div>
-
-            {comparisonResult.rankedRoutes.map((route, idx) => (
+          {planResult.routes.map((route, idx) => {
+            const isSelected = selectedRouteId === route.routeId
+            return (
               <div
                 key={route.routeId}
-                className={`p-3 rounded-xl border text-xs space-y-2 transition-all ${
-                  idx === 0
-                    ? 'border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20'
-                    : route.underpassCrossings > 0
-                      ? 'border-purple-500/40 bg-purple-50/40 dark:bg-purple-950/20'
-                      : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850'
+                onClick={() => handleSelectCandidate(route)}
+                className={`p-3 rounded-xl border text-xs space-y-2 cursor-pointer transition-all ${
+                  isSelected
+                    ? 'border-blue-500 bg-blue-50/40 dark:bg-blue-950/30 ring-1 ring-blue-500'
+                    : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -194,13 +253,22 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
                         #{idx + 1}
                       </span>
                       <span>{route.name}</span>
+                      {route.mode && (
+                        <span className="text-[9px] uppercase px-1.5 py-0.2 rounded font-mono font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                          {route.mode.replace('_', ' ')}
+                        </span>
+                      )}
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">
-                      Est. Length: {route.totalDistanceKm.toFixed(2)} km • Matched: {route.matchedSegmentsCount} segments
+                    <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2">
+                      <span><strong>{route.totalDistanceKm.toFixed(2)} km</strong></span>
+                      <span>•</span>
+                      <span>Est. <strong>{route.estimatedTimeMinutes} mins</strong></span>
+                      <span>•</span>
+                      <span>{route.matchedSegmentsCount} segments</span>
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <Badge
                       className={
                         route.recommendation === 'recommended'
@@ -213,7 +281,7 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
                       {route.recommendation.toUpperCase()}
                     </Badge>
                     <div className="text-[10px] font-mono text-slate-500 mt-0.5">
-                      Risk Penalty: {route.compositePenaltyScore}/100
+                      Penalty: {route.compositePenaltyScore}/100
                     </div>
                   </div>
                 </div>
@@ -221,7 +289,7 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
                 {/* Exposure breakdown bars */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-[10px] text-slate-500">
-                    <span>Exposure to Risk Segments:</span>
+                    <span>Modelled Hazard Exposure:</span>
                     <span>
                       High: {(route.exposureByClass.high * 100).toFixed(0)}% • Mod: {(route.exposureByClass.moderate * 100).toFixed(0)}% • Low: {(route.exposureByClass.low * 100).toFixed(0)}%
                     </span>
@@ -245,34 +313,63 @@ export function RoadRiskPanel({ cityId }: RoadRiskPanelProps) {
                   </div>
                 </div>
 
-                {/* Special Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-0.5">
-                  {route.underpassCrossings > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-700 dark:text-purple-300 font-semibold flex items-center gap-1">
-                      <ShieldAlert className="w-3 h-3" />
-                      <span>{route.underpassCrossings} Underpass Bottleneck</span>
-                    </span>
-                  )}
-                  {route.activeObservationCount > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 font-semibold">
-                      💧 {route.activeObservationCount} Active Reports
-                    </span>
-                  )}
+                {/* Trade-off Explanation */}
+                {route.explanation && (
+                  <div className="text-[11px] text-slate-600 dark:text-slate-400 italic">
+                    {route.explanation}
+                  </div>
+                )}
+
+                {/* Special Tags & Badges */}
+                <div className="flex flex-wrap items-center justify-between gap-1.5 pt-0.5 border-t border-slate-200/60 dark:border-slate-800/60">
+                  <div className="flex flex-wrap gap-1.5">
+                    {route.underpassCrossings > 0 && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-700 dark:text-purple-300 font-semibold flex items-center gap-1">
+                        <ShieldAlert className="w-3 h-3" />
+                        <span>{route.underpassCrossings} Underpass Bottleneck</span>
+                      </span>
+                    )}
+                    {route.activeObservationCount > 0 && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 font-semibold">
+                        💧 {route.activeObservationCount} Reports
+                      </span>
+                    )}
+                    {route.unknownRiskFraction > 0.1 && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                        ❓ {(route.unknownRiskFraction * 100).toFixed(0)}% Unknown
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold flex items-center gap-0.5">
+                    <span>{isSelected ? 'Displayed on Map' : 'Select'}</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </div>
                 </div>
               </div>
-            ))}
+            )
+          })}
 
-            {/* Disclaimer */}
-            <div className="text-[10px] text-slate-400 italic pt-1 border-t border-slate-200 dark:border-slate-800">
-              * Route evaluation uses static 250m susceptibility, known underpasses, and verified community observations. Full graph Dijkstra pathfinding is slated for Stage P13.
+          {/* Research Prototype Warning Notice */}
+          <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-900 dark:text-amber-200 space-y-1">
+            <div className="font-semibold flex items-center gap-1">
+              <Info className="w-3 h-3 shrink-0" />
+              <span>Experimental Decision-Support Prototype</span>
             </div>
+            <p>
+              Candidate routes reflect static 250m macro-catchment terrain runoff and documented field reports.
+              NEXSTORM does not model live traffic, one-way laws, or real-time flood depth gauges. Never drive through flooded underpasses.
+            </p>
           </div>
-        ) : (
-          <div className="p-3 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-500 text-xs">
-            Click &ldquo;Compare 3 Sample Routes&rdquo; to evaluate candidate routes against Amritsar road risk and underpass bottlenecks.
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="p-4 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-500 text-xs space-y-1">
+          <p className="font-semibold text-slate-700 dark:text-slate-300">Select origin and destination above</p>
+          <p className="text-[11px] text-slate-400">
+            A* search will evaluate candidate paths across 37,924 connected edges in Amritsar.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

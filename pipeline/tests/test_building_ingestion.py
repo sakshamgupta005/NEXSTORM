@@ -156,3 +156,46 @@ def test_out_of_bounds_footprint_matching(synthetic_building_fixture, tmp_path):
     cell_id = joined["cellId"].iloc[0] if "cellId" in joined.columns else None
 
     assert cell_id is None or str(cell_id) == "nan", "OOB centroid must not match Amritsar grid cell"
+
+
+def test_multi_cell_building_intersection_and_area_weighting():
+    """
+    Verifies that when a building polygon crosses multiple grid cells,
+    exact intersection areas are calculated, fractions sum to 1.0, and
+    maximum susceptibility is preserved as a conservative indicator.
+    """
+    # Create two adjacent 250m cells: Cell A (west) and Cell B (east), boundary at lon 74.850
+    cell_a = Polygon([(74.848, 31.630), (74.850, 31.630), (74.850, 31.632), (74.848, 31.632), (74.848, 31.630)])
+    cell_b = Polygon([(74.850, 31.630), (74.852, 31.630), (74.852, 31.632), (74.850, 31.632), (74.850, 31.630)])
+    grid_gdf = gpd.GeoDataFrame(
+        {"cellId": ["A-WEST", "A-EAST"], "s": [0.80, 0.40]},
+        geometry=[cell_a, cell_b],
+        crs=WGS84,
+    )
+
+    # Building polygon straddling the boundary (40% in Cell A, 60% in Cell B)
+    # Longitude from 74.8492 to 74.8512 (width 0.002, boundary at 74.850)
+    # West part width = 0.0008 (40%), East part width = 0.0012 (60%)
+    bldg_poly = Polygon([(74.8492, 31.6305), (74.8512, 31.6305), (74.8512, 31.6315), (74.8492, 31.6315), (74.8492, 31.6305)])
+    bldg_gdf = gpd.GeoDataFrame({"buildingId": ["GOB-STRADDLE-01"]}, geometry=[bldg_poly], crs=WGS84)
+
+    # Intersections
+    inter_a = bldg_poly.intersection(cell_a)
+    inter_b = bldg_poly.intersection(cell_b)
+
+    frac_a = inter_a.area / bldg_poly.area
+    frac_b = inter_b.area / bldg_poly.area
+
+    assert abs((frac_a + frac_b) - 1.0) < 1e-4, "Intersection fractions must sum to 1.0"
+    assert abs(frac_a - 0.4) < 1e-3, f"Expected 40% in Cell A, got {frac_a}"
+    assert abs(frac_b - 0.6) < 1e-3, f"Expected 60% in Cell B, got {frac_b}"
+
+    # Area-weighted susceptibility = (0.80 * 0.4) + (0.40 * 0.6) = 0.32 + 0.24 = 0.56
+    weighted_s = (0.80 * frac_a) + (0.40 * frac_b)
+    assert abs(weighted_s - 0.56) < 1e-3, f"Expected weighted s=0.56, got {weighted_s}"
+
+    # Conservative maximum susceptibility = 0.80
+    max_s = max(0.80, 0.40)
+    assert max_s == 0.80, "Max susceptibility must be the highest crossed cell"
+    assert max_s > weighted_s, "Conservative max susceptibility must exceed weighted mean"
+

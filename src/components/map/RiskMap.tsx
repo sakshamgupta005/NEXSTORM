@@ -8,7 +8,7 @@ import type { CellRisk } from '@/lib/risk/types'
 import type { HotspotRecord } from '@/lib/city/registry'
 import { RISK_COLORS } from './Legend'
 import type { WaterloggingObservation } from '@/lib/observations/types'
-import { AlertCircle, Droplets, Layers, MapPin, Route } from 'lucide-react'
+import { AlertCircle, Building, Droplets, Layers, MapPin, Route } from 'lucide-react'
 
 interface RiskMapProps {
   geoJsonData: GeoJsonObject | null
@@ -28,6 +28,15 @@ interface RiskMapProps {
   showRoads?: boolean
   onToggleRoads?: (show: boolean) => void
   roadsGeoJson?: GeoJsonObject | null
+  showBuildings?: boolean
+  onToggleBuildings?: (show: boolean) => void
+  buildingsGeoJson?: GeoJsonObject | null
+  activeRoute?: {
+    coordinates: [number, number][]
+    name: string
+    mode?: string
+  } | null
+  onClearRoute?: () => void
 }
 
 export function RiskMap({
@@ -48,6 +57,11 @@ export function RiskMap({
   showRoads = false,
   onToggleRoads,
   roadsGeoJson = null,
+  showBuildings = false,
+  onToggleBuildings,
+  buildingsGeoJson = null,
+  activeRoute = null,
+  onClearRoute,
 }: RiskMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<L.Map | null>(null)
@@ -55,6 +69,8 @@ export function RiskMap({
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
   const observationsLayerRef = useRef<L.LayerGroup | null>(null)
   const roadsLayerRef = useRef<L.GeoJSON | null>(null)
+  const buildingsLayerRef = useRef<L.GeoJSON | null>(null)
+  const routeLayerRef = useRef<L.LayerGroup | null>(null)
   const [tileError, setTileError] = useState(false)
 
   // Fast cell risk lookup map
@@ -489,6 +505,184 @@ export function RiskMap({
     }
   }, [map, roadsGeoJson, showRoads])
 
+  // Render or update Building Footprints Layer (Stage P12)
+  useEffect(() => {
+    if (!map) return
+
+    if (buildingsLayerRef.current) {
+      buildingsLayerRef.current.clearLayers()
+      map.removeLayer(buildingsLayerRef.current)
+      buildingsLayerRef.current = null
+    }
+
+    if (!showBuildings || !buildingsGeoJson) return
+
+    const layer = L.geoJSON(buildingsGeoJson, {
+      style: (feature) => {
+        const p = feature?.properties || {}
+        const expCat = p.exposureCategory || 'minimal'
+
+        if (expCat === 'high_catchment') {
+          return {
+            fillColor: '#ef4444',
+            color: '#b91c1c',
+            weight: 1,
+            fillOpacity: 0.65,
+          }
+        }
+        if (expCat === 'moderate_catchment') {
+          return {
+            fillColor: '#f59e0b',
+            color: '#d97706',
+            weight: 1,
+            fillOpacity: 0.65,
+          }
+        }
+        if (expCat === 'unmatched') {
+          return {
+            fillColor: '#94a3b8',
+            color: '#64748b',
+            weight: 1,
+            fillOpacity: 0.4,
+          }
+        }
+        return {
+          fillColor: '#3b82f6',
+          color: '#1d4ed8',
+          weight: 1,
+          fillOpacity: 0.55,
+        }
+      },
+      onEachFeature: (feature, l) => {
+        const p = feature?.properties || {}
+        const bId = p.buildingId || 'Unknown ID'
+        const areaM2 = Math.round(p.area_m2 || p.area_in_meters || 0)
+        const conf = p.confidence ? Math.round(p.confidence * 100) : 75
+        const cellId = p.cellId || 'UNMATCHED'
+        const s = p.susceptibilityScore !== undefined ? Number(p.susceptibilityScore).toFixed(3) : 'N/A'
+        const expCat = p.exposureCategory || 'minimal'
+
+        l.bindPopup(
+          `<div class="p-2 space-y-1.5 text-slate-900 text-xs max-w-xs">
+            <div class="font-bold text-sm flex items-center justify-between gap-1">
+              <span>🏢 ${bId}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                expCat === 'high_catchment'
+                  ? 'bg-rose-100 text-rose-700'
+                  : expCat === 'moderate_catchment'
+                    ? 'bg-amber-100 text-amber-700'
+                    : 'bg-blue-100 text-blue-700'
+              }">
+                ${expCat.replace(/_/g, ' ').toUpperCase()}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-600 font-mono">
+              Footprint Area: <strong>${areaM2} m²</strong> • Confidence: <strong>${conf}%</strong>
+            </div>
+            <div class="text-[11px] border-t border-slate-200 pt-1 space-y-0.5">
+              <div><strong>Primary Grid Cell:</strong> <span class="font-mono">${cellId}</span></div>
+              <div><strong>Cell Susceptibility (s):</strong> ${s}</div>
+            </div>
+            <div class="text-[9px] text-slate-400 italic pt-1 border-t border-slate-100">
+              * Macro-catchment terrain exposure. Does NOT model plinth elevation, foundation, or indoor structural damage.
+            </div>
+          </div>`
+        )
+      },
+    })
+
+    layer.addTo(map)
+    buildingsLayerRef.current = layer
+
+    return () => {
+      if (buildingsLayerRef.current && map) {
+        map.removeLayer(buildingsLayerRef.current)
+      }
+    }
+  }, [map, buildingsGeoJson, showBuildings])
+
+  // Render Active Route Layer
+  useEffect(() => {
+    if (!map) return
+
+    if (routeLayerRef.current) {
+      routeLayerRef.current.clearLayers()
+      map.removeLayer(routeLayerRef.current)
+      routeLayerRef.current = null
+    }
+
+    if (!activeRoute || !activeRoute.coordinates || activeRoute.coordinates.length < 2) {
+      return
+    }
+
+    const group = L.layerGroup()
+    const latLngs = activeRoute.coordinates.map(([lng, lat]) => [lat, lng] as [number, number])
+
+    const color =
+      activeRoute.mode === 'shortest'
+        ? '#3b82f6'
+        : activeRoute.mode === 'lower_exposure'
+          ? '#10b981'
+          : '#f59e0b'
+
+    const polyline = L.polyline(latLngs, {
+      color,
+      weight: 5,
+      opacity: 0.9,
+      lineCap: 'round',
+      lineJoin: 'round',
+    })
+
+    polyline.bindPopup(
+      `<div class="p-2 space-y-1 text-xs text-slate-900 font-sans">
+        <div class="font-bold text-sm">${activeRoute.name}</div>
+        <div class="text-[11px] text-slate-600">Active Flood-Aware Candidate Route</div>
+        <div class="text-[10px] text-slate-400 italic pt-1">* Real road network geometry (OSM)</div>
+      </div>`
+    )
+
+    group.addLayer(polyline)
+
+    // Start marker (Origin)
+    const startPt = latLngs[0]
+    const startMarker = L.circleMarker(startPt, {
+      radius: 7,
+      fillColor: '#10b981',
+      color: '#ffffff',
+      weight: 2,
+      fillOpacity: 1,
+    }).bindPopup('<div class="p-1 text-xs font-bold text-slate-900">📍 Route Origin</div>')
+    group.addLayer(startMarker)
+
+    // End marker (Destination)
+    const endPt = latLngs[latLngs.length - 1]
+    const endMarker = L.circleMarker(endPt, {
+      radius: 7,
+      fillColor: '#ef4444',
+      color: '#ffffff',
+      weight: 2,
+      fillOpacity: 1,
+    }).bindPopup('<div class="p-1 text-xs font-bold text-slate-900">🏁 Route Destination</div>')
+    group.addLayer(endMarker)
+
+    group.addTo(map)
+    routeLayerRef.current = group
+
+    // Fit map bounds to show full route with padding
+    try {
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40], maxZoom: 15 })
+    } catch {
+      // Non-blocking if bounds are degenerate
+    }
+
+    return () => {
+      if (routeLayerRef.current && map) {
+        map.removeLayer(routeLayerRef.current)
+      }
+    }
+  }, [map, activeRoute])
+
+
   return (
     <div className="relative w-full h-[620px] min-h-[500px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shadow-inner">
       {/* Non-blocking tile error notification */}
@@ -586,6 +780,44 @@ export function RiskMap({
                 <span>Major Corridors (773)</span>
               </span>
             </label>
+          </div>
+        )}
+
+        {/* Building Footprints Toggle (Stage P12) */}
+        {onToggleBuildings && (
+          <div className="self-end bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-lg border border-slate-200/90 dark:border-slate-700/90 px-2.5 py-1.5 shadow-md flex items-center gap-2 text-xs">
+            <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none">
+              <input
+                type="checkbox"
+                checked={showBuildings}
+                onChange={(e) => onToggleBuildings(e.target.checked)}
+                className="w-3.5 h-3.5 rounded text-indigo-600 accent-indigo-600"
+              />
+              <span className="flex items-center gap-1 text-[11px]">
+                <Building className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Building Footprints</span>
+              </span>
+            </label>
+          </div>
+        )}
+
+        {/* Active Route Banner */}
+        {activeRoute && (
+          <div className="self-end bg-blue-600/95 text-white backdrop-blur-md rounded-lg px-2.5 py-1 shadow-md flex items-center gap-2 text-xs">
+            <span className="font-semibold flex items-center gap-1">
+              <Route className="w-3.5 h-3.5 text-blue-200" />
+              <span>Route: {activeRoute.name}</span>
+            </span>
+            {onClearRoute && (
+              <button
+                type="button"
+                onClick={onClearRoute}
+                className="text-blue-100 hover:text-white font-bold ml-1 text-sm leading-none"
+                title="Clear route"
+              >
+                ×
+              </button>
+            )}
           </div>
         )}
 

@@ -31,6 +31,7 @@ import { ObservationReportModal } from '@/components/observations/ObservationRep
 import { ObservationsPanel } from '@/components/observations/ObservationsPanel'
 import { RoadRiskPanel } from '@/components/roads/RoadRiskPanel'
 import type { WaterloggingObservation } from '@/lib/observations/types'
+import type { CandidateRouteEvaluation } from '@/lib/roads/types'
 import type { GeoJsonObject } from 'geojson'
 
 // Dynamically import Leaflet RiskMap with SSR disabled
@@ -217,6 +218,39 @@ export default function CityDashboardPage() {
     }
   }, [cityId])
 
+  // State: Building Footprints (Stage P12)
+  const [showBuildings, setShowBuildings] = useState<boolean>(false)
+  const [buildingsGeoJson, setBuildingsGeoJson] = useState<GeoJsonObject | null>(null)
+
+  // 2d. Load Building Footprints GeoJSON on demand when layer is toggled
+  useEffect(() => {
+    if (cityId !== 'amritsar' || !showBuildings) return
+    let isMounted = true
+
+    const buildingPath =
+      viewScope === 'campus'
+        ? '/data/cities/amritsar/gndu/buildings.geojson'
+        : '/data/cities/amritsar/buildings/hotspot_buildings.geojson'
+
+    fetch(buildingPath)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data) {
+          setBuildingsGeoJson(data)
+        }
+      })
+      .catch(() => {
+        // Non-blocking fallback
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [cityId, viewScope, showBuildings])
+
+  // State: Active Flood-Aware Candidate Route (Stage P13)
+  const [activeRoute, setActiveRoute] = useState<CandidateRouteEvaluation | null>(null)
+
   // 3. Query /api/risk on parameter, mode, view, or hour change
   useEffect(() => {
     let isCurrent = true
@@ -393,6 +427,19 @@ export default function CityDashboardPage() {
                   showRoads={showRoads}
                   onToggleRoads={setShowRoads}
                   roadsGeoJson={roadsGeoJson}
+                  showBuildings={showBuildings}
+                  onToggleBuildings={setShowBuildings}
+                  buildingsGeoJson={buildingsGeoJson}
+                  activeRoute={
+                    activeRoute?.geometry?.coordinates
+                      ? {
+                          coordinates: activeRoute.geometry.coordinates,
+                          name: activeRoute.name,
+                          mode: activeRoute.mode,
+                        }
+                      : null
+                  }
+                  onClearRoute={() => setActiveRoute(null)}
                 />
               ) : (
                 <div
@@ -505,7 +552,11 @@ export default function CityDashboardPage() {
 
             {/* Road-Segment Risk Assessment & Route Exposure Panel */}
             {cityId === 'amritsar' && (
-              <RoadRiskPanel cityId={cityId} />
+              <RoadRiskPanel
+                cityId={cityId}
+                onSelectRoute={setActiveRoute}
+                activeRouteId={activeRoute?.routeId}
+              />
             )}
           </div>
         </div>
