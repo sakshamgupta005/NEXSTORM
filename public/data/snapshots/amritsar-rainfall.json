@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "savedAt": "2026-10-15T16:23:27.503Z",
+  "savedAt": "2026-10-15T17:42:59.133Z",
   "cityId": "amritsar",
   "source": "Open-Meteo Forecast",
   "data": {
@@ -207,9 +207,16 @@
     "provenance": {
       "kind": "live",
       "source": "Open-Meteo Deterministic Forecast API",
-      "fetchedAt": "2026-10-15T16:23:27.502Z",
+      "fetchedAt": "2026-10-15T17:42:59.132Z",
       "ageSeconds": 0,
       "note": "open_meteo_deterministic — Open-Meteo live forecast"
+    },
+    "dataQuality": {
+      "nullCount": 0,
+      "completenessRatio": 1,
+      "missingIndices": [],
+      "policy": "complete_unmodified",
+      "isDegraded": false
     }
   }
 }

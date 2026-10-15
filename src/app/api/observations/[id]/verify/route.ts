@@ -4,11 +4,19 @@
  */
 
 import { NextRequest } from 'next/server'
+import { timingSafeEqual } from 'node:crypto'
 import { apiError, apiSuccess } from '@/lib/api/response'
 import { observationService } from '@/lib/observations/service'
 import { verifyObservationSchema } from '@/lib/validations/observation'
+import { logger } from '@/lib/logging/logger'
 
-const ADMIN_SECRET = process.env.OBSERVATION_MODERATOR_KEY
+function timingSafeCompare(a?: string | null, b?: string | null): boolean {
+  if (!a || !b) return false
+  const bufA = Buffer.from(a)
+  const bufB = Buffer.from(b)
+  if (bufA.length !== bufB.length) return false
+  return timingSafeEqual(bufA, bufB)
+}
 
 export async function PATCH(
   req: NextRequest,
@@ -28,17 +36,25 @@ export async function PATCH(
     const token = authHeader?.replace(/^Bearer\s+/i, '').trim()
 
     const isProduction = process.env.NODE_ENV === 'production'
+    const adminSecret = process.env.OBSERVATION_MODERATOR_KEY
 
     // In production, strictly require configured OBSERVATION_MODERATOR_KEY
     let isAuthorized = false
-    if (ADMIN_SECRET && token === ADMIN_SECRET) {
+    if (adminSecret && token && timingSafeCompare(token, adminSecret)) {
       isAuthorized = true
     } else if (!isProduction) {
       // Allow development and automated test tokens in non-production environments only
-      isAuthorized = token === 'dev-reviewer' || token === 'test-moderator-token'
+      isAuthorized = Boolean(
+        token && (token === 'dev-reviewer' || token === 'test-moderator-token')
+      )
     }
 
     if (!isAuthorized) {
+      logger.warn('Unauthorized attempt to verify observation', {
+        observationId: id,
+        hasToken: Boolean(token),
+        isProduction,
+      })
       return apiError('Unauthorized: Authorized reviewer token required for observation verification.', {
         status: 401,
         code: 'UNAUTHORIZED_VERIFICATION',
@@ -73,6 +89,12 @@ export async function PATCH(
     }
 
     if (result.observation) {
+      logger.info('Observation lifecycle status updated by moderator', {
+        observationId: id,
+        newStatus: result.observation.lifecycleStatus,
+        verifiedBy: parsed.data.verifiedBy,
+        verificationMethod: parsed.data.verificationMethod,
+      })
       const publicObs = { ...result.observation }
       delete publicObs.reporterHash
       return apiSuccess(publicObs)

@@ -116,21 +116,42 @@ export function checkRateLimit(
 }
 
 /**
- * Extracts a client IP from common proxy headers (x-forwarded-for, cf-connecting-ip, x-real-ip).
+ * Validates whether a string is a well-formed IPv4 or IPv6 address.
+ */
+function isValidIp(ip: string): boolean {
+  // Simple regex for IPv4 (e.g. 192.168.1.1) and IPv6 (e.g. ::1 or 2001:db8::1)
+  const ipv4Regex = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/
+  const ipv6Regex = /^(?:[a-fA-F0-9]{1,4}:){1,7}[a-fA-F0-9]{1,4}$|^::1$|^::$/
+  return ipv4Regex.test(ip) || ipv6Regex.test(ip)
+}
+
+/**
+ * Extracts and sanitizes client IP from trusted edge proxy headers (cf-connecting-ip, true-client-ip, x-real-ip)
+ * before falling back to parsed x-forwarded-for.
  */
 export function getClientIp(input: Request | Headers): string {
   const headers = input instanceof Request ? input.headers : input
+
+  // 1. Edge-injected headers that client cannot spoof when behind Cloudflare / enterprise CDN
+  const cfIp = headers.get('cf-connecting-ip')?.trim()
+  if (cfIp && isValidIp(cfIp)) return cfIp
+
+  const trueClientIp = headers.get('true-client-ip')?.trim()
+  if (trueClientIp && isValidIp(trueClientIp)) return trueClientIp
+
+  const realIp = headers.get('x-real-ip')?.trim()
+  if (realIp && isValidIp(realIp)) return realIp
+
+  // 2. Fallback to X-Forwarded-For (sanitized, taking rightmost or first valid IP)
   const forwarded = headers.get('x-forwarded-for')
   if (forwarded) {
-    const first = forwarded.split(',')[0]?.trim()
-    if (first) return first
+    const parts = forwarded.split(',').map((p) => p.trim().replace(/:\d+$/, '')) // strip port
+    for (const part of parts) {
+      if (part && isValidIp(part)) {
+        return part
+      }
+    }
   }
-
-  const cfIp = headers.get('cf-connecting-ip')
-  if (cfIp) return cfIp.trim()
-
-  const realIp = headers.get('x-real-ip')
-  if (realIp) return realIp.trim()
 
   return '127.0.0.1'
 }

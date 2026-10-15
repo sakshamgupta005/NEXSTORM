@@ -7,7 +7,7 @@ export function SetupBanner() {
     <Card className="border-amber-300 dark:border-amber-900 bg-amber-50/70 dark:bg-amber-950/30 mb-8">
       <CardContent className="p-5">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3">.
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">
               <AlertTriangle className="h-5 w-5" />
             </div>

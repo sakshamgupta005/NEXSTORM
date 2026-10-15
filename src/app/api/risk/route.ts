@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
       }
 
       series = adapterResult.data
-      if (adapterResult.status === 'degraded') {
+      if (adapterResult.status === 'degraded' || series.provenance.kind === 'cached') {
         adapterStatus = 'degraded'
       }
     }

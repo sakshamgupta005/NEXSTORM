@@ -6,6 +6,14 @@
 import { z } from 'zod';
 import type { Provenance } from '../risk/types';
 
+export interface DataQualityMetadata {
+  nullCount: number;
+  completenessRatio: number;
+  missingIndices: number[];
+  policy: 'complete_unmodified' | 'imputed_zero_marked_degraded' | 'missing_intervals_flagged';
+  isDegraded: boolean;
+}
+
 export interface RainfallSeries {
   cityId: string;
   issueTime: string; // ISO timestamp
@@ -15,6 +23,7 @@ export interface RainfallSeries {
   model: string;
   gridKm: number;
   provenance: Provenance;
+  dataQuality?: DataQualityMetadata;
 }
 
 export interface SachetAlert {

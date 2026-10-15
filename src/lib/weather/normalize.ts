@@ -39,6 +39,60 @@ export function normalizeTimestampToIst(timeStr: string, utcOffsetSeconds = 1980
   return `${normalizedTime}${sign}${hours}:${mins}`;
 }
 
+/**
+ * Converts any timestamp (UTC with 'Z', explicit offset, or unqualified) to exact IST (+05:30) ISO string.
+ * Example: "2023-07-08T20:00:00Z" -> "2023-07-09T01:30:00+05:30"
+ */
+export function toIstTimestamp(timeStr: string, defaultUtcOffsetSeconds = 19800): string {
+  if (typeof timeStr !== 'string' || !timeStr.trim()) {
+    throw new Error(`Invalid timestamp value: ${timeStr}`);
+  }
+
+  const trimmed = timeStr.trim();
+
+  // If already ending with +05:30, ensure seconds are padded and return
+  if (trimmed.endsWith('+05:30')) {
+    const withoutOffset = trimmed.slice(0, -6);
+    const parts = withoutOffset.split(':');
+    return (parts.length === 2 ? `${withoutOffset}:00` : withoutOffset) + '+05:30';
+  }
+
+  // If ends with Z or has another offset, parse as UTC Date and format in IST
+  if (trimmed.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(trimmed)) {
+    const parsed = new Date(trimmed);
+    if (isNaN(parsed.getTime())) {
+      throw new Error(`Unparseable timestamp: ${timeStr}`);
+    }
+    // Shift milliseconds by +05:30 (19,800,000 ms) and extract UTC components
+    const istMs = parsed.getTime() + 19800 * 1000;
+    const istDate = new Date(istMs);
+    const iso = istDate.toISOString(); // e.g. 2023-07-09T01:30:00.000Z
+    return `${iso.slice(0, 19)}+05:30`;
+  }
+
+  // Unqualified local string: if defaultUtcOffsetSeconds is GMT (0), treat as UTC
+  if (defaultUtcOffsetSeconds === 0) {
+    const parsed = new Date(`${trimmed}Z`);
+    if (!isNaN(parsed.getTime())) {
+      const istMs = parsed.getTime() + 19800 * 1000;
+      const istDate = new Date(istMs);
+      return `${istDate.toISOString().slice(0, 19)}+05:30`;
+    }
+  }
+
+  // Otherwise treat as already in local time and attach +05:30
+  return normalizeTimestampToIst(trimmed, 19800);
+}
+
+/**
+ * Extracts the calendar date string (YYYY-MM-DD) in Amritsar local time (Asia/Kolkata).
+ * Prevents timezone-shift errors where a UTC evening timestamp maps to the wrong local date.
+ */
+export function toAmritsarDateString(isoOrLocal: string): string {
+  const istIso = toIstTimestamp(isoOrLocal);
+  return istIso.slice(0, 10);
+}
+
 export interface NormalizationOptions {
   cityId: string;
   model: string;
@@ -67,6 +121,7 @@ export function normalizeOpenMeteoResponse(
   const hoursCount = times.length;
 
   let nullCount = 0;
+  const missingIndices: number[] = [];
 
   // Process deterministic series (key: 'precipitation' or fallback 'rain')
   let deterministic: number[] | undefined;
@@ -81,8 +136,8 @@ export function normalizeOpenMeteoResponse(
     deterministic = rawDet.map((val, idx) => {
       if (val === null || val === undefined) {
         nullCount++;
-        // Missing values are tracked and preserved as NaN in computation or throw if critical
-        return 0; // fallback numerical value for computation while tracking nullCount
+        missingIndices.push(idx);
+        return 0; // tracked and flagged explicitly in dataQuality
       }
       if (typeof val !== 'number' || !Number.isFinite(val) || val < 0) {
         throw new Error(`Invalid rainfall value at index ${idx}: ${val}`);
@@ -106,6 +161,7 @@ export function normalizeOpenMeteoResponse(
       return arr.map((val, idx) => {
         if (val === null || val === undefined) {
           nullCount++;
+          if (!missingIndices.includes(idx)) missingIndices.push(idx);
           return 0;
         }
         if (typeof val !== 'number' || !Number.isFinite(val) || val < 0) {
@@ -121,7 +177,7 @@ export function normalizeOpenMeteoResponse(
 
   let note = `${options.model} — Open-Meteo ${options.isCached ? 'cached snapshot' : 'live forecast'}`;
   if (nullCount > 0) {
-    note += ` (DATA QUALITY WARNING: ${nullCount} missing forecast interval(s) imputed as 0 mm)`;
+    note += ` (DATA QUALITY WARNING: ${nullCount} missing forecast interval(s) imputed as 0 mm; marked as degraded)`;
   }
 
   const provenance: Provenance = {
@@ -132,6 +188,8 @@ export function normalizeOpenMeteoResponse(
     note,
   };
 
+  const completenessRatio = hoursCount > 0 ? (hoursCount - Math.min(hoursCount, nullCount)) / hoursCount : 1.0;
+
   const series: RainfallSeries = {
     cityId: options.cityId,
     issueTime: hours[0] || new Date().toISOString(),
@@ -141,6 +199,13 @@ export function normalizeOpenMeteoResponse(
     model: options.model,
     gridKm: options.gridKm,
     provenance,
+    dataQuality: {
+      nullCount,
+      completenessRatio: Math.round(completenessRatio * 10000) / 10000,
+      missingIndices,
+      policy: nullCount > 0 ? 'imputed_zero_marked_degraded' : 'complete_unmodified',
+      isDegraded: nullCount > 0,
+    },
   };
 
   return { series, nullCount };

@@ -187,7 +187,7 @@ npm run typecheck
 # 2. ESLint Code Quality (zero errors, zero warnings)
 npm run lint
 
-# 3. Vitest Unit, Component, and Integration Tests (94 test suites, 895 tests)
+# 3. Vitest Unit, Component, and Integration Tests (96 test suites, 926 tests)
 npm test
 
 # 4. Next.js Production Build Verification (compiles all 27 routes)
@@ -217,6 +217,7 @@ npm run test:e2e
 | `/api/observations?cityId=amritsar` | `GET`, `POST` | Query filtered observations or submit a community report with rate-limiting and spatial snapping. |
 | `/api/official-alerts?state=Punjab` | `GET` | Normalized NDMA SACHET CAP alert feed for official flood/weather advisories. |
 | `/api/evaluation?cityId=amritsar` | `GET` | Serves offline pipeline evaluation summary verified against frozen configuration hash. |
+| `/api/evaluation/backtest?cityId=amritsar&season=2024` | `GET` | Runs chronological historical backtesting against genuine ERA5 reanalysis and Tribune incident records. |
 | `/api/health` | `GET` | Operational health probe with system memory, uptime, and cache statuses. |
 
 ---
@@ -237,7 +238,7 @@ npm run test:e2e
 2. **Road Network Restrictions**: Road graph edges in `road_graph.json` are bidirectional due to OpenStreetMap GeoPackage limitations; lane-level one-way restrictions and turn bans are unmodeled.
 3. **Routing Velocities**: Candidate route travel times are estimated using a fixed 30 km/h baseline velocity without dynamic real-time traffic congestion feeds.
 4. **Building Plinth Heights**: Footprint exposure measures terrain macro-catchment intersection ($m^2$); it does not assess plinth elevations above street grade or indoor submergence.
-5. **Observation Storage**: Citizen observations persist locally in `public/data/cities/amritsar/observations/observations.json`. High-concurrency production deployments should attach Supabase or PostgreSQL.
+5. **Observation Storage**: Features dual-mode persistence (`src/lib/observations/repository.ts`): high-concurrency Supabase PostgreSQL/PostGIS in production with RLS; serialized queue-based mutex file storage for local offline development. Database migration provided in `supabase/migrations/20261015_create_observations.sql`.
 
 ---
 

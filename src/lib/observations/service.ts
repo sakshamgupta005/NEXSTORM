@@ -5,7 +5,7 @@
  * corroboration clustering, lifecycle transitions, and atomic file persistence.
  */
 
-import { createHash } from 'node:crypto'
+import { createHash, createHmac, randomBytes } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
@@ -24,12 +24,15 @@ import type {
   VerifyObservationInput,
   WaterloggingObservation,
 } from './types'
+import { getObservationRepository, type IObservationRepository } from './repository'
+import { logger } from '../logging/logger'
 
-const SALT = process.env.OBSERVATION_SALT || 'nexstorm_amritsar_salt_v1'
 const MAX_OBSERVATIONS_STORED = 1000
 
 export class ObservationService {
   private static instance: ObservationService
+  private static ephemeralProdSalt: string | null = null
+  private repository: IObservationRepository = getObservationRepository()
   private observationsCache: WaterloggingObservation[] | null = null
   private gridCache: GridCellFeature[] | null = null
   private roadsCache: RoadSegmentGeometry[] | null = null
@@ -44,12 +47,45 @@ export class ObservationService {
   }
 
   /**
-   * Generates a pseudonymous reporter hash to track corroboration and prevent abuse
+   * Returns whether active persistence is backed by a durable shared store (e.g. Supabase PostgreSQL)
+   * or ephemeral local file storage.
+   */
+  public isDurableStorage(): boolean {
+    return this.repository.isDurable()
+  }
+
+  /**
+   * Returns the active storage driver identifier.
+   */
+  public getStorageType(): string {
+    return this.repository.storageType
+  }
+
+  /**
+   * Generates a pseudonymous keyed reporter hash (HMAC-SHA256) to track corroboration and prevent abuse
    * without storing or leaking IP addresses, emails, or user accounts.
+   * In production, requires OBSERVATION_SALT environment variable; falls back to an ephemeral startup secret if omitted.
    */
   public generateReporterHash(ipOrId: string, userAgent: string = ''): string {
-    const raw = `${ipOrId}_${userAgent}_${SALT}`
-    return createHash('sha256').update(raw).digest('hex').slice(0, 16)
+    const configuredSalt = process.env.OBSERVATION_SALT
+    let salt: string
+
+    if (configuredSalt && configuredSalt.trim().length > 0) {
+      salt = configuredSalt.trim()
+    } else if (process.env.NODE_ENV === 'production') {
+      if (!ObservationService.ephemeralProdSalt) {
+        ObservationService.ephemeralProdSalt = randomBytes(32).toString('hex')
+        logger.error(
+          '[SECURITY ALERT] OBSERVATION_SALT is unset in production. Using ephemeral random startup salt. Reporter hashes will not be stable across process restarts.'
+        )
+      }
+      salt = ObservationService.ephemeralProdSalt
+    } else {
+      salt = 'nexstorm_amritsar_dev_salt_v1'
+    }
+
+    const raw = `${ipOrId}_${userAgent}`
+    return createHmac('sha256', salt).update(raw).digest('hex').slice(0, 16)
   }
 
   /**
@@ -117,7 +153,7 @@ export class ObservationService {
         this.observationsCache = []
       }
     } else {
-      // Seed with 15 verified historical records from hotspots.json
+      // Seed with 15 documented historical records from hotspots.json
       this.observationsCache = this.importHistoricalHotspots(cityId)
       this.saveObservations(this.observationsCache, cityId)
     }
@@ -126,7 +162,8 @@ export class ObservationService {
   }
 
   /**
-   * Imports the 15 news-reported Tribune incidents as verified historical records.
+   * Imports the 15 news-reported Tribune incidents as unverified historical baseline records.
+   * Strictly separates media archives from independently verified ground truth.
    */
   private importHistoricalHotspots(cityId: string): WaterloggingObservation[] {
     try {
@@ -160,16 +197,16 @@ export class ObservationService {
             ? 'underpass_submersion'
             : 'street_flooding',
           severity: 'severe_knee_or_higher',
-          description: `Historical documented waterlogging incident at ${h.name}. Source: ${h.sourceUrl}`,
+          description: `Historical documented waterlogging incident at ${h.name}. Source: ${h.sourceUrl}. Location precision: ${h.precision || 'street'}.`,
           reporterHash: 'SYSTEM_HISTORICAL_IMPORT',
           sourceType: 'imported_historical_record',
-          lifecycleStatus: 'verified',
+          lifecycleStatus: 'under_review',
           verification: {
-            isVerified: true,
-            verifiedAt: observedAt,
-            verifiedBy: 'The Tribune India / Municipal Police Dispatch',
+            isVerified: false,
+            verifiedAt: null,
+            verifiedBy: 'The Tribune India (Media Archive)',
             verificationMethod: 'news_report',
-            verificationNotes: `Verified from historical publication on ${dateStr}.`,
+            verificationNotes: `Media report from historical newspaper archive published on ${dateStr}. Not an independent field inspection.`,
           },
           corroboration: {
             corroborationCount: 1,
@@ -179,10 +216,10 @@ export class ObservationService {
           freshness: {
             isStale: true,
             isExpired: true,
-            expiresAt: new Date(new Date(observedAt).getTime() + 86400000).toISOString(),
+            expiresAt: observedAt,
           },
           scientificCaveat:
-            'Historical observation imported from news archive; does NOT indicate current road passage status.',
+            'Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey.',
         }
       })
     } catch {
@@ -191,24 +228,18 @@ export class ObservationService {
   }
 
   /**
-   * Atomically writes observations to disk using temp-file rename.
+   * Atomically writes observations to disk and shared repository.
    */
   private saveObservations(observations: WaterloggingObservation[], cityId: string = 'amritsar'): void {
-    const filePath = this.getStoragePath(cityId)
-    const tempPath = `${filePath}.tmp`
+    const trimmed = observations.slice(-MAX_OBSERVATIONS_STORED)
+    this.observationsCache = trimmed
 
-    try {
-      // Keep most recent N records
-      const trimmed = observations.slice(-MAX_OBSERVATIONS_STORED)
-      fs.writeFileSync(tempPath, JSON.stringify(trimmed, null, 2), 'utf-8')
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath)
-      }
-      fs.renameSync(tempPath, filePath)
-      this.observationsCache = trimmed
-    } catch (err) {
-      console.error('[OBSERVATION_SERVICE] Failed to save observations:', err)
-    }
+    // Delegate to repository for atomic/durable persistence
+    this.repository.saveAll(trimmed, cityId).catch((err) => {
+      logger.error('[OBSERVATION_SERVICE] Failed to persist observations via repository:', {
+        error: String(err),
+      })
+    })
   }
 
   /**
@@ -444,14 +475,16 @@ export class ObservationService {
     }
 
     this.saveObservations(all, cityId)
+    this.repository.update(target, cityId).catch(() => {})
     return { observation: target }
   }
 
   /**
-   * Resets observations cache and file to baseline seeded records (for test isolation).
+   * Resets observations cache and repository to baseline seeded records (for test isolation).
    */
   public resetForTesting(cityId: string = 'amritsar'): void {
     this.observationsCache = null
+    this.repository.reset(cityId).catch(() => {})
     const filePath = this.getStoragePath(cityId)
     if (fs.existsSync(filePath)) {
       try {

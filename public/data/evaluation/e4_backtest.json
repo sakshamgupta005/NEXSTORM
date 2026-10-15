@@ -1,0 +1,151 @@
+{
+  "evaluationSpan": "2023-06-01 to 2024-09-30 (2 Monsoon Seasons)",
+  "provenance": {
+    "source": "Open-Meteo ERA5-Land Hourly Reanalysis",
+    "resolution": "11 km",
+    "incidents": "The Tribune Amritsar Archive (15 Documented Hotspot Reports)"
+  },
+  "sampleCounts": {
+    "totalEligibleDays": 488,
+    "reportedEventDays": 9,
+    "distinctIncidents": 15,
+    "seasons": 2
+  },
+  "modelAlertRule": {
+    "condition": "At least one cell moderate or high risk (Max RTI >= 0.5)",
+    "hits": 8,
+    "misses": 1,
+    "pod": 0.8889,
+    "wilson95CI": [
+      0.565,
+      0.9801
+    ],
+    "totalAlertDays": 131,
+    "alertDaysPerSeason": 65.5
+  },
+  "baselineAlertRule": {
+    "condition": "24-hour rainfall >= 64.5 mm (IMD Heavy Rainfall Standard)",
+    "hits": 1,
+    "misses": 8,
+    "pod": 0.1111,
+    "wilson95CI": [
+      0.0199,
+      0.435
+    ],
+    "totalAlertDays": 1,
+    "alertDaysPerSeason": 0.5
+  },
+  "events": [
+    {
+      "date": "2023-07-09",
+      "locationCount": 1,
+      "locations": [
+        "SSSS Chowk Railway Underpass"
+      ],
+      "maxRti": 1.6286,
+      "total24hMm": 30.8,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2023-07-15",
+      "locationCount": 1,
+      "locations": [
+        "Hall Gate Market"
+      ],
+      "maxRti": 0.9143,
+      "total24hMm": 4.2,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2023-07-18",
+      "locationCount": 1,
+      "locations": [
+        "Chatiwind Gate Tarn Taran Road"
+      ],
+      "maxRti": 0.6,
+      "total24hMm": 2.6,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2023-08-20",
+      "locationCount": 1,
+      "locations": [
+        "GT Road near Alpha Mall"
+      ],
+      "maxRti": 0.8286,
+      "total24hMm": 3.8,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2023-09-02",
+      "locationCount": 1,
+      "locations": [
+        "East Mohan Nagar"
+      ],
+      "maxRti": 0.0246,
+      "total24hMm": 0.0,
+      "modelDetected": false,
+      "baselineDetected": false
+    },
+    {
+      "date": "2024-07-22",
+      "locationCount": 2,
+      "locations": [
+        "GNDU Main Gate GT Road",
+        "Putlighar Main Chowk"
+      ],
+      "maxRti": 0.6857,
+      "total24hMm": 4.2,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2024-07-28",
+      "locationCount": 1,
+      "locations": [
+        "Heritage Street Golden Temple Plaza"
+      ],
+      "maxRti": 1.5429,
+      "total24hMm": 5.4,
+      "modelDetected": true,
+      "baselineDetected": false
+    },
+    {
+      "date": "2024-08-01",
+      "locationCount": 1,
+      "locations": [
+        "Majitha Road GND Hospital Approach"
+      ],
+      "maxRti": 3.3714,
+      "total24hMm": 66.5,
+      "modelDetected": true,
+      "baselineDetected": true
+    },
+    {
+      "date": "2024-08-11",
+      "locationCount": 6,
+      "locations": [
+        "Batala Road Celebration Mall Stretch",
+        "Crystal Chowk Queens Road",
+        "Lawrence Road Chowk",
+        "MM Malviya Road",
+        "Ranjit Avenue B-Block",
+        "Taylor Road Civil Lines"
+      ],
+      "maxRti": 1.7143,
+      "total24hMm": 23.1,
+      "modelDetected": true,
+      "baselineDetected": false
+    }
+  ],
+  "limitations": [
+    "News reporting bias: incidents represent opportunistic journalistic coverage of central corridors.",
+    "Unreported days and locations cannot be classified as verified flood-free negatives.",
+    "Coarse 11 km ERA5 grid averages convective thunderstorm cores.",
+    "Small sample size of 15 validated incident locations."
+  ]
+}

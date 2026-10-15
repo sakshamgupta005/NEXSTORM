@@ -8,7 +8,7 @@ import { NextRequest } from 'next/server'
 import { apiError, apiSuccess } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { observationService } from '@/lib/observations/service'
-import { rateLimiter } from '@/lib/security/rate-limit'
+import { rateLimiter, getClientIp } from '@/lib/security/rate-limit'
 import {
   createObservationSchema,
   observationQuerySchema,
@@ -75,10 +75,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     // 1. IP & Rate Limiting Check
-    const ip =
-      req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-      req.headers.get('x-real-ip') ||
-      '127.0.0.1'
+    const ip = getClientIp(req)
     const userAgent = req.headers.get('user-agent') || ''
 
     // Rate limit: 5 submissions per 10 minutes per IP
