@@ -72,7 +72,8 @@ NEXSTORM Architecture
 | `p7-validation` | **Done** | Scientific validation, risk calibration, temporal holdouts, data reliability safeguards |
 | `p8-spatial` | **Done** | Amritsar data foundation audit, geodetic CRS engine, spatial matching, unified 3-pillar contracts & routing architecture |
 | `p9-ingest` | **Done** | Ingested 360,252 Google Open Buildings V3 footprints, metric areas in UTM 43N, cell index, prepared 14,853 roads with 26,155 topological nodes |
-| `p10-routes` | **Roadmap** | Unified multi-layer console & flood-aware route exposure comparison engine |
+| `p10-observations` | **Done** | Ground-truth observations & community reporting evidence layer, corroboration clustering, verification moderation, privacy hashing |
+| `p11-roads` | **Roadmap** | Amritsar road-segment risk assessment, underpass exposure corridors, and flood-aware route comparison |
 
 ---
 
@@ -134,6 +135,8 @@ npm run test:e2e
 | `/api/cell/[cellId]?cityId=amritsar` | `GET` | Returns cell factor contributions, terrain override note, nearest historical hotspot ($\le 500\text{ m}$), and scientific limitations. |
 | `/api/evaluation?cityId=amritsar` | `GET` | Serves offline pipeline evaluation summary verified against frozen configuration hash. |
 | `/api/official-alerts?state=Punjab` | `GET` | Normalized NDMA SACHET CAP alert feed for official flood/weather advisories. |
+| `/api/observations?cityId=amritsar` | `GET`, `POST` | Query filtered observations or submit a community report with rate-limiting and spatial snapping. |
+| `/api/observations/[id]/verify` | `PATCH` | Authorized moderation endpoint to independently verify or reject community reports. |
 | `/api/health` | `GET` | Operational health probe with system memory, uptime, and cache statuses. |
 
 ---

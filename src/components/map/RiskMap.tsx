@@ -7,7 +7,8 @@ import type { GeoJsonObject, Feature } from 'geojson'
 import type { CellRisk } from '@/lib/risk/types'
 import type { HotspotRecord } from '@/lib/city/registry'
 import { RISK_COLORS } from './Legend'
-import { AlertCircle, Layers, MapPin } from 'lucide-react'
+import type { WaterloggingObservation } from '@/lib/observations/types'
+import { AlertCircle, Droplets, Layers, MapPin } from 'lucide-react'
 
 interface RiskMapProps {
   geoJsonData: GeoJsonObject | null
@@ -21,6 +22,9 @@ interface RiskMapProps {
   showHotspots?: boolean
   onToggleHotspots?: (show: boolean) => void
   hotspots?: HotspotRecord[]
+  showObservations?: boolean
+  onToggleObservations?: (show: boolean) => void
+  observations?: WaterloggingObservation[]
 }
 
 export function RiskMap({
@@ -35,11 +39,15 @@ export function RiskMap({
   showHotspots = true,
   onToggleHotspots,
   hotspots = [],
+  showObservations = true,
+  onToggleObservations,
+  observations = [],
 }: RiskMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<L.Map | null>(null)
   const geoJsonLayerRef = useRef<L.GeoJSON | null>(null)
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
+  const observationsLayerRef = useRef<L.LayerGroup | null>(null)
   const [tileError, setTileError] = useState(false)
 
   // Fast cell risk lookup map
@@ -277,6 +285,88 @@ export function RiskMap({
     }
   }, [map, hotspots, showHotspots, onSelectCell])
 
+  // Render or update Community Observations Layer
+  useEffect(() => {
+    if (!map) return
+
+    if (observationsLayerRef.current) {
+      observationsLayerRef.current.clearLayers()
+      map.removeLayer(observationsLayerRef.current)
+      observationsLayerRef.current = null
+    }
+
+    if (!showObservations || !observations || observations.length === 0) return
+
+    const group = L.layerGroup()
+
+    for (const obs of observations) {
+      if (obs.lifecycleStatus === 'rejected') continue
+
+      const color =
+        obs.lifecycleStatus === 'verified'
+          ? '#10b981'
+          : obs.lifecycleStatus === 'corroborated'
+            ? '#f59e0b'
+            : obs.lifecycleStatus === 'expired'
+              ? '#64748b'
+              : '#0284c7'
+
+      const marker = L.circleMarker([obs.coordinates.lat, obs.coordinates.lng], {
+        radius: obs.lifecycleStatus === 'verified' ? 6.5 : 5,
+        fillColor: color,
+        color: '#ffffff',
+        weight: 1.5,
+        opacity: 1,
+        fillOpacity: 0.9,
+      })
+
+      marker.bindPopup(
+        `<div class="p-2 space-y-1 text-slate-900 text-xs max-w-xs">
+          <div class="font-bold text-sm flex items-center justify-between gap-1">
+            <span>💧 ${obs.category.replace(/_/g, ' ')}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold" style="background-color: ${color}20; color: ${color};">
+              ${obs.lifecycleStatus}
+            </span>
+          </div>
+          <div><strong>Severity:</strong> ${obs.severity.replace(/_/g, ' ')}</div>
+          <div><strong>Observed:</strong> ${new Date(obs.observedAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+          ${obs.spatialMatch.cellId ? `<div><strong>Cell:</strong> <span class="font-mono">${obs.spatialMatch.cellId}</span></div>` : ''}
+          ${obs.corroboration.corroborationCount > 1 ? `<div><strong>Corroboration:</strong> ${obs.corroboration.corroborationCount} reports</div>` : ''}
+          ${obs.description ? `<div class="italic text-[11px] text-slate-600">"${obs.description}"</div>` : ''}
+          ${
+            obs.spatialMatch.cellId
+              ? `<div class="pt-1.5 border-t border-slate-200">
+                  <button id="btn-obs-cell-${obs.id}" class="px-2 py-1 bg-blue-600 text-white rounded text-[11px] font-semibold hover:bg-blue-700 w-full text-center cursor-pointer">
+                    Inspect Cell ${obs.spatialMatch.cellId}
+                  </button>
+                </div>`
+              : ''
+          }
+        </div>`
+      )
+
+      marker.on('popupopen', () => {
+        if (obs.spatialMatch.cellId) {
+          const btn = document.getElementById(`btn-obs-cell-${obs.id}`)
+          if (btn && onSelectCell) {
+            btn.onclick = () => onSelectCell(obs.spatialMatch.cellId)
+          }
+        }
+      })
+
+      group.addLayer(marker)
+    }
+
+    group.addTo(map)
+    observationsLayerRef.current = group
+
+    return () => {
+      if (observationsLayerRef.current && map) {
+        map.removeLayer(observationsLayerRef.current)
+      }
+    }
+  }, [map, observations, showObservations, onSelectCell])
+
   return (
     <div className="relative w-full h-[620px] min-h-[500px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shadow-inner">
       {/* Non-blocking tile error notification */}
@@ -336,6 +426,24 @@ export function RiskMap({
               <span className="flex items-center gap-1 text-[11px]">
                 <MapPin className="w-3.5 h-3.5 text-purple-500" />
                 <span>Verified Hotspots ({hotspots.length})</span>
+              </span>
+            </label>
+          </div>
+        )}
+
+        {/* Observations Toggle */}
+        {observations.length > 0 && (
+          <div className="self-end bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-lg border border-slate-200/90 dark:border-slate-700/90 px-2.5 py-1.5 shadow-md flex items-center gap-2 text-xs">
+            <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none">
+              <input
+                type="checkbox"
+                checked={showObservations}
+                onChange={(e) => onToggleObservations?.(e.target.checked)}
+                className="w-3.5 h-3.5 rounded text-emerald-600 accent-emerald-600"
+              />
+              <span className="flex items-center gap-1 text-[11px]">
+                <Droplets className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Observations Layer ({observations.length})</span>
               </span>
             </label>
           </div>

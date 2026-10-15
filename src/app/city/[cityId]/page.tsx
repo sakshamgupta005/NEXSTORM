@@ -25,7 +25,11 @@ import {
   Building,
   Radio,
   History,
+  Droplets,
 } from 'lucide-react'
+import { ObservationReportModal } from '@/components/observations/ObservationReportModal'
+import { ObservationsPanel } from '@/components/observations/ObservationsPanel'
+import type { WaterloggingObservation } from '@/lib/observations/types'
 
 // Dynamically import Leaflet RiskMap with SSR disabled
 const DynamicRiskMap = dynamic(
@@ -144,6 +148,12 @@ export default function CityDashboardPage() {
     }
   }, [cityId, viewScope])
 
+  // State: Community & Ground-Truth Observations
+  const [observations, setObservations] = useState<WaterloggingObservation[]>([])
+  const [showObservations, setShowObservations] = useState<boolean>(true)
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false)
+  const [obsRefreshTrigger, setObsRefreshTrigger] = useState<number>(0)
+
   // 2. Load historical incident hotspots once
   useEffect(() => {
     let isMounted = true
@@ -160,6 +170,25 @@ export default function CityDashboardPage() {
       isMounted = false
     }
   }, [cityId])
+
+  // 2b. Load Ground-Truth Observations from API
+  useEffect(() => {
+    let isMounted = true
+    fetch(`/api/observations?cityId=${cityId}&limit=100`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data?.data?.observations) {
+          setObservations(data.data.observations)
+        }
+      })
+      .catch(() => {
+        // Non-blocking fallback
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [cityId, obsRefreshTrigger])
 
   // 3. Query /api/risk on parameter, mode, view, or hour change
   useEffect(() => {
@@ -287,8 +316,19 @@ export default function CityDashboardPage() {
               </button>
             </div>
 
-            {/* Mode Switcher */}
-            <ModeSwitch mode={mode} onChange={setMode} disabled={isPending} />
+            {/* Mode Switcher & Community Report Action */}
+            <div className="flex items-center gap-2">
+              <ModeSwitch mode={mode} onChange={setMode} disabled={isPending} />
+
+              <button
+                type="button"
+                onClick={() => setIsReportModalOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
+              >
+                <Droplets className="w-3.5 h-3.5" />
+                <span>Report Waterlogging</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -320,6 +360,9 @@ export default function CityDashboardPage() {
                   showHotspots={showHotspots}
                   onToggleHotspots={setShowHotspots}
                   hotspots={hotspots}
+                  showObservations={showObservations}
+                  onToggleObservations={setShowObservations}
+                  observations={observations}
                 />
               ) : (
                 <div
@@ -417,6 +460,18 @@ export default function CityDashboardPage() {
 
             {/* Official Alerts Panel */}
             <OfficialAlertsPanel />
+
+            {/* Community Observations & Ground-Truth Evidence Panel */}
+            <ObservationsPanel
+              cityId={cityId}
+              onOpenReportModal={() => setIsReportModalOpen(true)}
+              refreshTrigger={obsRefreshTrigger}
+              onSelectObservation={(obs) => {
+                if (obs.spatialMatch.cellId) {
+                  setSelectedCellId(obs.spatialMatch.cellId)
+                }
+              }}
+            />
           </div>
         </div>
 
@@ -426,6 +481,16 @@ export default function CityDashboardPage() {
           <MethodologySection />
         </div>
       </main>
+
+      {/* Community Waterlogging Observation Reporting Modal */}
+      <ObservationReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        cityId={cityId}
+        onObservationSubmitted={() => {
+          setObsRefreshTrigger((prev) => prev + 1)
+        }}
+      />
 
       <Footer />
     </div>
