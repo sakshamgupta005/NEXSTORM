@@ -150,14 +150,67 @@ Each platform capability has been audited against actual code execution, physica
 
 ---
 
-## 6. Historical Backtesting & Empirical Evidence Protocol
+## 6. Historical Backtesting & Empirical Evidence Protocol (P19 Audit)
 
-### The Publication-Lag Phenomenon
-In empirical backtesting against media reports, news articles published on date $D$ routinely document waterlogging caused by intense storms on date $D-1$ or multi-day accumulation over $D-2$ to $D$. The backtesting engine (`src/lib/evaluation/backtest.ts`) accommodates this publication lag by evaluating the trailing 24–72h precipitation leading into the reported article date.
+### 1. Reanalysis Baseline Truth (Correction of P18 "IMD Baseline")
+- **Data Source Reality:** The baseline evaluated in NEXSTORM uses **ECMWF ERA5-Land gridded hourly reanalysis** retrieved via Open-Meteo's historical archive, evaluated against the IMD standard meteorological threshold of 64.5 mm (Heavy Rainfall).
+- **Audit Finding:** It was previously described as an "IMD 24h baseline", which risked misleading readers into believing direct IMD station rain-gauge data was being evaluated. In-situ IMD station telemetry (Amritsar Airport Station 42071) requires institutional credentials and was not available via open programmatic API. Gridded 11 km ERA5 reanalysis inherently smooths micro-scale convective storm peaks over ~120 km², explaining why the 64.5 mm threshold was reached on only 1 calendar day (2024-08-01) across 488 evaluation days.
+- **Defensible Nomenclature:** In P19, this baseline is renamed to **`ERA5 Reanalysis >= 64.5 mm (IMD Heavy Rainfall Threshold)`**.
 
-### Backtest Performance Summary (2023–2024 Monsoons)
-- **Model Event Hit Rate (POD):** 8 of 9 event dates (88.9%, Wilson 95% CI: [56.5%, 98.0%]).
-- **IMD 64.5 mm Baseline Hit Rate:** 1 of 9 event dates (11.1%, Wilson 95% CI: [2.0%, 43.5%]).
-- **Inference:** Localized urban inundation in Amritsar is triggered predominantly by short-duration convective bursts ($P_{1h} \ge 15\text{ mm/h}$) or compound 3-day antecedent saturation ($P_{72h}$) rather than massive 24-hour total volumes.
-- **Unlabelled Negative Space:** Unreported days and locations are incomplete samples (unlabelled), not confirmed negative non-flooding zones. False Alarm Rate (FAR) cannot be computed defensibly without complete negative ground-truth logs across all 1,998 cells.
+### 2. Incident Inventory & Storm Deduplication
+- **Total Hotspot Records:** 15 records from The Tribune Amritsar archives.
+- **Genuine Rainfall-Driven Storms:** **7 distinct storm events** (`STORM-2023-07-08`, `STORM-2023-07-15`, `STORM-2023-08-20`, `STORM-2024-07-22`, `STORM-2024-07-28`, `STORM-2024-08-01`, `STORM-2024-08-11`).
+  - `STORM-2024-08-11` clustered **6 distinct newspaper records** into 1 single multi-hour thunderstorm system.
+  - `STORM-2024-07-22` clustered **2 distinct records** (GNDU Main Gate and Putlighar Chowk).
+  - Records `H-0013` (MM Malviya Rd) and `H-0015` (Taylor Rd) shared the exact same source article URL.
+- **Excluded Non-Rainfall Incidents:** **2 records excluded** with explicit rationale:
+  - `H-0003` (Chatiwind Gate): Caused by a 40-foot **hydraulic canal embankment breach** of an Upper Bari Doab Canal (UBDC) distributary (`excluded_with_reason: "non_rainfall_canal_breach"`).
+  - `H-0005` (East Mohan Nagar): Chronic sewage stagnation with **0.0 mm concurrent rainfall** on 2023-09-01 and 0.0 mm on 2023-09-02 (`excluded_with_reason: "no_concurrent_rainfall_chronic_stagnation"`).
+
+### 3. P19 Defensible Backtest Performance Summary
+- **Storm-Level Event Hit Rate (7 Genuine Storms):**
+  - **RTI $\ge 0.5$ (Low Alert Threshold):** 7 of 7 storms detected (**100.0% POD**, Wilson 95% CI: [64.6%, 100.0%]), 65.5 alert-days/season (131 days / 488 days = 26.8% of period).
+  - **RTI $\ge 0.75$:** 6 of 7 storms detected (**85.7% POD**, Wilson 95% CI: [48.7%, 97.4%]), 47.5 alert-days/season.
+  - **RTI $\ge 1.00$ (High Intensity):** 4 of 7 storms detected (**57.1% POD**, Wilson 95% CI: [25.0%, 84.2%]), 34.5 alert-days/season.
+  - **RTI $\ge 1.50$ (Extreme Intensity):** 4 of 7 storms detected (**57.1% POD**, Wilson 95% CI: [25.0%, 84.2%]), 24.5 alert-days/season.
+  - **ERA5 Reanalysis 64.5 mm Baseline:** 1 of 7 storms detected (**14.3% POD**, Wilson 95% CI: [2.6%, 51.3%]), 0.5 alert-days/season.
+- **Location-Level Cell Hit Rate (13 Included Incident Locations):**
+  - **10 of 13 cells (76.9% hit rate)** reached Moderate or High risk during the storm event.
+  - **3 cells (23.1%) remained Low risk:** `H-0004` (GT Road Alpha Mall, S=0.605, RTI=0.83), `H-0006` (GNDU Main Gate, S=0.151, RTI=0.69), and `H-0007` (Putlighar Chowk, S=0.320, RTI=0.69) where moderate rainfall did not overcome low/mid topographic depression scores.
+- **Negative Space & Scientific Withholding:**
+  - Days without news reports are **unlabelled unknown intervals**, not verified flood-free negatives.
+  - **False Alarm Rate (FAR), Specificity, and ROC-AUC are strictly withheld** because true negative labels cannot be scientifically established without exhaustive citywide ground logging across all 1,998 cells.
+- **Lead Time Reality:**
+  - Historical evaluation uses retrospective reanalysis and rolling accumulation sums, providing **antecedent situational awareness**, not a 24-hour predictive lead time. Predictive lead time requires prospective forecast verification.
+
+---
+
+## 7. Localized Flood-Risk Model Audit & Spatial Validation (P22 Audit)
+
+### 1. Spatial Matching & Boundary Proximity Audit
+- **Point-in-Polygon Verification:** All 15 historical incident coordinates strictly fall inside their assigned 250m cell polygons (`A-0001` through `A-1998`) in EPSG:4326 / UTM Zone 43N space.
+- **Boundary Proximity Finding:** Several documented incidents lie within 10–15 meters of the cell boundary:
+  - `H-0008` (Heritage Street Plaza): 9.7 meters from cell edge.
+  - `H-0010` (Batala Road Celebration Mall): 7.0 meters from cell edge.
+  - `H-0011` (Crystal Chowk Queens Road): 13.0 meters from cell edge.
+  - `H-0002` (Hall Gate Market): 10.1 meters from cell edge.
+  Because regular 250m grid lines are an arbitrary geometric partition of continuous streets, points near cell boundaries share physical drainage context with immediate adjacent cells.
+
+### 2. Dissection of the 3 Missed Locations (H-0004, H-0006, H-0007)
+- **H-0004 (GT Road near Alpha Mall, Cell `A-1254`):** Target $s = 0.6054$ (mid-band), storm Max RTI $= 0.83$ (elevated band). Under the 2D matrix, $(s=\text{mid}, \text{RTI}=\text{elevated}) \implies \text{Low Risk}$. However, the immediate neighboring cell (`A-1255`) has $s = 0.8972$ (high-band).
+- **H-0006 (GNDU Main Gate GT Road, Cell `A-0816`):** Target $s = 0.1513$ (low-band), storm Max RTI $= 0.69$ (elevated band). In matrix, $(s=\text{low}, \text{RTI}=\text{elevated}) \implies \text{Low Risk}$. The maximum neighbor susceptibility is $s = 0.580$.
+- **H-0007 (Putlighar Main Chowk, Cell `A-0924`):** Target $s = 0.3196$ (low-band), storm Max RTI $= 0.69$ (elevated band). In matrix, $(s=\text{low}, \text{RTI}=\text{elevated}) \implies \text{Low Risk}$. However, an immediate neighboring cell (`A-0925`) has $s = 0.811$ (high-band).
+- **Hydrological Mechanism:** All three misses occurred during moderate rainstorms (RTI 0.69–0.83) along major paved asphalt corridors (GT Road). At moderate rainfall, the macro-topographic DEM (Copernicus 30m smoothed to 250m) does not register concave depression. Waterlogging at these specific highway points is driven by localized curb inlets, storm sewer blockage, and asphalt impermeability, which are invisible to satellite elevation data. When storm rainfall is severe/extreme (e.g. `STORM-2024-08-11`, RTI $= 1.71$), the dynamic rainfall trigger correctly elevates all low- and mid-susceptibility cells to Moderate or High risk (6/6 = 100% recall).
+
+### 3. Leave-One-Storm-Event-Out (LOSEO) Cross-Validation
+To prevent treating multiple reports from one storm as independent samples and avoid overfitting against a small 13-location dataset:
+- Evaluated 7 distinct folds holding out one complete storm event per fold.
+- **5 of 7 storms** achieved **100% test recall** (`STORM-2023-07-08`, `STORM-2023-07-15`, `STORM-2024-07-28`, `STORM-2024-08-01`, `STORM-2024-08-11`).
+- **2 of 7 storms** had **0% test recall** (`STORM-2023-08-20` with 1 incident; `STORM-2024-07-22` with 2 incidents), reflecting moderate rainfall on low/mid susceptibility cells.
+
+### 4. Candidate Feature Improvement Evaluation
+1. **Flow Accumulation (D8 / MD8):** Evaluated and **rejected**. Amritsar's municipal terrain has an elevation standard deviation of only ~1.2m across 125 km² (mean slope 0.3°). Applying standard D8 flow routing across a flat urban plain without culvert/pipe networks creates arbitrary routing artifacts and depression-filling distortion.
+2. **Road Proximity / Highway Penalties:** Evaluated and **rejected as an uncalibrated heuristic**. Arbitrarily inflating susceptibility on all road segments would elevate thousands of well-drained road cells without ground validation.
+3. **Stormwater Drainage Infrastructure:** Evaluated and **documented as an access barrier**. Municipal storm sewer network GIS layers remain restricted within the municipal corporation.
+4. **Multi-Scale Area Normalization:** Implemented. Corrected building density calculation for the 50m GNDU campus grid by normalizing by cell area ratio (25x) when ranking against the 250m city reference distribution.
 

@@ -17,6 +17,7 @@
     "verify:all": "node scripts/verify.mjs --e2e",
     "smoke": "node scripts/smoke-test.mjs",
     "release:check": "node scripts/release-check.mjs",
+    "preflight:alerts": "node scripts/preflight-alerts.mjs",
     "hackathon:init": "node scripts/hackathon-init.mjs"
   },
   "dependencies": {

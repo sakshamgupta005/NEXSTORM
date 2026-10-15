@@ -20,16 +20,16 @@
     },
     "category": "underpass_submersion",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at SSSS Chowk Railway Underpass. Source: https://www.tribuneindia.com/news/amritsar/underpass-waterlogging-halts-traffic-at-ssss-chowk",
+    "description": "Historical documented waterlogging incident at SSSS Chowk Railway Underpass. Source: https://www.tribuneindia.com/news/amritsar/underpass-waterlogging-halts-traffic-at-ssss-chowk. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2023-07-09T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2023-07-09."
+      "verificationNotes": "Media report from historical newspaper archive published on 2023-07-09. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -39,9 +39,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2023-07-10T12:00:00.000Z"
+      "expiresAt": "2023-07-09T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0002",
@@ -64,16 +64,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Hall Gate Market. Source: https://www.tribuneindia.com/news/amritsar/monsoon-showers-submerge-hall-gate-market",
+    "description": "Historical documented waterlogging incident at Hall Gate Market. Source: https://www.tribuneindia.com/news/amritsar/monsoon-showers-submerge-hall-gate-market. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2023-07-15T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2023-07-15."
+      "verificationNotes": "Media report from historical newspaper archive published on 2023-07-15. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -83,9 +83,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2023-07-16T12:00:00.000Z"
+      "expiresAt": "2023-07-15T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0003",
@@ -108,16 +108,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Chatiwind Gate Tarn Taran Road. Source: https://www.tribuneindia.com/news/amritsar/canal-breach-submerges-chatiwind-localities",
+    "description": "Historical documented waterlogging incident at Chatiwind Gate Tarn Taran Road. Source: https://www.tribuneindia.com/news/amritsar/canal-breach-submerges-chatiwind-localities. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2023-07-18T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2023-07-18."
+      "verificationNotes": "Media report from historical newspaper archive published on 2023-07-18. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -127,9 +127,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2023-07-19T12:00:00.000Z"
+      "expiresAt": "2023-07-18T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0004",
@@ -152,16 +152,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at GT Road near Alpha Mall. Source: https://www.tribuneindia.com/news/amritsar/heavy-downpour-waterlogs-gt-road-near-alpha-one",
+    "description": "Historical documented waterlogging incident at GT Road near Alpha Mall. Source: https://www.tribuneindia.com/news/amritsar/heavy-downpour-waterlogs-gt-road-near-alpha-one. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2023-08-20T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2023-08-20."
+      "verificationNotes": "Media report from historical newspaper archive published on 2023-08-20. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -171,9 +171,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2023-08-21T12:00:00.000Z"
+      "expiresAt": "2023-08-20T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0005",
@@ -196,16 +196,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at East Mohan Nagar. Source: https://www.tribuneindia.com/news/amritsar/low-lying-east-mohan-nagar-faces-waterlogging",
+    "description": "Historical documented waterlogging incident at East Mohan Nagar. Source: https://www.tribuneindia.com/news/amritsar/low-lying-east-mohan-nagar-faces-waterlogging. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2023-09-02T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2023-09-02."
+      "verificationNotes": "Media report from historical newspaper archive published on 2023-09-02. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -215,9 +215,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2023-09-03T12:00:00.000Z"
+      "expiresAt": "2023-09-02T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0006",
@@ -240,16 +240,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at GNDU Main Gate GT Road. Source: https://www.tribuneindia.com/news/amritsar/gndu-campus-gate-waterlogging-students-stranded",
+    "description": "Historical documented waterlogging incident at GNDU Main Gate GT Road. Source: https://www.tribuneindia.com/news/amritsar/gndu-campus-gate-waterlogging-students-stranded. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-07-22T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-07-22."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-07-22. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -259,9 +259,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-07-23T12:00:00.000Z"
+      "expiresAt": "2024-07-22T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0007",
@@ -284,16 +284,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Putlighar Main Chowk. Source: https://www.tribuneindia.com/news/amritsar/putlighar-market-flooded-shopkeepers-fume",
+    "description": "Historical documented waterlogging incident at Putlighar Main Chowk. Source: https://www.tribuneindia.com/news/amritsar/putlighar-market-flooded-shopkeepers-fume. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-07-22T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-07-22."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-07-22. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -303,9 +303,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-07-23T12:00:00.000Z"
+      "expiresAt": "2024-07-22T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0008",
@@ -328,16 +328,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Heritage Street Golden Temple Plaza. Source: https://www.tribuneindia.com/news/amritsar/waterlogging-hits-heritage-street-devotees-inconvenienced",
+    "description": "Historical documented waterlogging incident at Heritage Street Golden Temple Plaza. Source: https://www.tribuneindia.com/news/amritsar/waterlogging-hits-heritage-street-devotees-inconvenienced. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-07-28T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-07-28."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-07-28. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -347,9 +347,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-07-29T12:00:00.000Z"
+      "expiresAt": "2024-07-28T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0009",
@@ -372,16 +372,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Majitha Road GND Hospital Approach. Source: https://www.tribuneindia.com/news/amritsar/gnd-hospital-approach-waterlogged-patients-hit",
+    "description": "Historical documented waterlogging incident at Majitha Road GND Hospital Approach. Source: https://www.tribuneindia.com/news/amritsar/gnd-hospital-approach-waterlogged-patients-hit. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-01T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-01."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-01. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -391,9 +391,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-02T12:00:00.000Z"
+      "expiresAt": "2024-08-01T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0010",
@@ -416,16 +416,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Batala Road Celebration Mall Stretch. Source: https://www.tribuneindia.com/news/amritsar/waterlogging-on-batala-road-causes-snarls",
+    "description": "Historical documented waterlogging incident at Batala Road Celebration Mall Stretch. Source: https://www.tribuneindia.com/news/amritsar/waterlogging-on-batala-road-causes-snarls. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -435,9 +435,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0011",
@@ -460,16 +460,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Crystal Chowk Queens Road. Source: https://www.tribuneindia.com/news/amritsar/queens-road-submerged-after-rain",
+    "description": "Historical documented waterlogging incident at Crystal Chowk Queens Road. Source: https://www.tribuneindia.com/news/amritsar/queens-road-submerged-after-rain. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -479,9 +479,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0012",
@@ -504,16 +504,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Lawrence Road Chowk. Source: https://www.tribuneindia.com/news/amritsar/lawrence-road-waterlogging-causes-traffic-jam",
+    "description": "Historical documented waterlogging incident at Lawrence Road Chowk. Source: https://www.tribuneindia.com/news/amritsar/lawrence-road-waterlogging-causes-traffic-jam. Location precision: intersection.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -523,9 +523,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0013",
@@ -548,16 +548,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at MM Malviya Road. Source: https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged",
+    "description": "Historical documented waterlogging incident at MM Malviya Road. Source: https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -567,9 +567,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0014",
@@ -592,16 +592,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Ranjit Avenue B-Block. Source: https://www.tribuneindia.com/news/amritsar/ranjit-avenue-residents-face-waterlogging-woes",
+    "description": "Historical documented waterlogging incident at Ranjit Avenue B-Block. Source: https://www.tribuneindia.com/news/amritsar/ranjit-avenue-residents-face-waterlogging-woes. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -611,9 +611,9 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
     "id": "OBS-HIST-0015",
@@ -636,16 +636,16 @@
     },
     "category": "street_flooding",
     "severity": "severe_knee_or_higher",
-    "description": "Historical documented waterlogging incident at Taylor Road Civil Lines. Source: https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged",
+    "description": "Historical documented waterlogging incident at Taylor Road Civil Lines. Source: https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged. Location precision: street.",
     "reporterHash": "SYSTEM_HISTORICAL_IMPORT",
     "sourceType": "imported_historical_record",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "under_review",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2024-08-11T12:00:00.000Z",
-      "verifiedBy": "The Tribune India / Municipal Police Dispatch",
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": "The Tribune India (Media Archive)",
       "verificationMethod": "news_report",
-      "verificationNotes": "Verified from historical publication on 2024-08-11."
+      "verificationNotes": "Media report from historical newspaper archive published on 2024-08-11. Not an independent field inspection."
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -655,41 +655,41 @@
     "freshness": {
       "isStale": true,
       "isExpired": true,
-      "expiresAt": "2024-08-12T12:00:00.000Z"
+      "expiresAt": "2024-08-11T12:00:00.000Z"
     },
-    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
+    "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
-    "id": "OBS-20261015-73b1b411",
+    "id": "OBS-20261015-5e1d31b2",
     "schemaVersion": "1.0.0",
     "cityId": "amritsar",
-    "createdAt": "2026-10-15T16:23:49.613Z",
-    "submittedAt": "2026-10-15T16:23:49.613Z",
-    "observedAt": "2026-10-15T16:03:49.610Z",
+    "createdAt": "2026-10-15T19:18:17.665Z",
+    "submittedAt": "2026-10-15T19:18:17.665Z",
+    "observedAt": "2026-10-15T19:13:17.663Z",
     "coordinates": {
-      "lat": 31.632,
-      "lng": 74.87
+      "lat": 31.634,
+      "lng": 74.872
     },
     "spatialMatch": {
-      "cellId": "A-0933",
-      "cellSusceptibility": 0.8293,
+      "cellId": "A-0884",
+      "cellSusceptibility": 0.8126,
       "roadSegmentId": null,
       "roadName": null,
       "distanceToRoadMeters": null,
       "matchQuality": "exact_inside",
       "unmatchedReason": "No candidate road segments available in search radius."
     },
-    "category": "drain_overflow",
+    "category": "street_flooding",
     "severity": "moderate_ankle",
-    "reporterHash": "test_rep_auth",
+    "reporterHash": "tester_spatial_inside",
     "sourceType": "community_submission",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "submitted",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2026-10-15T16:23:49.621Z",
-      "verifiedBy": "Municipal Corporation Amritsar Ward 8 Inspector",
-      "verificationMethod": "field_inspection",
-      "verificationNotes": "On-site team confirmed blockage cleared."
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": null,
+      "verificationMethod": null,
+      "verificationNotes": null
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -699,7 +699,51 @@
     "freshness": {
       "isStale": false,
       "isExpired": false,
-      "expiresAt": "2026-10-16T16:03:49.610Z"
+      "expiresAt": "2026-10-16T19:13:17.663Z"
+    },
+    "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
+  },
+  {
+    "id": "OBS-20261015-b3087b48",
+    "schemaVersion": "1.0.0",
+    "cityId": "amritsar",
+    "createdAt": "2026-10-15T19:18:17.668Z",
+    "submittedAt": "2026-10-15T19:18:17.668Z",
+    "observedAt": "2026-10-15T19:13:17.668Z",
+    "coordinates": {
+      "lat": 31.51,
+      "lng": 74.72
+    },
+    "spatialMatch": {
+      "cellId": null,
+      "cellSusceptibility": null,
+      "roadSegmentId": null,
+      "roadName": null,
+      "distanceToRoadMeters": null,
+      "matchQuality": "unmatched",
+      "unmatchedReason": "No candidate road segments available in search radius."
+    },
+    "category": "street_flooding",
+    "severity": "minor_curb",
+    "reporterHash": "tester_spatial_far",
+    "sourceType": "community_submission",
+    "lifecycleStatus": "submitted",
+    "verification": {
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": null,
+      "verificationMethod": null,
+      "verificationNotes": null
+    },
+    "corroboration": {
+      "corroborationCount": 1,
+      "corroboratingObservationIds": [],
+      "lastCorroboratedAt": null
+    },
+    "freshness": {
+      "isStale": false,
+      "isExpired": false,
+      "expiresAt": "2026-10-16T19:13:17.668Z"
     },
     "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
   }

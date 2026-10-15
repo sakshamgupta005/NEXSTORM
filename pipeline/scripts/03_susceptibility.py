@@ -90,10 +90,16 @@ def compute_features_dict(df: pd.DataFrame, ref_df: pd.DataFrame | None = None) 
     else:
         f_lowPoint = pd.Series(df.get("underpass_flag", 0).astype(float), index=df.index)
 
-    # 5. f_density = rank(building_count_per_cell) * (1 - rank(mean_building_area))
-    # Drainage deficiency proxy
-    bldg_count = df.get("building_count", pd.Series(0, index=df.index))
-    ref_bldg_count = ref.get("building_count", pd.Series(0, index=ref.index))
+    # 5. f_density = rank(building_count_density) * (1 - rank(mean_building_area))
+    # Area-aware drainage deficiency proxy: normalizes building count by cell scale (250m vs 50m)
+    # 250m cell = 0.0625 km2; 50m cell = 0.0025 km2 (area ratio = 25.0)
+    df_is_campus = df.get("is_campus", pd.Series(False, index=df.index))
+    ref_is_campus = ref.get("is_campus", pd.Series(False, index=ref.index))
+    df_scale = df_is_campus.map(lambda c: 25.0 if c else 1.0)
+    ref_scale = ref_is_campus.map(lambda c: 25.0 if c else 1.0)
+
+    bldg_count = df.get("building_count", pd.Series(0, index=df.index)) * df_scale
+    ref_bldg_count = ref.get("building_count", pd.Series(0, index=ref.index)) * ref_scale
     r_count = rank_series(bldg_count) if is_ref else rank_against_reference(bldg_count, ref_bldg_count)
 
     mean_bldg_area = df.get("mean_building_area", pd.Series(0.0, index=df.index))

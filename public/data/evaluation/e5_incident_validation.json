@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "datasetPath": "public\\data\\cities\\amritsar\\incidents_inventory.json",
+  "totalRecords": 15,
+  "includedRecords": 13,
+  "excludedRecords": 2,
+  "distinctStormEvents": 9,
+  "rainfallDrivenStorms": 7,
+  "excludedNonRainfallEvents": 2,
+  "statusCounts": {
+    "source_reported": 13,
+    "excluded_with_reason": 2
+  },
+  "clusterStorms": {
+    "STORM-2024-07-22": 2,
+    "STORM-2024-08-11": 6
+  },
+  "sharedSourceUrls": {
+    "https://www.tribuneindia.com/news/amritsar/rain-exposes-mc-claims-taylor-road-waterlogged": [
+      "INC-ASR-2024-013",
+      "INC-ASR-2024-015"
+    ]
+  },
+  "exclusions": [
+    {
+      "incidentId": "INC-ASR-2023-003",
+      "name": "Chatiwind Gate Tarn Taran Road",
+      "reason": "Excluded from rainfall-runoff validation: Flooding caused by hydraulic canal embankment failure rather than pluvial precipitation runoff (ERA5 rain was only 2.6 mm)."
+    },
+    {
+      "incidentId": "INC-ASR-2023-005",
+      "name": "East Mohan Nagar",
+      "reason": "Excluded from rainfall-runoff validation: Weather reanalysis indicates 0.0 mm rainfall on 2023-09-01 and 0.0 mm on 2023-09-02; article reports chronic infrastructural drainage stagnation."
+    }
+  ]
+}

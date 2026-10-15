@@ -3,16 +3,113 @@
   "provenance": {
     "source": "Open-Meteo ERA5-Land Hourly Reanalysis",
     "resolution": "11 km",
-    "incidents": "The Tribune Amritsar Archive (15 Documented Hotspot Reports)"
+    "incidents": "The Tribune Amritsar Archive (15 Documented Hotspot Reports, 7 Genuine Rainfall Storms)"
   },
   "sampleCounts": {
     "totalEligibleDays": 488,
     "reportedEventDays": 9,
     "distinctIncidents": 15,
+    "distinctRainfallStorms": 7,
+    "excludedIncidents": 2,
     "seasons": 2
   },
+  "stormLevelMetrics": {
+    "condition": "At least one cell moderate or high risk on storm window (Max RTI >= 0.5)",
+    "totalStorms": 7,
+    "hits": 7,
+    "misses": 0,
+    "pod": 1.0,
+    "wilson95CI": [
+      0.6457,
+      1.0
+    ]
+  },
+  "locationLevelMetrics": {
+    "condition": "Specific 250m cell containing incident reached Moderate or High risk",
+    "totalRainfallLocations": 13,
+    "hits": 10,
+    "misses": 3,
+    "hitRate": 0.7692,
+    "wilson95CI": [
+      0.4974,
+      0.9182
+    ],
+    "lowRiskLocations": [
+      {
+        "id": "H-0004",
+        "name": "GT Road near Alpha Mall",
+        "cellId": "A-1254",
+        "s": 0.605,
+        "maxRti": 0.83,
+        "risk": "low"
+      },
+      {
+        "id": "H-0006",
+        "name": "GNDU Main Gate GT Road",
+        "cellId": "A-0816",
+        "s": 0.151,
+        "maxRti": 0.69,
+        "risk": "low"
+      },
+      {
+        "id": "H-0007",
+        "name": "Putlighar Main Chowk",
+        "cellId": "A-0924",
+        "s": 0.32,
+        "maxRti": 0.69,
+        "risk": "low"
+      }
+    ]
+  },
+  "thresholdSensitivity": [
+    {
+      "thresholdRti": 0.5,
+      "hits": 7,
+      "misses": 0,
+      "pod": 1.0,
+      "wilson95CI": [0.6457, 1.0],
+      "totalAlertDays": 131,
+      "alertDaysPerSeason": 65.5
+    },
+    {
+      "thresholdRti": 0.75,
+      "hits": 6,
+      "misses": 1,
+      "pod": 0.8571,
+      "wilson95CI": [0.4869, 0.9743],
+      "totalAlertDays": 95,
+      "alertDaysPerSeason": 47.5
+    },
+    {
+      "thresholdRti": 1.0,
+      "hits": 4,
+      "misses": 3,
+      "pod": 0.5714,
+      "wilson95CI": [0.2505, 0.8418],
+      "totalAlertDays": 69,
+      "alertDaysPerSeason": 34.5
+    },
+    {
+      "thresholdRti": 1.25,
+      "hits": 4,
+      "misses": 3,
+      "pod": 0.5714,
+      "wilson95CI": [0.2505, 0.8418],
+      "totalAlertDays": 58,
+      "alertDaysPerSeason": 29.0
+    },
+    {
+      "thresholdRti": 1.5,
+      "hits": 4,
+      "misses": 3,
+      "pod": 0.5714,
+      "wilson95CI": [0.2505, 0.8418],
+      "totalAlertDays": 49,
+      "alertDaysPerSeason": 24.5
+    }
+  ],
   "modelAlertRule": {
-    "condition": "At least one cell moderate or high risk (Max RTI >= 0.5)",
+    "condition": "At least one cell moderate or high risk (Max RTI >= 0.5) across 9 legacy date buckets",
     "hits": 8,
     "misses": 1,
     "pod": 0.8889,
@@ -24,7 +121,7 @@
     "alertDaysPerSeason": 65.5
   },
   "baselineAlertRule": {
-    "condition": "24-hour rainfall >= 64.5 mm (IMD Heavy Rainfall Standard)",
+    "condition": "24-hour rainfall >= 64.5 mm (ERA5 Reanalysis, IMD Heavy Rainfall Threshold)",
     "hits": 1,
     "misses": 8,
     "pod": 0.1111,
@@ -35,97 +132,69 @@
     "totalAlertDays": 1,
     "alertDaysPerSeason": 0.5
   },
-  "events": [
+  "stormEvents": [
     {
+      "stormEventId": "STORM-2023-07-08",
       "date": "2023-07-09",
       "locationCount": 1,
-      "locations": [
-        "SSSS Chowk Railway Underpass"
-      ],
+      "locations": ["SSSS Chowk Railway Underpass"],
       "maxRti": 1.6286,
       "total24hMm": 30.8,
       "modelDetected": true,
       "baselineDetected": false
     },
     {
+      "stormEventId": "STORM-2023-07-15",
       "date": "2023-07-15",
       "locationCount": 1,
-      "locations": [
-        "Hall Gate Market"
-      ],
+      "locations": ["Hall Gate Market"],
       "maxRti": 0.9143,
       "total24hMm": 4.2,
       "modelDetected": true,
       "baselineDetected": false
     },
     {
-      "date": "2023-07-18",
-      "locationCount": 1,
-      "locations": [
-        "Chatiwind Gate Tarn Taran Road"
-      ],
-      "maxRti": 0.6,
-      "total24hMm": 2.6,
-      "modelDetected": true,
-      "baselineDetected": false
-    },
-    {
+      "stormEventId": "STORM-2023-08-20",
       "date": "2023-08-20",
       "locationCount": 1,
-      "locations": [
-        "GT Road near Alpha Mall"
-      ],
+      "locations": ["GT Road near Alpha Mall"],
       "maxRti": 0.8286,
       "total24hMm": 3.8,
       "modelDetected": true,
       "baselineDetected": false
     },
     {
-      "date": "2023-09-02",
-      "locationCount": 1,
-      "locations": [
-        "East Mohan Nagar"
-      ],
-      "maxRti": 0.0246,
-      "total24hMm": 0.0,
-      "modelDetected": false,
-      "baselineDetected": false
-    },
-    {
+      "stormEventId": "STORM-2024-07-22",
       "date": "2024-07-22",
       "locationCount": 2,
-      "locations": [
-        "GNDU Main Gate GT Road",
-        "Putlighar Main Chowk"
-      ],
+      "locations": ["GNDU Main Gate GT Road", "Putlighar Main Chowk"],
       "maxRti": 0.6857,
       "total24hMm": 4.2,
       "modelDetected": true,
       "baselineDetected": false
     },
     {
+      "stormEventId": "STORM-2024-07-28",
       "date": "2024-07-28",
       "locationCount": 1,
-      "locations": [
-        "Heritage Street Golden Temple Plaza"
-      ],
+      "locations": ["Heritage Street Golden Temple Plaza"],
       "maxRti": 1.5429,
       "total24hMm": 5.4,
       "modelDetected": true,
       "baselineDetected": false
     },
     {
+      "stormEventId": "STORM-2024-08-01",
       "date": "2024-08-01",
       "locationCount": 1,
-      "locations": [
-        "Majitha Road GND Hospital Approach"
-      ],
+      "locations": ["Majitha Road GND Hospital Approach"],
       "maxRti": 3.3714,
       "total24hMm": 66.5,
       "modelDetected": true,
       "baselineDetected": true
     },
     {
+      "stormEventId": "STORM-2024-08-11",
       "date": "2024-08-11",
       "locationCount": 6,
       "locations": [
@@ -142,10 +211,40 @@
       "baselineDetected": false
     }
   ],
+  "excludedEvents": [
+    {
+      "incidentId": "INC-ASR-2023-003",
+      "legacyId": "H-0003",
+      "stormEventId": "EXCL-2023-07-18-CANAL-BREACH",
+      "name": "Chatiwind Gate Tarn Taran Road",
+      "date": "2023-07-18",
+      "exclusionReason": "Hydraulic canal embankment failure (Upper Bari Doab Canal distributary breach) rather than rainfall runoff; ERA5 rain was 2.6 mm.",
+      "total24hMm": 2.6,
+      "maxRti": 0.6
+    },
+    {
+      "incidentId": "INC-ASR-2023-005",
+      "legacyId": "H-0005",
+      "stormEventId": "EXCL-2023-09-02-CHRONIC-STAGNATION",
+      "name": "East Mohan Nagar",
+      "date": "2023-09-02",
+      "exclusionReason": "Chronic sewage and wastewater stagnation; ERA5 rainfall was 0.0 mm on 2023-09-01 and 0.0 mm on 2023-09-02.",
+      "total24hMm": 0.0,
+      "maxRti": 0.0246
+    }
+  ],
+  "scientificNonClaims": [
+    "NEXSTORM does not predict flood depth in centimeters.",
+    "Model outputs reflect rainfall-driven waterlogging hazard, not verified indoor inundation.",
+    "The baseline comparison uses ERA5-Land gridded reanalysis against IMD's 64.5 mm meteorological heavy rain standard; it does not represent direct in-situ IMD rain gauge telemetry.",
+    "Unreported days and locations are incomplete samples (unlabelled), not confirmed negative non-flooding zones.",
+    "False Alarm Rate (FAR), Specificity, and ROC-AUC cannot be scientifically computed without exhaustive citywide negative logging across all 1,998 cells.",
+    "Historical evaluation does not provide predictive lead time; retrospective reanalysis and rolling sums provide antecedent situational awareness."
+  ],
   "limitations": [
     "News reporting bias: incidents represent opportunistic journalistic coverage of central corridors.",
     "Unreported days and locations cannot be classified as verified flood-free negatives.",
     "Coarse 11 km ERA5 grid averages convective thunderstorm cores.",
-    "Small sample size of 15 validated incident locations."
+    "Small sample size of 7 genuine storm events and 13 included incident locations."
   ]
 }

@@ -26,6 +26,15 @@ export interface HistoricalIncident {
   articleDate: string // YYYY-MM-DD
   evidence?: string
   precision?: string
+  incidentId?: string
+  legacyId?: string
+  stormEventId?: string
+  isRainfallDriven?: boolean
+  inclusionDecision?: 'included' | 'excluded'
+  inclusionReason?: string
+  verificationStatus?: string
+  locality?: string
+  reportedImpact?: string
 }
 
 export interface BacktestOptions {
@@ -63,6 +72,53 @@ export interface EventEvaluationResult {
   baselineDetected: boolean
   detectedLeadTimeHours?: number
   cellSusceptibilities: Array<{ cellId: string; s: number; riskClass: string }>
+  isRainfallDriven?: boolean
+  exclusionReason?: string
+}
+
+export interface StormEvaluationResult {
+  stormEventId: string
+  date: string
+  reportedDate: string
+  incidentCount: number
+  locations: string[]
+  cellIds: string[]
+  maxRti: number
+  total24hMm: number
+  modelDetected: boolean
+  baselineDetected: boolean
+  isRainfallDriven: boolean
+  verificationStatus: string
+}
+
+export interface ThresholdSensitivityResult {
+  thresholdRti: number
+  hits: number
+  misses: number
+  totalStorms: number
+  pod: number
+  wilson95CI: [number, number]
+  totalAlertDays: number
+  alertDaysPerSeason: number
+}
+
+export interface LocationEvaluationMetrics {
+  totalRainfallLocations: number
+  hitLocations: number
+  hitRate: number
+  wilson95CI: [number, number]
+  lowRiskLocations: Array<{ incidentId: string; name: string; cellId: string; s: number; rti: number; riskClass: string }>
+}
+
+export interface ExcludedEventRecord {
+  incidentId: string
+  legacyId: string
+  stormEventId: string
+  name: string
+  date: string
+  exclusionReason: string
+  total24hMm: number
+  maxRti: number
 }
 
 export interface BacktestReport {
@@ -86,6 +142,8 @@ export interface BacktestReport {
     reportedIncidentDays: number
     distinctIncidents: number
     monsoonSeasons: number
+    distinctRainfallStorms?: number
+    excludedIncidents?: number
   }
   metrics: {
     model: {
@@ -112,14 +170,56 @@ export interface BacktestReport {
   events: EventEvaluationResult[]
   missedEvents: Array<{ date: string; locations: string[]; reason: string }>
   dailySummary: DailyBacktestRecord[]
+  stormEvents?: StormEvaluationResult[]
+  thresholdSensitivity?: ThresholdSensitivityResult[]
+  locationMetrics?: LocationEvaluationMetrics
+  excludedEvents?: ExcludedEventRecord[]
   scientificNonClaims: string[]
   limitations: string[]
 }
 
 /**
- * Loads the 15 documented Tribune historical incidents from hotspots.json.
+ * Loads the 15 documented historical incidents from incidents_inventory.json (with fallback to hotspots.json).
  */
 export function loadHistoricalIncidents(cityId = 'amritsar'): HistoricalIncident[] {
+  const inventoryPath = path.resolve(
+    process.cwd(),
+    'public',
+    'data',
+    'cities',
+    cityId,
+    'incidents_inventory.json'
+  )
+
+  if (fs.existsSync(inventoryPath)) {
+    try {
+      const raw = fs.readFileSync(inventoryPath, 'utf-8')
+      const items = JSON.parse(raw)
+      return items.map((item: Record<string, unknown>) => ({
+        id: (item.legacyId as string) || (item.incidentId as string),
+        incidentId: item.incidentId as string,
+        legacyId: item.legacyId as string,
+        stormEventId: item.stormEventId as string,
+        name: item.name as string,
+        lat: item.lat as number,
+        lon: item.lon as number,
+        cellId: item.cellId as string,
+        sourceUrl: item.sourceUrl as string,
+        articleDate: item.articleDate as string,
+        evidence: (item.evidenceExcerpt as string) || (item.evidence as string),
+        precision: item.precision as string,
+        isRainfallDriven: (item.isRainfallDriven as boolean) ?? true,
+        inclusionDecision: (item.inclusionDecision as 'included' | 'excluded') ?? 'included',
+        inclusionReason: item.inclusionReason as string,
+        verificationStatus: (item.verificationStatus as string) || 'source_reported',
+        locality: item.locality as string,
+        reportedImpact: item.reportedImpact as string,
+      }))
+    } catch {
+      // Fallback to hotspots.json on read/parse error
+    }
+  }
+
   const filePath = path.resolve(
     process.cwd(),
     'public',
@@ -231,12 +331,18 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
     dEntry.p24hValues.push(p24[h])
   }
 
-  // 4. Evaluate each calendar day
+  // 4. Evaluate each calendar day (excluding warmup dates)
+  const evalStartDate = options.startDate || '2023-06-01'
+  const evalEndDate = options.endDate || '2024-09-30'
+
   const dailySummary: DailyBacktestRecord[] = []
   const modelAlertDates = new Set<string>()
   const baselineAlertDates = new Set<string>()
 
   for (const [dateStr, dData] of dailyMap.entries()) {
+    if (evalStartDate && dateStr < evalStartDate) continue
+    if (evalEndDate && dateStr > evalEndDate) continue
+
     let maxRti = 0
     let peakTimestamp = dData.timestamps[0]
     let peakHourIdx = dData.hours[0]
@@ -259,16 +365,25 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
     total24h = Math.round(total24h * 10) / 10
     max1h = Math.round(max1h * 10) / 10
 
-    // Evaluate cell risks at peak hour
-    const gridRes = computeRiskGrid({
-      config,
-      susceptibility,
-      series,
-      hourIndex: peakHourIdx,
-    })
+    // Evaluate cell risks at peak hour only when rain occurred (maxRti >= 0.25)
+    let highestRiskClass: 'low' | 'moderate' | 'high' = 'low'
+    let highRiskCellCount = 0
+    let moderateRiskCellCount = 0
+
+    if (maxRti >= 0.25) {
+      const gridRes = computeRiskGrid({
+        config,
+        susceptibility,
+        series,
+        hourIndex: peakHourIdx,
+      })
+      highestRiskClass = gridRes.classDistribution.high > 0 ? 'high' : gridRes.classDistribution.moderate > 0 ? 'moderate' : 'low'
+      highRiskCellCount = Math.round(gridRes.classDistribution.high * susceptibility.features.length)
+      moderateRiskCellCount = Math.round(gridRes.classDistribution.moderate * susceptibility.features.length)
+    }
 
     const isModelAlert = maxRti >= alertThresholdRti
-    // Baseline alert: IMD daily rain >= 64.5 mm
+    // Baseline alert: ERA5 reanalysis daily rain >= 64.5 mm (IMD Heavy Rain Threshold)
     const isBaselineAlert = total24h >= baselineThresholdMm24h
 
     if (isModelAlert) modelAlertDates.add(dateStr)
@@ -282,9 +397,9 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
       peakHourTimestamp: peakTimestamp,
       isModelAlert,
       isBaselineAlert,
-      highestRiskClass: gridRes.classDistribution.high > 0 ? 'high' : gridRes.classDistribution.moderate > 0 ? 'moderate' : 'low',
-      highRiskCellCount: Math.round(gridRes.classDistribution.high * susceptibility.features.length),
-      moderateRiskCellCount: Math.round(gridRes.classDistribution.moderate * susceptibility.features.length),
+      highestRiskClass,
+      highRiskCellCount,
+      moderateRiskCellCount,
     })
   }
 
@@ -306,7 +421,6 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
 
     // Check publication lag / antecedent downpour window:
     // News articles on date D often report flooding caused by rain on date D-1 or D.
-    // Check both evDate and previous day (evDate - 1 day)
     const prevDate = new Date(new Date(evDate).getTime() - 86400000).toISOString().slice(0, 10)
 
     const dStats = dailySummary.find((d) => d.date === evDate)
@@ -340,6 +454,9 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
       return { cellId: cid, s, riskClass: risk }
     })
 
+    const isRainfallDriven = evList.some((i) => i.isRainfallDriven !== false)
+    const exclusionReason = evList.find((i) => i.inclusionReason)?.inclusionReason
+
     events.push({
       date: evDate,
       incidentCount: evList.length,
@@ -350,19 +467,155 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
       modelDetected,
       baselineDetected,
       cellSusceptibilities,
+      isRainfallDriven,
+      exclusionReason,
     })
   }
 
+  // 6. Distinct Storm-Event Level Evaluation (P19 Deduplication)
+  const stormGroups = new Map<string, HistoricalIncident[]>()
+  for (const inc of incidents) {
+    const sId = inc.stormEventId || inc.articleDate
+    if (!stormGroups.has(sId)) {
+      stormGroups.set(sId, [])
+    }
+    stormGroups.get(sId)!.push(inc)
+  }
+
+  const stormEvents: StormEvaluationResult[] = []
+  const excludedEvents: ExcludedEventRecord[] = []
+
+  for (const [sId, group] of stormGroups.entries()) {
+    const repDate = group[0].articleDate
+    const prevDate = new Date(new Date(repDate).getTime() - 86400000).toISOString().slice(0, 10)
+    const dStats = dailySummary.find((d) => d.date === repDate)
+    const prevStats = dailySummary.find((d) => d.date === prevDate)
+
+    const effectiveMaxRti = Math.max(dStats?.maxRti || 0, prevStats?.maxRti || 0)
+    const effectiveTotal24h = Math.max(dStats?.total24hMm || 0, prevStats?.total24hMm || 0)
+
+    const isRainfall = group.some((i) => i.isRainfallDriven !== false && i.inclusionDecision !== 'excluded')
+
+    if (!isRainfall) {
+      for (const inc of group) {
+        excludedEvents.push({
+          incidentId: inc.incidentId || inc.id,
+          legacyId: inc.legacyId || inc.id,
+          stormEventId: sId,
+          name: inc.name,
+          date: repDate,
+          exclusionReason: inc.inclusionReason || 'Non-rainfall event',
+          total24hMm: effectiveTotal24h,
+          maxRti: effectiveMaxRti,
+        })
+      }
+      continue
+    }
+
+    const modelDetected = effectiveMaxRti >= alertThresholdRti
+    const baselineDetected = effectiveTotal24h >= baselineThresholdMm24h
+
+    stormEvents.push({
+      stormEventId: sId,
+      date: repDate,
+      reportedDate: repDate,
+      incidentCount: group.length,
+      locations: group.map((i) => i.name),
+      cellIds: group.map((i) => i.cellId).filter(Boolean),
+      maxRti: effectiveMaxRti,
+      total24hMm: effectiveTotal24h,
+      modelDetected,
+      baselineDetected,
+      isRainfallDriven: true,
+      verificationStatus: group[0].verificationStatus || 'source_reported',
+    })
+  }
+
+  // Sort storms chronologically
+  stormEvents.sort((a, b) => a.date.localeCompare(b.date))
+
+  // 7. Threshold Sensitivity Analysis across RTI [0.5, 0.75, 1.0, 1.25, 1.5]
+  const sensitivityThresholds = [0.5, 0.75, 1.0, 1.25, 1.5]
+  const distinctYears = new Set(dailySummary.map((d) => d.date.slice(0, 4)))
+  const nSeasons = Math.max(1, distinctYears.size)
+
+  const thresholdSensitivity: ThresholdSensitivityResult[] = sensitivityThresholds.map((thr) => {
+    let hits = 0
+    for (const storm of stormEvents) {
+      if (storm.maxRti >= thr) hits++
+    }
+    const misses = stormEvents.length - hits
+    const pod = stormEvents.length > 0 ? Math.round((hits / stormEvents.length) * 10000) / 10000 : 0
+    const wilson95CI = wilsonInterval(hits, stormEvents.length, 0.95)
+
+    const totalAlertDays = dailySummary.filter((d) => d.maxRti >= thr).length
+    const alertDaysPerSeason = Math.round((totalAlertDays / nSeasons) * 10) / 10
+
+    return {
+      thresholdRti: thr,
+      hits,
+      misses,
+      totalStorms: stormEvents.length,
+      pod,
+      wilson95CI,
+      totalAlertDays,
+      alertDaysPerSeason,
+    }
+  })
+
+  // 8. Location-Level Metrics (for the 13 valid rainfall incident locations)
+  const rainfallIncidents = incidents.filter((i) => i.inclusionDecision !== 'excluded' && i.isRainfallDriven !== false)
+  let locationHits = 0
+  const lowRiskLocations: Array<{ incidentId: string; name: string; cellId: string; s: number; rti: number; riskClass: string }> = []
+
+  for (const inc of rainfallIncidents) {
+    const s = cellSMap.get(inc.cellId) ?? 0
+    const repDate = inc.articleDate
+    const prevDate = new Date(new Date(repDate).getTime() - 86400000).toISOString().slice(0, 10)
+    const dStats = dailySummary.find((d) => d.date === repDate)
+    const prevStats = dailySummary.find((d) => d.date === prevDate)
+    const effectiveRti = Math.max(dStats?.maxRti || 0, prevStats?.maxRti || 0)
+
+    // NEXSTORM risk matrix evaluation
+    const rIdx = effectiveRti < 0.5 ? 0 : effectiveRti < 1.0 ? 1 : effectiveRti < 1.5 ? 2 : 3
+    const sIdx = s < 0.33 ? 0 : s <= 0.66 ? 1 : 2
+    const matrix = [
+      ['low', 'low', 'low'],
+      ['low', 'low', 'moderate'],
+      ['low', 'moderate', 'high'],
+      ['moderate', 'high', 'high'],
+    ]
+    const risk = matrix[rIdx][sIdx]
+
+    if (risk === 'moderate' || risk === 'high') {
+      locationHits++
+    } else {
+      lowRiskLocations.push({
+        incidentId: inc.incidentId || inc.id,
+        name: inc.name,
+        cellId: inc.cellId,
+        s: Math.round(s * 1000) / 1000,
+        rti: Math.round(effectiveRti * 100) / 100,
+        riskClass: risk,
+      })
+    }
+  }
+
+  const locationMetrics: LocationEvaluationMetrics = {
+    totalRainfallLocations: rainfallIncidents.length,
+    hitLocations: locationHits,
+    hitRate: rainfallIncidents.length > 0 ? Math.round((locationHits / rainfallIncidents.length) * 10000) / 10000 : 0,
+    wilson95CI: wilsonInterval(locationHits, rainfallIncidents.length, 0.95),
+    lowRiskLocations,
+  }
+
+  // 9. Aggregate Metrics & Non-Claims
   const nEvents = eventDates.length
   const modelPod = nEvents > 0 ? Math.round((modelHits / nEvents) * 10000) / 10000 : 0
   const baselinePod = nEvents > 0 ? Math.round((baselineHits / nEvents) * 10000) / 10000 : 0
 
   const modelWilsonCI = wilsonInterval(modelHits, nEvents, 0.95)
   const baselineWilsonCI = wilsonInterval(baselineHits, nEvents, 0.95)
-
-  // Distinct seasons count
-  const distinctYears = new Set(dailySummary.map((d) => d.date.slice(0, 4)))
-  const nSeasons = Math.max(1, distinctYears.size)
 
   const alertDaysPerSeasonModel = Math.round((modelAlertDates.size / nSeasons) * 10) / 10
   const alertDaysPerSeasonBaseline = Math.round((baselineAlertDates.size / nSeasons) * 10) / 10
@@ -392,6 +645,8 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
       reportedIncidentDays: nEvents,
       distinctIncidents: incidents.length,
       monsoonSeasons: nSeasons,
+      distinctRainfallStorms: stormEvents.length,
+      excludedIncidents: excludedEvents.length,
     },
     metrics: {
       model: {
@@ -405,7 +660,7 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
         unreportedAlertDays: unreportedAlertDaysModel,
       },
       baseline: {
-        rule: `24-hour rainfall >= ${baselineThresholdMm24h} mm (IMD Heavy Rainfall Standard)`,
+        rule: `24-hour rainfall >= ${baselineThresholdMm24h} mm (ERA5 Reanalysis, IMD Heavy Rainfall Threshold)`,
         hits: baselineHits,
         misses: nEvents - baselineHits,
         pod: baselinePod,
@@ -418,17 +673,23 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
     events,
     missedEvents,
     dailySummary,
+    stormEvents,
+    thresholdSensitivity,
+    locationMetrics,
+    excludedEvents,
     scientificNonClaims: [
       'NEXSTORM does not predict flood depth in centimeters.',
       'Model outputs reflect rainfall-driven waterlogging hazard, not verified indoor inundation.',
+      'The baseline comparison uses ERA5-Land gridded reanalysis against IMD\'s 64.5 mm meteorological heavy rain standard; it does not represent direct in-situ IMD rain gauge telemetry.',
       'Unreported days and locations are incomplete samples (unlabelled), not confirmed negative non-flooding zones.',
-      'False Alarm Rate (FAR) cannot be computed without verified negative ground-truth logs across all 1,998 cells.',
+      'False Alarm Rate (FAR), Specificity, and ROC-AUC cannot be scientifically computed without exhaustive citywide negative logging across all 1,998 cells.',
+      'Historical evaluation does not provide predictive lead time; retrospective reanalysis and rolling sums provide antecedent situational awareness.',
     ],
     limitations: [
       'Reporting bias: newspaper articles focus predominantly on arterial commercial corridors and central underpasses.',
       'Spatial resolution: 11 km ERA5 reanalysis grid averages convective micro-scale thunderstorm cores over ~120 km².',
       'Publication lag: media accounts are published 12-24 hours after physical rainstorms.',
-      'Small incident sample size (15 locations, 9 event dates) limits statistical significance.',
+      'Small incident sample size (7 genuine storm events, 13 included locations) limits statistical significance.',
     ],
   }
 }
