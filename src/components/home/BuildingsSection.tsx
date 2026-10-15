@@ -70,7 +70,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     key: 'mall-road',
     code: 'ID: ASR-BLD-0820',
     name: 'Mall Road & Civil Lines District',
-    areaTag: 'AREA: MALL ROAD & CIVIL LINES CORRIDOR (AMRITSAR)',
+    areaTag: 'AREA: CIVIL LINES RETAIL PRECINCT (AMRITSAR)',
     center: [31.6425, 74.8685],
     zoom: 17,
     sink: [31.6408, 74.871],
@@ -98,7 +98,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     zoom: 17,
     sink: [31.6575, 74.8525],
     baseScore: 16,
-    risk: 'Low Exposure',
+    risk: 'Minimal Risk',
     riskClass: 'text-emerald-700',
     baseGradient: 2.2,
     gradientText: '+2.2% Engineered Ridge',
@@ -111,6 +111,144 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.16',
     actionStatus: 'Unmodeled',
     statusMsg: 'Modern planned sector with high relative ground elevation (234.6m MSL).',
+  },
+  'gndu-science': {
+    key: 'gndu-science',
+    code: 'ID: ASR-BLD-1192',
+    name: 'GNDU University Science Block',
+    areaTag: 'AREA: GURU NANAK DEV UNIVERSITY CAMPUS (AMRITSAR)',
+    center: [31.6375, 74.825],
+    zoom: 17,
+    sink: [31.635, 74.822],
+    baseScore: 19,
+    risk: 'Minimal Risk',
+    riskClass: 'text-emerald-700',
+    baseGradient: 1.8,
+    gradientText: '+1.8% Campus Ridge',
+    baseElevation: 233.8,
+    drain: 'Parkland Contour',
+    drainClass: 'text-emerald-700',
+    flowText:
+      'Spacious campus parkland topography sheds surface runoff naturally toward peripheral unpaved retention greens.',
+    velocity: '3,420 m²',
+    drainCap: 's = 0.19',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Elevated university campus terrain with high permeable soil ratio.',
+  },
+  'putlighar-market': {
+    key: 'putlighar-market',
+    code: 'ID: ASR-BLD-2108',
+    name: 'Putlighar GT Road Commercial Hub',
+    areaTag: 'AREA: PUTLIGHAR GT ROAD CORRIDOR (AMRITSAR)',
+    center: [31.631, 74.843],
+    zoom: 17,
+    sink: [31.6295, 74.8415],
+    baseScore: 82,
+    risk: 'High Exposure',
+    riskClass: 'text-rose-700',
+    baseGradient: -1.6,
+    gradientText: '-1.6% Railway Basin',
+    baseElevation: 227.4,
+    drain: 'Embankment Bottleneck',
+    drainClass: 'text-rose-700',
+    flowText:
+      'Direct storm catchment trapped against railway embankment culverts with historical storm pooling up to 50cm.',
+    velocity: '1,650 m²',
+    drainCap: 's = 0.82',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Copernicus DEM 30m confirms local depression pinned by southern railway line.',
+  },
+  'batala-road': {
+    key: 'batala-road',
+    code: 'ID: ASR-BLD-4091',
+    name: 'Batala Road & Vijay Nagar Sump',
+    areaTag: 'AREA: BATALA ROAD INDUSTRIAL CORRIDOR (AMRITSAR)',
+    center: [31.652, 74.896],
+    zoom: 17,
+    sink: [31.6505, 74.898],
+    baseScore: 85,
+    risk: 'High Exposure',
+    riskClass: 'text-rose-700',
+    baseGradient: -2.3,
+    gradientText: '-2.3% Low Sump',
+    baseElevation: 226.2,
+    drain: 'Natural Sink',
+    drainClass: 'text-rose-700',
+    flowText:
+      'Northern low-lying depression receiving heavy sheetflow from surrounding high-density residential wards.',
+    velocity: '1,980 m²',
+    drainCap: 's = 0.85',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Lowest local ground elevation in northern Amritsar industrial sector (226.2m MSL).',
+  },
+  'durgiana-temple': {
+    key: 'durgiana-temple',
+    code: 'ID: ASR-BLD-0315',
+    name: 'Durgiana Temple & Gol Bagh Basin',
+    areaTag: 'AREA: DURGIANA TEMPLE ENVIRONS (AMRITSAR)',
+    center: [31.627, 74.869],
+    zoom: 17,
+    sink: [31.6255, 74.871],
+    baseScore: 68,
+    risk: 'Moderate Exposure',
+    riskClass: 'text-amber-700',
+    baseGradient: -0.8,
+    gradientText: '-0.8% Moat Basin',
+    baseElevation: 227.1,
+    drain: 'Historic Moat Depression',
+    drainClass: 'text-amber-700',
+    flowText:
+      'Historic walled city perimeter moat basin collecting stormwater from Lohgarh and Hathi Gate corridors.',
+    velocity: '2,750 m²',
+    drainCap: 's = 0.68',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Topographic depression adjacent to Gol Bagh park and heritage temple precinct.',
+  },
+  'majitha-medical': {
+    key: 'majitha-medical',
+    code: 'ID: ASR-BLD-1520',
+    name: 'Majitha Road Medical Enclave (GMC)',
+    areaTag: 'AREA: MAJITHA ROAD HEALTH CORRIDOR (AMRITSAR)',
+    center: [31.651, 74.878],
+    zoom: 17,
+    sink: [31.649, 74.88],
+    baseScore: 24,
+    risk: 'Low Exposure',
+    riskClass: 'text-emerald-700',
+    baseGradient: 1.2,
+    gradientText: '+1.2% Crowned Grade',
+    baseElevation: 231.5,
+    drain: 'Graded Collector',
+    drainClass: 'text-emerald-700',
+    flowText:
+      'Elevated medical hospital complex with positive asphalt crown discharging directly into storm drain trunk line.',
+    velocity: '4,100 m²',
+    drainCap: 's = 0.24',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Critical healthcare asset zone with well-maintained roadside drainage outfalls.',
+  },
+  'lawrence-road': {
+    key: 'lawrence-road',
+    code: 'ID: ASR-BLD-0945',
+    name: 'Lawrence Road & Novelty Chowk',
+    areaTag: 'AREA: LAWRENCE ROAD COMMERCIAL CORRIDOR (AMRITSAR)',
+    center: [31.639, 74.876],
+    zoom: 17,
+    sink: [31.6375, 74.8785],
+    baseScore: 32,
+    risk: 'Low Exposure',
+    riskClass: 'text-emerald-700',
+    baseGradient: 0.9,
+    gradientText: '+0.9% Road Crown',
+    baseElevation: 230.8,
+    drain: 'Lateral Curb Gutter',
+    drainClass: 'text-emerald-700',
+    flowText:
+      'Continuous paved commercial artery with positive camber shedding rainfall toward Novelty Chowk storm outfalls.',
+    velocity: '1,280 m²',
+    drainCap: 's = 0.32',
+    actionStatus: 'Unmodeled',
+    statusMsg: 'Commercial street corridor with moderate elevation (230.8m MSL).',
   },
 }
 
@@ -196,85 +334,45 @@ export function BuildingsSection() {
           {/* Left: Hotspot Selection Column */}
           <div className="building-selector-column">
             <div className="neuro-card p-7">
-              <h3 className="column-heading text-slate-900">Critical Hotspot Structures</h3>
-              <p className="column-subtext">
-                Click any location below — the map instantly focuses onto that single area:
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="column-heading text-slate-900">Critical Hotspot Structures</h3>
+                <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
+                  {Object.keys(AMRITSAR_AREAS).length} Locations
+                </span>
+              </div>
+              <p className="column-subtext mb-3">
+                Click any location below — the map instantly focuses onto that single building asset:
               </p>
 
-              <div className="building-selector-list">
-                {/* Item 1: Hall Gate Basin */}
-                <button
-                  type="button"
-                  className={`building-item ${activeAreaKey === 'hall-gate' ? 'active-building' : ''}`}
-                  onClick={() => handleSelectArea('hall-gate')}
-                >
-                  <div className="flex justify-between items-center">
-                    <strong className="item-name text-slate-900">Hall Gate Commercial Basin</strong>
-                    <span className="risk-badge badge-high">High Exposure (88%)</span>
-                  </div>
-                  <div className="item-meta">
-                    <span className="text-slate-600">Footprint: 1,420 m²</span>
-                    <span className="text-blue-700 font-medium">Elevation: 226.8m MSL</span>
-                    <span className="text-slate-500">Zone: Amritsar Walled City Basin</span>
-                  </div>
-                </button>
-
-                {/* Item 2: Heritage Street */}
-                <button
-                  type="button"
-                  className={`building-item ${activeAreaKey === 'heritage-street' ? 'active-building' : ''}`}
-                  onClick={() => handleSelectArea('heritage-street')}
-                >
-                  <div className="flex justify-between items-center">
-                    <strong className="item-name text-slate-900">
-                      Heritage Street &amp; Golden Temple Axis
-                    </strong>
-                    <span className="risk-badge badge-med">Moderate Exposure (62%)</span>
-                  </div>
-                  <div className="item-meta">
-                    <span className="text-slate-600">Footprint: 2,150 m²</span>
-                    <span className="text-blue-700 font-medium">Elevation: 228.4m MSL</span>
-                    <span className="text-slate-500">Zone: Heritage Pedestrian Axis</span>
-                  </div>
-                </button>
-
-                {/* Item 3: Mall Road District */}
-                <button
-                  type="button"
-                  className={`building-item ${activeAreaKey === 'mall-road' ? 'active-building' : ''}`}
-                  onClick={() => handleSelectArea('mall-road')}
-                >
-                  <div className="flex justify-between items-center">
-                    <strong className="item-name text-slate-900">
-                      Mall Road &amp; Civil Lines Corridor
-                    </strong>
-                    <span className="risk-badge badge-low">Low Hazard (28%)</span>
-                  </div>
-                  <div className="item-meta">
-                    <span className="text-slate-600">Footprint: 980 m²</span>
-                    <span className="text-emerald-700 font-medium">Elevation: 232.1m MSL</span>
-                    <span className="text-slate-500">Zone: Civil Lines Commercial</span>
-                  </div>
-                </button>
-
-                {/* Item 4: Ranjit Avenue */}
-                <button
-                  type="button"
-                  className={`building-item ${activeAreaKey === 'ranjit-avenue' ? 'active-building' : ''}`}
-                  onClick={() => handleSelectArea('ranjit-avenue')}
-                >
-                  <div className="flex justify-between items-center">
-                    <strong className="item-name text-slate-900">
-                      Ranjit Avenue Sector D Complex
-                    </strong>
-                    <span className="risk-badge badge-low">Minimal Risk (16%)</span>
-                  </div>
-                  <div className="item-meta">
-                    <span className="text-slate-600">Footprint: 1,850 m²</span>
-                    <span className="text-emerald-700 font-medium">Elevation: 234.6m MSL</span>
-                    <span className="text-slate-500">Zone: Engineered Modern Sector</span>
-                  </div>
-                </button>
+              <div className="building-selector-list max-h-[460px] overflow-y-auto pr-1 space-y-2.5">
+                {Object.values(AMRITSAR_AREAS).map((item) => (
+                  <button
+                    key={item.key}
+                    type="button"
+                    className={`building-item ${activeAreaKey === item.key ? 'active-building' : ''}`}
+                    onClick={() => handleSelectArea(item.key)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <strong className="item-name text-slate-900">{item.name}</strong>
+                      <span
+                        className={`risk-badge ${
+                          item.baseScore > 70
+                            ? 'badge-high'
+                            : item.baseScore > 35
+                              ? 'badge-med'
+                              : 'badge-low'
+                        }`}
+                      >
+                        {item.risk} ({item.baseScore}%)
+                      </span>
+                    </div>
+                    <div className="item-meta">
+                      <span className="text-slate-600">Footprint: {item.velocity}</span>
+                      <span className="text-blue-700 font-medium">Elevation: {item.baseElevation}m MSL</span>
+                      <span className="text-slate-500 truncate">Zone: {item.areaTag.replace('AREA: ', '')}</span>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
 

@@ -45,27 +45,25 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
   }
 
   return (
-    <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm">
-      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/80">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span>Rainfall Scenario Controls</span>
-          </CardTitle>
-          <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">
-            Deterministic Hyetograph
-          </span>
+    <div className="neuro-card p-5 space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="text-sm font-bold flex items-center gap-2 text-slate-900 dark:text-slate-100">
+          <Sliders className="w-4 h-4 text-blue-600" />
+          <span>Rainfall Scenario Controls</span>
         </div>
-      </CardHeader>
+        <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+          Deterministic Hyetograph
+        </span>
+      </div>
 
-      <CardContent className="pt-4 space-y-5">
+      <div className="space-y-4">
         {/* Presets */}
         <div>
-          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-2">
+          <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-2.5">
             <Zap className="w-3.5 h-3.5 text-amber-500" />
-            <span>Quick Presets</span>
+            <span>Quick Storm Presets</span>
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {presets.map((preset) => {
               const Icon = preset.icon
               const isActive =
@@ -74,39 +72,42 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
                 params.antecedentMm72h === preset.params.antecedentMm72h
 
               return (
-                <Button
+                <button
                   key={preset.name}
                   type="button"
-                  variant={isActive ? 'default' : 'outline'}
-                  size="sm"
                   disabled={isLoading}
                   onClick={() => onChange(preset.params)}
-                  className={`flex flex-col items-start p-2.5 h-auto text-left justify-start ${
-                    isActive ? 'border-blue-600' : ''
+                  className={`flex flex-col items-start p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-50/90 border-blue-600 text-blue-900 shadow-sm ring-2 ring-blue-500/20'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50 text-slate-800 dark:text-slate-200'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 font-semibold text-xs">
-                    <Icon className="w-3.5 h-3.5 shrink-0" />
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900 dark:text-slate-100">
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
                     <span>{preset.name}</span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+                  <span className="text-[11px] font-mono font-bold text-blue-700 dark:text-blue-400 mt-1">
+                    {preset.params.peakMm1h} mm/h &bull; {preset.params.durationH}h
+                  </span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
                     {preset.description}
                   </span>
-                </Button>
+                </button>
               )
             })}
           </div>
         </div>
 
         {/* Sliders */}
-        <div className="space-y-4 pt-1">
+        <div className="space-y-3.5 pt-1">
           {/* Peak Rainfall */}
-          <div className="space-y-1.5">
+          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 space-y-1.5">
             <div className="flex justify-between items-center text-xs">
-              <label htmlFor="peak-rainfall-slider" className="font-medium text-slate-700 dark:text-slate-300">
+              <label htmlFor="peak-rainfall-slider" className="font-bold text-slate-700 dark:text-slate-300">
                 Peak 1-Hour Rainfall (P1h)
               </label>
-              <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
+              <span className="font-mono font-bold text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded">
                 {params.peakMm1h} mm/h
               </span>
             </div>
@@ -124,20 +125,20 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
               aria-valuemax={120}
               aria-valuenow={params.peakMm1h}
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
-              <span>0 mm</span>
+            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>0 mm (Dry)</span>
               <span>50 mm (Heavy)</span>
               <span>120 mm (Extreme)</span>
             </div>
           </div>
 
           {/* Duration */}
-          <div className="space-y-1.5">
+          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 space-y-1.5">
             <div className="flex justify-between items-center text-xs">
-              <label htmlFor="duration-slider" className="font-medium text-slate-700 dark:text-slate-300">
+              <label htmlFor="duration-slider" className="font-bold text-slate-700 dark:text-slate-300">
                 Storm Event Duration
               </label>
-              <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
+              <span className="font-mono font-bold text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300 px-2 py-0.5 rounded">
                 {params.durationH} {params.durationH === 1 ? 'hour' : 'hours'}
               </span>
             </div>
@@ -155,7 +156,7 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
               aria-valuemax={24}
               aria-valuenow={params.durationH}
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
+            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
               <span>1h (Flash)</span>
               <span>12h (Extended)</span>
               <span>24h (All-day)</span>
@@ -163,9 +164,9 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
           </div>
 
           {/* Antecedent 72h Rainfall */}
-          <div className="space-y-1.5">
+          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 space-y-1.5">
             <div className="flex justify-between items-center text-xs">
-              <label htmlFor="antecedent-slider" className="font-medium text-slate-700 dark:text-slate-300">
+              <label htmlFor="antecedent-slider" className="font-bold text-slate-700 dark:text-slate-300">
                 Antecedent Soil Saturation (72h Rain)
               </label>
               <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
@@ -193,7 +194,7 @@ export function ScenarioPanel({ params, onChange, isLoading = false }: ScenarioP
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

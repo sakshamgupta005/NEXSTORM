@@ -247,57 +247,83 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
 
           <div className="three-pillars-grid">
             {/* Pillar A */}
-            <div className="neuro-card pillar-card">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 mb-4">
-                <Layers className="w-5 h-5" />
+            <div className="neuro-card pillar-card flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 mb-4">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <h3 className="pillar-title text-slate-900">Pillar A — Area Susceptibility</h3>
+                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
+                  Combines Copernicus DEM terrain slope, low-lying depression indices, and historical
+                  waterlogging hotspots into a persistent susceptibility grid across metropolitan
+                  zones. Distinguishes baseline vulnerability from dynamic weather hazard.
+                </p>
               </div>
-              <h3 className="pillar-title text-slate-900">Pillar A — Area Susceptibility</h3>
-              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                Combines Copernicus DEM terrain slope, low-lying depression indices, and historical
-                waterlogging hotspots into a persistent susceptibility grid across metropolitan
-                zones. Distinguishes baseline vulnerability from dynamic weather hazard.
-              </p>
-              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
-                <span className="text-slate-500">Resolution: 250m grid (1,998 cells)</span>
-                <span className="text-blue-700 font-bold">&bull; Verified DEM</span>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
+                <Link
+                  href="/city/amritsar"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-900 hover:underline transition"
+                >
+                  <span>Launch 250m Grid Console</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+                <span className="text-[11px] text-slate-400 font-medium">1,998 Cells</span>
               </div>
             </div>
 
             {/* Pillar B */}
-            <div className="neuro-card pillar-card">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mb-4">
-                <Building2 className="w-5 h-5" />
+            <div className="neuro-card pillar-card flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mb-4">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <h3 className="pillar-title text-slate-900">
+                  Pillar B — Building Footprint Exposure
+                </h3>
+                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
+                  Evaluates individual structure polygons against localized terrain depressions and
+                  macro-catchment overlap in UTM 43N. Explicitly avoids fabricating plinth heights or
+                  indoor damage to maintain scientific honesty.
+                </p>
               </div>
-              <h3 className="pillar-title text-slate-900">
-                Pillar B — Building Footprint Exposure
-              </h3>
-              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                Evaluates individual structure polygons against localized terrain depressions and
-                macro-catchment overlap in UTM 43N. Explicitly avoids fabricating plinth heights or
-                indoor damage to maintain scientific honesty.
-              </p>
-              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
-                <span className="text-slate-500">Coverage: 360,252 structures</span>
-                <span className="text-emerald-700 font-bold">&bull; Google Open Buildings</span>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={() => onSwitchTab('buildings')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition cursor-pointer"
+                >
+                  <span>Inspect Building Footprints</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[11px] text-slate-400 font-medium">360k+ Buildings</span>
               </div>
             </div>
 
             {/* Pillar C */}
-            <div className="neuro-card pillar-card">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 mb-4">
-                <Route className="w-5 h-5" />
+            <div className="neuro-card pillar-card flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 mb-4">
+                  <Route className="w-5 h-5" />
+                </div>
+                <h3 className="pillar-title text-slate-900">
+                  Pillar C — Road Inundation &amp; Routing
+                </h3>
+                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
+                  Associates connected road network segments with terrain elevation sinks and
+                  underpass sumps. Computes sub-2ms A* flood-aware route comparison prioritizing lower
+                  modeled exposure corridors.
+                </p>
               </div>
-              <h3 className="pillar-title text-slate-900">
-                Pillar C — Road Inundation &amp; Routing
-              </h3>
-              <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                Associates connected road network segments with terrain elevation sinks and
-                underpass sumps. Computes sub-2ms A* flood-aware route comparison prioritizing lower
-                modeled exposure corridors.
-              </p>
-              <div className="pillar-footer pt-4 border-t border-slate-100 flex justify-between text-xs font-semibold">
-                <span className="text-slate-500">Network: 14,853 segments (28,418 nodes)</span>
-                <span className="text-indigo-700 font-bold">&bull; A* Pathfinding</span>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
+                <button
+                  type="button"
+                  onClick={() => onSwitchTab('roads')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 hover:text-indigo-900 hover:underline transition cursor-pointer"
+                >
+                  <span>Evaluate Road Corridors</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[11px] text-slate-400 font-medium">14,855 Segments</span>
               </div>
             </div>
           </div>

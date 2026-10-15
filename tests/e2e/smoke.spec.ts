@@ -5,7 +5,7 @@ test.describe('Hackathon Starter Smoke Tests', () => {
     await page.goto('/')
     await expect(page).toHaveTitle(/NEXSTORM|Hackathon Starter/i)
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      /Hackathon Starter Foundation/i
+      /Urban Flood Risk|Hackathon Starter Foundation/i
     )
     await expect(page.getByRole('link', { name: /sign in/i }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: /sign up/i }).first()).toBeVisible()

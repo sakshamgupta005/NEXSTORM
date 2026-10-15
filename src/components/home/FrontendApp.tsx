@@ -10,12 +10,44 @@ import { HealthDiagnosticsModal } from './HealthDiagnosticsModal'
 import { ObservationReportModal } from '@/components/observations/ObservationReportModal'
 
 export function FrontendApp() {
-  const [activeTab, setActiveTab] = useState<TabKey>('overview')
+  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get('tab') as TabKey | null
+      if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
+        return tabParam
+      }
+    }
+    return 'overview'
+  })
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(false)
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false)
 
+  React.useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get('tab') as TabKey | null
+      if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
+        setActiveTab(tabParam)
+      } else {
+        setActiveTab('overview')
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
   const handleSwitchTab = (tab: TabKey) => {
     setActiveTab(tab)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (tab === 'overview') {
+        url.searchParams.delete('tab')
+      } else {
+        url.searchParams.set('tab', tab)
+      }
+      window.history.replaceState({}, '', url.toString())
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 

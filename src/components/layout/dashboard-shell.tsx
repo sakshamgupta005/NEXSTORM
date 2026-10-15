@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import {
-  Rocket,
   LayoutDashboard,
   BarChart3,
   Languages,
@@ -19,6 +18,8 @@ import {
   X,
   User as UserIcon,
   ShieldCheck,
+  Droplets,
+  MapPin,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'

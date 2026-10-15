@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert } from '@/components/ui/alert'
-import { AlertCircle, Rocket } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
 import { getSafeRedirectPath } from '@/lib/utils/redirect'
 
@@ -77,12 +77,30 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md shadow-xl border-slate-200 dark:border-slate-800">
       <CardHeader className="space-y-1 text-center">
-        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
-          <Rocket className="h-6 w-6" />
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-md">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect x="2" y="2" width="36" height="36" rx="10" fill="#0f172a" />
+            <path
+              d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
+              stroke="#94a3b8"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+            />
+            <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
+            <circle cx="20" cy="20" r="2.8" fill="#2563eb" />
+          </svg>
         </div>
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+        <CardTitle className="text-2xl font-bold font-display text-slate-900 dark:text-white">
+          Welcome back
+        </CardTitle>
         <CardDescription>
-          Sign in to access your hackathon application workspace
+          Sign in to access your NEXSTORM research workspace &amp; data console
         </CardDescription>
       </CardHeader>
 

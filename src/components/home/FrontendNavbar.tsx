@@ -105,6 +105,16 @@ export function FrontendNavbar({
                 About
               </button>
             </li>
+            <li>
+              <Link
+                href="/city/amritsar"
+                className="nav-item text-blue-700 hover:text-blue-900 font-bold flex items-center gap-1 transition"
+                title="Open 250m Macro Grid Operations Console"
+              >
+                <span>250m Console</span>
+                <span className="text-[10px] text-blue-600 font-mono">↗</span>
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -135,7 +145,7 @@ export function FrontendNavbar({
           </button>
 
           {/* Discreet auth links for platform sign-in */}
-          <div className="hidden lg:flex items-center gap-1.5 pl-2 border-l border-slate-200">
+          <div className="flex items-center gap-1.5 pl-2 border-l border-slate-200">
             <Link
               href="/login"
               className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 py-1 rounded-md hover:bg-slate-100 transition"

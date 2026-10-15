@@ -298,64 +298,64 @@ export default function CityDashboardPage() {
     : undefined
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="flex min-h-screen flex-col bg-[#f6f8fc] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans light-premium">
       <Navbar />
 
-      <main className="flex-1 container mx-auto max-w-7xl px-4 py-6 sm:px-6 space-y-6">
+      <main className="flex-1 container mx-auto max-w-[1440px] px-4 py-6 sm:px-8 space-y-6">
         {/* City Console Operations Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                <MapPin className="w-3.5 h-3.5" />
+        <div className="neuro-card p-6 sm:p-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">
+                <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                 <span>Punjab, India</span>
               </span>
 
-              <Badge variant="outline" className="text-[10px] font-mono">
+              <Badge variant="outline" className="text-[10px] font-mono border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70">
                 BBox: 31.55°–31.72° N, 74.80°–74.95° E
               </Badge>
 
               <Badge
                 data-testid="demo-data-badge"
-                className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5"
+                className="bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-[10px] tracking-wider uppercase px-2.5 py-0.5 shadow-xs"
               >
                 DEMO DATA
               </Badge>
 
-              <Badge variant="warning" className="text-[10px]">
+              <Badge variant="warning" className="text-[10px] font-semibold">
                 PROVISIONAL THRESHOLDS
               </Badge>
 
               {riskData?.status === 'degraded' && (
-                <Badge variant="danger" className="text-[10px]">
+                <Badge variant="danger" className="text-[10px] font-semibold">
                   DEGRADED CACHE FALLBACK
                 </Badge>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-display text-slate-900 dark:text-white">
               Amritsar City Waterlogging Risk Console
             </h1>
 
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
               Operational geospatial decision-support console mapping relative waterlogging susceptibility and rainfall-triggered risk. Output represents an experimental relative risk model, not surveyed street-level flood elevations.
             </p>
           </div>
 
           {/* Controls: View Scope & Mode Switch */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
             {/* View Scope Toggle (City vs GNDU Campus) */}
             <div
               role="group"
               aria-label="Geographic Scope"
-              className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-xs"
+              className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 text-xs shadow-inner"
             >
               <button
                 type="button"
                 onClick={() => setViewScope('city')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
                   viewScope === 'city'
-                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs'
+                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
@@ -366,9 +366,9 @@ export default function CityDashboardPage() {
               <button
                 type="button"
                 onClick={() => setViewScope('campus')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
                   viewScope === 'campus'
-                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs'
+                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
@@ -384,9 +384,9 @@ export default function CityDashboardPage() {
               <button
                 type="button"
                 onClick={() => setIsReportModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 transition shadow-xs cursor-pointer active:scale-95"
               >
-                <Droplets className="w-3.5 h-3.5" />
+                <Droplets className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Report Waterlogging</span>
               </button>
             </div>
@@ -396,7 +396,7 @@ export default function CityDashboardPage() {
         {error && (
           <div
             role="alert"
-            className="p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-xs sm:text-sm flex items-center gap-2"
+            className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-xs sm:text-sm flex items-center gap-2"
           >
             <AlertTriangle className="w-5 h-5 shrink-0 text-rose-600" />
             <span>{error}</span>
@@ -407,7 +407,7 @@ export default function CityDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Interactive Map & Legend (7 cols on lg) */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="relative">
+            <div className="relative neuro-card p-2.5 overflow-hidden">
               {geoJsonData && riskData ? (
                 <DynamicRiskMap
                   geoJsonData={geoJsonData}
@@ -481,27 +481,31 @@ export default function CityDashboardPage() {
             )}
 
             {mode === 'replay' && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md space-y-2 text-xs">
-                <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                  <History className="w-4 h-4 text-purple-500" />
-                  <span>Historical Event Replay: September 1, 2025</span>
+              <div className="neuro-card p-5 space-y-2.5 text-xs">
+                <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <div className="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center">
+                    <History className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <span className="text-sm font-display">Historical Event Replay: September 1, 2025</span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                   Replaying 72-hour historical extreme monsoon storm series from Open-Meteo ERA5-Land reanalysis archive over Amritsar. Use the timeline scrubber below to step through storm hours.
                 </p>
-                <div className="text-[10px] text-slate-400 font-mono">
+                <div className="text-[11px] text-purple-700 dark:text-purple-400 font-mono bg-purple-50 dark:bg-purple-950/50 px-2.5 py-1 rounded-lg border border-purple-200 dark:border-purple-800/80 inline-block">
                   Event Dataset: 2025-09-01_amritsar.json (Verified)
                 </div>
               </div>
             )}
 
             {mode === 'live' && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md space-y-2 text-xs">
-                <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                  <Radio className="w-4 h-4 text-blue-500" />
-                  <span>Operational Live Weather Telemetry</span>
+              <div className="neuro-card p-5 space-y-2.5 text-xs">
+                <div className="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center">
+                    <Radio className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="text-sm font-display">Operational Live Weather Telemetry</span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                   Active 48-hour numerical weather prediction ensemble (ECMWF IFS 0.25° + NOAA GFS). Fallback to cached snapshot active if upstream times out.
                 </p>
               </div>

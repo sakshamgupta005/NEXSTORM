@@ -77,22 +77,22 @@ export function RainfallTimeline({
   }
 
   return (
-    <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm">
+    <Card className="neuro-card">
       <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/80">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-blue-500" />
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>Rainfall Horizon &amp; Risk Scrubber</span>
             </CardTitle>
-            <Badge variant="secondary" className="font-mono text-[10px]">
+            <Badge variant="secondary" className="font-mono text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               {timeline.length} Hours Evaluated
             </Badge>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-500">Selected Hour:</span>
-            <Badge className={`font-mono text-[10px] ${bandBadge.className}`}>
+            <span className="text-[11px] font-medium text-slate-500">Selected Hour:</span>
+            <Badge className={`font-mono text-[10px] font-bold ${bandBadge.className}`}>
               t={safeHourIndex} ({bandBadge.label})
             </Badge>
           </div>
@@ -104,7 +104,7 @@ export function RainfallTimeline({
         {beyondCalibration && (
           <div
             role="alert"
-            className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-xs flex items-start gap-2 leading-relaxed"
+            className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-xs flex items-start gap-2 leading-relaxed"
           >
             <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <div>
@@ -116,31 +116,31 @@ export function RainfallTimeline({
         )}
 
         {/* Selected Hour Telemetry Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-          <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50">
-            <span className="block text-[10px] text-slate-500 uppercase">Hourly Rain</span>
-            <span className="font-mono font-bold text-sm text-blue-600 dark:text-blue-400">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+          <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
+            <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Hourly Rain</span>
+            <span className="font-mono font-extrabold text-base text-blue-600 dark:text-blue-400">
               {currentRainfall.toFixed(1)} mm
             </span>
           </div>
 
-          <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50">
-            <span className="block text-[10px] text-slate-500 uppercase">Median RTI</span>
-            <span className="font-mono font-bold text-sm text-purple-600 dark:text-purple-400">
+          <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
+            <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Median RTI</span>
+            <span className="font-mono font-extrabold text-base text-purple-600 dark:text-purple-400">
               {currentHour.rtiP50.toFixed(3)}
             </span>
           </div>
 
-          <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50">
-            <span className="block text-[10px] text-slate-500 uppercase">RTI Band</span>
-            <span className={`font-mono font-bold text-xs uppercase ${bandBadge.className}`}>
+          <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
+            <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">RTI Band</span>
+            <span className={`font-mono font-extrabold text-xs uppercase ${bandBadge.className}`}>
               {currentBand}
             </span>
           </div>
 
-          <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50">
-            <span className="block text-[10px] text-slate-500 uppercase">Timestamp</span>
-            <span className="font-mono font-medium text-[11px] text-slate-700 dark:text-slate-300 truncate block">
+          <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
+            <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Timestamp</span>
+            <span className="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">
               {formatTimestamp(currentHour.timestamp)}
             </span>
           </div>
@@ -200,32 +200,32 @@ export function RainfallTimeline({
 
         {/* Hourly Precipitation Sparkline Visualizer */}
         {rainfallValues.length > 0 && (
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center justify-between">
               <span>Precipitation Hyetograph (mm/h)</span>
-              <span>Click bar to jump to hour</span>
+              <span className="text-slate-400 font-medium">Click bar to jump to hour</span>
             </div>
 
-            <div className="flex items-end gap-1 h-16 w-full pt-2">
+            <div className="flex items-end gap-0.5 h-16 w-full pt-2 px-1 bg-slate-50/50 dark:bg-slate-850/50 rounded-xl border border-slate-200/40 dark:border-slate-800/40">
               {timeline.slice(0, 48).map((hour, idx) => {
                 const val = rainfallValues[idx] ?? 0
                 const maxP = Math.max(...rainfallValues.slice(0, 48), 1)
-                const heightPct = Math.max(Math.round((val / maxP) * 100), 4)
+                const heightPct = Math.max(Math.round((val / maxP) * 100), 6)
                 const isSelected = idx === safeHourIndex
                 const isExtreme = hour.band === 'extreme' || hour.band === 'severe'
                 const isElevated = hour.band === 'elevated'
 
-                let barColor = 'bg-blue-400/60 dark:bg-blue-500/50'
-                if (isExtreme) barColor = 'bg-rose-500'
-                else if (isElevated) barColor = 'bg-amber-500'
+                let barColor = 'bg-blue-400/70 hover:bg-blue-500'
+                if (isExtreme) barColor = 'bg-rose-500 hover:bg-rose-600'
+                else if (isElevated) barColor = 'bg-amber-500 hover:bg-amber-600'
 
                 return (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => onSelectHour(idx)}
-                    className={`flex-1 rounded-t transition-all hover:opacity-100 ${barColor} ${
-                      isSelected ? 'ring-2 ring-cyan-400 ring-offset-1 z-10 opacity-100 scale-y-105' : 'opacity-70'
+                    className={`flex-1 rounded-t-sm transition-all ${barColor} ${
+                      isSelected ? 'ring-2 ring-blue-600 ring-offset-1 z-10 opacity-100 scale-y-105' : 'opacity-70'
                     }`}
                     style={{ height: `${heightPct}%` }}
                     title={`Hour ${idx} (${formatTimestamp(hour.timestamp)}): ${val.toFixed(1)} mm, RTI: ${hour.rtiP50.toFixed(2)}`}

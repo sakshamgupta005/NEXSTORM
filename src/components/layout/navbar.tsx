@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import type { User } from '@supabase/supabase-js'
-import { Droplets, MapPin, Menu, X, ArrowUpRight } from 'lucide-react'
+import { MapPin, Menu, X } from 'lucide-react'
 
 interface NavbarProps {
   user?: User | null
@@ -14,7 +14,7 @@ export function Navbar({ user }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-8">
         {/* Brand Logo & Name */}
         <Link
           href="/"

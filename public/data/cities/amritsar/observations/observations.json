@@ -660,12 +660,12 @@
     "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status."
   },
   {
-    "id": "OBS-20261015-f3dfa177",
+    "id": "OBS-20261015-73b1b411",
     "schemaVersion": "1.0.0",
     "cityId": "amritsar",
-    "createdAt": "2026-10-15T14:58:46.549Z",
-    "submittedAt": "2026-10-15T14:58:46.549Z",
-    "observedAt": "2026-10-15T14:38:46.529Z",
+    "createdAt": "2026-10-15T16:23:49.613Z",
+    "submittedAt": "2026-10-15T16:23:49.613Z",
+    "observedAt": "2026-10-15T16:03:49.610Z",
     "coordinates": {
       "lat": 31.632,
       "lng": 74.87
@@ -686,7 +686,7 @@
     "lifecycleStatus": "verified",
     "verification": {
       "isVerified": true,
-      "verifiedAt": "2026-10-15T14:58:46.571Z",
+      "verifiedAt": "2026-10-15T16:23:49.621Z",
       "verifiedBy": "Municipal Corporation Amritsar Ward 8 Inspector",
       "verificationMethod": "field_inspection",
       "verificationNotes": "On-site team confirmed blockage cleared."
@@ -699,7 +699,7 @@
     "freshness": {
       "isStale": false,
       "isExpired": false,
-      "expiresAt": "2026-10-16T14:38:46.529Z"
+      "expiresAt": "2026-10-16T16:03:49.610Z"
     },
     "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
   }
