@@ -8,7 +8,7 @@ import type { CellRisk } from '@/lib/risk/types'
 import type { HotspotRecord } from '@/lib/city/registry'
 import { RISK_COLORS } from './Legend'
 import type { WaterloggingObservation } from '@/lib/observations/types'
-import { AlertCircle, Droplets, Layers, MapPin } from 'lucide-react'
+import { AlertCircle, Droplets, Layers, MapPin, Route } from 'lucide-react'
 
 interface RiskMapProps {
   geoJsonData: GeoJsonObject | null
@@ -25,6 +25,9 @@ interface RiskMapProps {
   showObservations?: boolean
   onToggleObservations?: (show: boolean) => void
   observations?: WaterloggingObservation[]
+  showRoads?: boolean
+  onToggleRoads?: (show: boolean) => void
+  roadsGeoJson?: GeoJsonObject | null
 }
 
 export function RiskMap({
@@ -42,12 +45,16 @@ export function RiskMap({
   showObservations = true,
   onToggleObservations,
   observations = [],
+  showRoads = false,
+  onToggleRoads,
+  roadsGeoJson = null,
 }: RiskMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<L.Map | null>(null)
   const geoJsonLayerRef = useRef<L.GeoJSON | null>(null)
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
   const observationsLayerRef = useRef<L.LayerGroup | null>(null)
+  const roadsLayerRef = useRef<L.GeoJSON | null>(null)
   const [tileError, setTileError] = useState(false)
 
   // Fast cell risk lookup map
@@ -367,6 +374,121 @@ export function RiskMap({
     }
   }, [map, observations, showObservations, onSelectCell])
 
+  // Render or update Road Network Corridors Layer
+  useEffect(() => {
+    if (!map) return
+
+    if (roadsLayerRef.current) {
+      roadsLayerRef.current.clearLayers()
+      map.removeLayer(roadsLayerRef.current)
+      roadsLayerRef.current = null
+    }
+
+    if (!showRoads || !roadsGeoJson) return
+
+    const layer = L.geoJSON(roadsGeoJson, {
+      style: (feature) => {
+        const p = feature?.properties || {}
+        const isUnderpass = Boolean(p.isUnderpass)
+        const riskClass = p.modeledRiskClass || 'low'
+
+        if (isUnderpass) {
+          return {
+            color: '#c084fc', // purple-400
+            weight: 4.5,
+            opacity: 0.95,
+            dashArray: '4, 4',
+          }
+        }
+
+        if (riskClass === 'high') {
+          return {
+            color: '#ef4444', // red-500
+            weight: 3.5,
+            opacity: 0.9,
+          }
+        }
+
+        if (riskClass === 'moderate') {
+          return {
+            color: '#f59e0b', // amber-500
+            weight: 2.5,
+            opacity: 0.85,
+          }
+        }
+
+        return {
+          color: '#10b981', // emerald-500
+          weight: 2,
+          opacity: 0.75,
+        }
+      },
+      onEachFeature: (feature, l) => {
+        const p = feature?.properties || {}
+        const name = p.name || 'Unnamed Corridor'
+        const highway = p.highway || 'road'
+        const lengthM = Math.round(p.lengthM || 0)
+        const isUnderpass = p.isUnderpass
+        const isBridge = p.isBridge
+        const riskClass = p.modeledRiskClass || 'low'
+        const sWeighted = (p.weightedCellSusceptibility ?? 0.5).toFixed(3)
+        const sMax = (p.maxCellSusceptibility ?? 0.5).toFixed(3)
+        const cellCount = Array.isArray(p.intersectingCells) ? p.intersectingCells.length : 1
+
+        l.bindPopup(
+          `<div class="p-2 space-y-1.5 text-slate-900 text-xs max-w-xs">
+            <div class="font-bold text-sm flex items-center justify-between gap-1">
+              <span>🛣️ ${name}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                riskClass === 'high'
+                  ? 'bg-rose-100 text-rose-700'
+                  : riskClass === 'moderate'
+                    ? 'bg-amber-100 text-amber-700'
+                    : 'bg-emerald-100 text-emerald-700'
+              }">
+                ${riskClass.toUpperCase()} RISK
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-600 font-mono">
+              Class: <strong>${highway}</strong> • Length: <strong>${lengthM} m</strong>
+            </div>
+            ${
+              isUnderpass
+                ? `<div class="p-1 rounded bg-purple-100 text-purple-900 font-semibold text-[11px] flex items-center gap-1">
+                    ⚠️ Tagged Railway/Road Underpass
+                  </div>`
+                : ''
+            }
+            ${
+              isBridge
+                ? `<div class="p-1 rounded bg-blue-100 text-blue-900 font-semibold text-[11px]">
+                    🌉 Bridge / Elevated Structure
+                  </div>`
+                : ''
+            }
+            <div class="text-[11px] border-t border-slate-200 pt-1 space-y-0.5">
+              <div><strong>Weighted Susceptibility:</strong> ${sWeighted}</div>
+              <div><strong>Max Cell Susceptibility:</strong> ${sMax}</div>
+              <div><strong>Crossed Grid Cells:</strong> ${cellCount} cell(s)</div>
+            </div>
+            <div class="text-[9px] text-slate-400 italic pt-1 border-t border-slate-100">
+              * Modeled 250m grid intersection. Does not guarantee road clearance.
+            </div>
+          </div>`
+        )
+      },
+    })
+
+    layer.addTo(map)
+    roadsLayerRef.current = layer
+
+    return () => {
+      if (roadsLayerRef.current && map) {
+        map.removeLayer(roadsLayerRef.current)
+      }
+    }
+  }, [map, roadsGeoJson, showRoads])
+
   return (
     <div className="relative w-full h-[620px] min-h-[500px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shadow-inner">
       {/* Non-blocking tile error notification */}
@@ -444,6 +566,24 @@ export function RiskMap({
               <span className="flex items-center gap-1 text-[11px]">
                 <Droplets className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Observations Layer ({observations.length})</span>
+              </span>
+            </label>
+          </div>
+        )}
+
+        {/* Road Corridors Toggle */}
+        {onToggleRoads && (
+          <div className="self-end bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-lg border border-slate-200/90 dark:border-slate-700/90 px-2.5 py-1.5 shadow-md flex items-center gap-2 text-xs">
+            <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none">
+              <input
+                type="checkbox"
+                checked={showRoads}
+                onChange={(e) => onToggleRoads(e.target.checked)}
+                className="w-3.5 h-3.5 rounded text-orange-600 accent-orange-600"
+              />
+              <span className="flex items-center gap-1 text-[11px]">
+                <Route className="w-3.5 h-3.5 text-orange-500" />
+                <span>Major Corridors (773)</span>
               </span>
             </label>
           </div>

@@ -29,7 +29,9 @@ import {
 } from 'lucide-react'
 import { ObservationReportModal } from '@/components/observations/ObservationReportModal'
 import { ObservationsPanel } from '@/components/observations/ObservationsPanel'
+import { RoadRiskPanel } from '@/components/roads/RoadRiskPanel'
 import type { WaterloggingObservation } from '@/lib/observations/types'
+import type { GeoJsonObject } from 'geojson'
 
 // Dynamically import Leaflet RiskMap with SSR disabled
 const DynamicRiskMap = dynamic(
@@ -189,6 +191,31 @@ export default function CityDashboardPage() {
       isMounted = false
     }
   }, [cityId, obsRefreshTrigger])
+
+  // State: Road Network Corridors
+  const [showRoads, setShowRoads] = useState<boolean>(true)
+  const [roadsGeoJson, setRoadsGeoJson] = useState<GeoJsonObject | null>(null)
+
+  // 2c. Load Major Road Corridors GeoJSON
+  useEffect(() => {
+    if (cityId !== 'amritsar') return
+    let isMounted = true
+
+    fetch('/data/cities/amritsar/roads/major_corridors.geojson')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data) {
+          setRoadsGeoJson(data)
+        }
+      })
+      .catch(() => {
+        // Non-blocking fallback
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [cityId])
 
   // 3. Query /api/risk on parameter, mode, view, or hour change
   useEffect(() => {
@@ -363,6 +390,9 @@ export default function CityDashboardPage() {
                   showObservations={showObservations}
                   onToggleObservations={setShowObservations}
                   observations={observations}
+                  showRoads={showRoads}
+                  onToggleRoads={setShowRoads}
+                  roadsGeoJson={roadsGeoJson}
                 />
               ) : (
                 <div
@@ -472,6 +502,11 @@ export default function CityDashboardPage() {
                 }
               }}
             />
+
+            {/* Road-Segment Risk Assessment & Route Exposure Panel */}
+            {cityId === 'amritsar' && (
+              <RoadRiskPanel cityId={cityId} />
+            )}
           </div>
         </div>
 

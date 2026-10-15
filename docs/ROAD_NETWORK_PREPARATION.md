@@ -72,23 +72,39 @@ The pipeline executes topological node extraction with coordinate snapping:
 
 ---
 
-## 5. Requirements for Future Flood-Aware Routing Engine
+## 5. Multi-Cell Spatial Intersection & Risk Weighting (Stage P11)
 
-While Stage P9 establishes the edge attributes and topological nodes, the following requirements must be addressed in Stage P10 before claiming live routing capability:
+In Stage P11, road preprocessing was significantly enhanced beyond single centroid snapping to perform exact line-in-polygon multi-cell intersections:
+1. **STRtree Spatial Indexing:** 1,998 susceptibility grid cells indexed for rapid query against 14,853 segments.
+2. **Intersection Geometry Clipping:** Road polylines crossing multiple cells are split into sub-segments, and exact metric lengths ($L_{i,c}$) in UTM 43N are calculated.
+3. **Proportion Normalization:** Normalized by $\max(\sum L_{i,k}, L_i)$ to prevent boundary double-counting.
+4. **Exported Artifacts:**
+   - `amritsar_roads_prepared.parquet` (1.98 MB): Complete prepared dataset with spatial columns.
+   - `major_corridors.geojson` (548 KB): 773 arterial/trunk/primary/secondary/tertiary and underpass segments for 60fps client map rendering.
+   - `road_segments_index.json` (9.3 MB): Complete 14,853 segment dictionary.
+   - `road_graph.json` (3.78 MB): Directed topological graph nodes and edges.
+   - `road_network_topology.json` (1.1 KB): Summary metrics.
+
+---
+
+## 6. Requirements for Future Flood-Aware Routing Engine
+
+While Stage P11 establishes the multi-cell risk weighting and route exposure scoring model (`/api/roads/route-compare`), the following requirements remain for future Stage P13:
 
 ```mermaid
 flowchart TD
     A[OSM Punjab PBF File] --> B[Edge Splitting at All Intersections]
     B --> C[Extract Turn Restrictions: type=restriction]
-    C --> D[Extract One-Way Directions: oneway=yes]
-    D --> E[Attach Waterlogging Risk Penalty Cost Function]
+    B --> D[Extract One-Way Directions: oneway=yes]
+    C --> E[Attach Waterlogging Risk Penalty Cost Function]
+    D --> E
     E --> F[Ingest into Valhalla / GraphHopper Engine]
     F --> G[Query Candidate Routes via API]
     G --> H[Compare Exposure Breakdown: High-Risk Distance & Underpasses]
 ```
 
 1. **Intersection Splitting**: OSM ways often span multiple intersections without being segmented. A production routing graph must split lines at every crossing node.
-2. **Turn Restrictions & Directionality**: Legal turns and one-way restrictions require parsing OSM relation XML (`type=restriction`), which is preserved in raw PBF files but stripped in simple GeoPackages.
+2. **Turn Restrictions & Directionality**: The source `osm_features.gpkg` does not include `oneway` tags or turn-restriction relations. Consequently, the P11 graph treats edges as bidirectional. Stage P13 should ingest raw OSM PBF data to enforce legal one-ways.
 3. **Engine Compatibility**:
    - **Valhalla**: Supports dynamic costing models (Lua/C++) allowing runtime penalty additions for waterlogged segments ($C_e = L_e \cdot (1 + \alpha S_e) + \gamma U_e$).
    - **GraphHopper**: Supports runtime custom JSON weighting models without recompiling contraction hierarchies.

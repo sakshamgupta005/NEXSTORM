@@ -126,3 +126,59 @@ def test_topological_node_extraction_and_junction_degree(synthetic_road_network_
 
     assert junction_count == 1, "Exactly 1 junction node (degree 3) must exist"
     assert dead_end_count == 3, "Exactly 3 dead-end nodes (degree 1) must exist"
+
+
+def test_multi_cell_intersection_proportions():
+    """
+    Verifies that a road traversing two adjacent 250m cells has exact length proportions computed per cell
+    and correctly extracts worst-case and length-weighted susceptibility.
+    """
+    from shapely.geometry import box
+
+    # Cell 1: [0, 0] to [100, 100], s = 0.8 (high)
+    # Cell 2: [100, 0] to [200, 100], s = 0.2 (low)
+    cell1 = box(0, 0, 100, 100)
+    cell2 = box(100, 0, 200, 100)
+
+    # Road line traversing from (20, 50) to (180, 50): total length = 160 units
+    # In Cell 1: from 20 to 100 -> length = 80 units (50%)
+    # In Cell 2: from 100 to 180 -> length = 80 units (50%)
+    road = LineString([(20, 50), (180, 50)])
+
+    inter1 = shapely.intersection(road, cell1)
+    inter2 = shapely.intersection(road, cell2)
+
+    assert inter1.length == 80.0
+    assert inter2.length == 80.0
+
+    total_len = road.length
+    assert total_len == 160.0
+
+    s1, s2 = 0.8, 0.2
+    max_s = max(s1, s2)
+    weighted_s = (s1 * (inter1.length / total_len)) + (s2 * (inter2.length / total_len))
+
+    assert max_s == 0.8
+    assert round(weighted_s, 3) == 0.500
+
+
+def test_road_network_topology_artifact():
+    """Verifies that the generated road network topology JSON artifact matches real pipeline outputs."""
+    import json
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    topo_path = repo_root / "public" / "data" / "cities" / "amritsar" / "roads" / "road_network_topology.json"
+    major_path = repo_root / "public" / "data" / "cities" / "amritsar" / "roads" / "major_corridors.geojson"
+
+    assert topo_path.exists(), "road_network_topology.json must exist"
+    assert major_path.exists(), "major_corridors.geojson must exist"
+
+    with open(topo_path, "r", encoding="utf-8") as f:
+        topo = json.load(f)
+
+    assert topo["status"] == "success"
+    assert topo["validPreparedSegments"] == 14853
+    assert topo["underpassCount"] == 5
+    assert topo["bridgeCount"] == 160
+    assert topo["majorCorridorsCount"] == 773
+    assert topo["totalTopologicalNodes"] == 26155
+

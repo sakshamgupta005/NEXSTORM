@@ -226,7 +226,7 @@ describe('ObservationService Lifecycle & Abuse Prevention', () => {
         verifiedBy: 'mca_officer_42',
         verificationNotes: 'Inspected on-site; primary storm drain clogged with silt.',
       },
-      'mca_officer_42'
+      'amritsar'
     )
 
     expect(verified.error).toBeUndefined()

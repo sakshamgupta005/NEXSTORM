@@ -73,7 +73,8 @@ NEXSTORM Architecture
 | `p8-spatial` | **Done** | Amritsar data foundation audit, geodetic CRS engine, spatial matching, unified 3-pillar contracts & routing architecture |
 | `p9-ingest` | **Done** | Ingested 360,252 Google Open Buildings V3 footprints, metric areas in UTM 43N, cell index, prepared 14,853 roads with 26,155 topological nodes |
 | `p10-observations` | **Done** | Ground-truth observations & community reporting evidence layer, corroboration clustering, verification moderation, privacy hashing |
-| `p11-roads` | **Roadmap** | Amritsar road-segment risk assessment, underpass exposure corridors, and flood-aware route comparison |
+| `p11-roads` | **Done** | Amritsar road-segment risk assessment, multi-cell spatial intersections, underpass chokepoint tags, dynamic observation elevation, and route flood exposure comparison |
+| `p12-buildings` | **Roadmap** | Building-level exposure assessment, terrain elevation differentials, plinth risk, and footprint hazard inspection |
 
 ---
 

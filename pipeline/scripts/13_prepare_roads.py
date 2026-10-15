@@ -2,8 +2,9 @@
 pipeline/scripts/13_prepare_roads.py
 Road network preparation and topological graph extraction for Amritsar.
 Extracts 14,855 road segments from OSM GeoPackage, computes metric lengths in UTM 43N,
-preserves classification and elevation/underpass tags, maps segments to 250m susceptibility cells,
-extracts topological intersection nodes, and produces clean graph artifacts for future flood-aware routing.
+preserves classification and elevation/underpass tags, maps segments to 250m susceptibility cells
+with exact line-in-polygon multi-cell intersection, extracts topological intersection nodes,
+and produces clean graph artifacts for future flood-aware routing.
 """
 
 import argparse
@@ -71,7 +72,6 @@ def prepare_roads(source_gpkg: str = None) -> dict:
         print(f"[ROADS] Dropped {dropped_zero_len} degenerate zero-length segments.")
 
     # 2. Attribute Preservation & Underpass Tagging
-    # OpenStreetMap attributes
     gdf["osmid"] = gdf["osmid"].astype(str)
     gdf["name"] = gdf["name"].fillna("Unnamed Road")
     gdf["highway"] = gdf["highway"].fillna("unclassified")
@@ -96,6 +96,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     # 4. Topological Node Extraction (Endpoints rounding to 5 decimal places ~1m)
     print("[ROADS] Extracting topological nodes and junction connectivity...")
     node_registry = {}  # (round_lng, round_lat) -> node_id
+    node_coords = {}    # node_id -> [lng, lat]
     next_node_id = 1
 
     from_nodes = []
@@ -109,6 +110,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
 
         if start_pt not in node_registry:
             node_registry[start_pt] = next_node_id
+            node_coords[next_node_id] = [start_pt[0], start_pt[1]]
             next_node_id += 1
         from_id = node_registry[start_pt]
         from_nodes.append(from_id)
@@ -116,6 +118,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
 
         if end_pt not in node_registry:
             node_registry[end_pt] = next_node_id
+            node_coords[next_node_id] = [end_pt[0], end_pt[1]]
             next_node_id += 1
         to_id = node_registry[end_pt]
         to_nodes.append(to_id)
@@ -129,42 +132,92 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     dead_end_nodes = sum(1 for d in node_degree.values() if d == 1)
     print(f"[ROADS] Topological Graph: {total_unique_nodes} nodes ({junction_nodes} junctions, {dead_end_nodes} dead ends).")
 
-    # 5. Spatial Join with Susceptibility Grid
+    # 5. Exact Multi-Cell Spatial Intersections with 250m Susceptibility Grid
     grid_path = public_amritsar_dir / "susceptibility.geojson"
+    intersections_by_segment = {}
+
     if grid_path.exists():
-        print("[ROADS] Intersecting road segments with 250m susceptibility grid cells...")
+        print("[ROADS] Computing exact line-in-polygon multi-cell intersections...")
         grid_gdf = gpd.read_file(grid_path)
         if "cellId" not in grid_gdf.columns and "id" in grid_gdf.columns:
             grid_gdf["cellId"] = grid_gdf["id"]
         if "susceptibilityScore" not in grid_gdf.columns and "s" in grid_gdf.columns:
             grid_gdf["susceptibilityScore"] = grid_gdf["s"]
 
-        # Midpoint for primary cell assignment
-        midpoints = [geom.interpolate(0.5, normalized=True) for geom in gdf.geometry]
-        midpoint_gdf = gpd.GeoDataFrame(
-            {"segmentId": gdf["segmentId"]},
-            geometry=midpoints,
-            crs=WGS84,
-        )
-
-        mid_join = gpd.sjoin(
-            midpoint_gdf,
+        sjoin_df = gpd.sjoin(
+            gdf[["segmentId", "length_m", "geometry"]],
             grid_gdf[["cellId", "susceptibilityScore", "geometry"]],
-            how="left",
-            predicate="within",
-        ).drop_duplicates(subset=["segmentId"])
-
-        gdf = gdf.merge(
-            mid_join[["segmentId", "cellId", "susceptibilityScore"]],
-            on="segmentId",
-            how="left",
+            how="inner",
+            predicate="intersects",
         )
-        gdf["primaryCellId"] = gdf["cellId"].fillna("OUTSIDE_GRID")
-        gdf["cellSusceptibility"] = gdf["susceptibilityScore"].fillna(0.0)
-        gdf.drop(columns=["cellId", "susceptibilityScore"], inplace=True)
-    else:
-        gdf["primaryCellId"] = "UNKNOWN"
-        gdf["cellSusceptibility"] = 0.0
+
+        road_geom_map = gdf.set_index("segmentId")["geometry"].to_dict()
+        grid_geom_map = grid_gdf.set_index("cellId")["geometry"].to_dict()
+
+        inter_geoms = [
+            shapely.intersection(road_geom_map[s], grid_geom_map[c])
+            for s, c in zip(sjoin_df["segmentId"], sjoin_df["cellId"])
+        ]
+
+        inter_gdf = gpd.GeoDataFrame(geometry=inter_geoms, crs=WGS84).to_crs(UTM43N)
+        sjoin_df["inter_length_m"] = inter_gdf.geometry.length.round(2)
+
+        for row in sjoin_df.itertuples():
+            if row.inter_length_m < 0.5:
+                continue
+            seg_id = row.segmentId
+            if seg_id not in intersections_by_segment:
+                intersections_by_segment[seg_id] = []
+            intersections_by_segment[seg_id].append({
+                "cellId": str(row.cellId),
+                "s": round(float(row.susceptibilityScore), 4),
+                "lengthM": round(float(row.inter_length_m), 2),
+                "fraction": round(float(row.inter_length_m) / max(float(row.length_m), 1.0), 3),
+            })
+
+    # Build multi-cell spatial attributes per segment
+    primary_cells = []
+    max_scores = []
+    weighted_scores = []
+    unmatched_fractions = []
+    cell_ids_list = []
+    cells_json_list = []
+
+    for seg_id, tot_len in zip(gdf["segmentId"], gdf["length_m"]):
+        cell_items = intersections_by_segment.get(seg_id, [])
+        if not cell_items:
+            primary_cells.append("OUTSIDE_GRID")
+            max_scores.append(0.0)
+            weighted_scores.append(0.0)
+            unmatched_fractions.append(1.0)
+            cell_ids_list.append([])
+            cells_json_list.append("[]")
+        else:
+            cell_items.sort(key=lambda x: x["lengthM"], reverse=True)
+            primary_cells.append(cell_items[0]["cellId"])
+            max_s = max(c["s"] for c in cell_items)
+            tot_inter_m = sum(c["lengthM"] for c in cell_items)
+            # Normalize fractions so boundary double-counting cannot cause sum(fractions) > 1.0
+            norm_factor = max(tot_inter_m, tot_len, 1.0)
+            for c in cell_items:
+                c["fraction"] = round(c["lengthM"] / norm_factor, 3)
+
+            w_s = sum(c["s"] * (c["lengthM"] / max(tot_inter_m, 1.0)) for c in cell_items)
+            unmatched_frac = max(0.0, round(1.0 - min(1.0, tot_inter_m / max(tot_len, 1.0)), 3))
+
+            max_scores.append(round(max_s, 4))
+            weighted_scores.append(round(w_s, 4))
+            unmatched_fractions.append(unmatched_frac)
+            cell_ids_list.append([c["cellId"] for c in cell_items])
+            cells_json_list.append(json.dumps(cell_items))
+
+    gdf["primaryCellId"] = primary_cells
+    gdf["cellSusceptibility"] = max_scores
+    gdf["maxCellSusceptibility"] = max_scores
+    gdf["weightedCellSusceptibility"] = weighted_scores
+    gdf["unmatchedFraction"] = unmatched_fractions
+    gdf["intersectingCellIds"] = cell_ids_list
+    gdf["intersectingCellsJson"] = cells_json_list
 
     # Modeled corridor risk class
     def get_corridor_risk(score: float, is_underpass: bool) -> str:
@@ -176,29 +229,109 @@ def prepare_roads(source_gpkg: str = None) -> dict:
 
     gdf["modeledRiskClass"] = [
         get_corridor_risk(score, up)
-        for score, up in zip(gdf["cellSusceptibility"], gdf["is_underpass"])
+        for score, up in zip(gdf["maxCellSusceptibility"], gdf["is_underpass"])
     ]
 
-    gdf["scientificCaveat"] = "Modeled catchment exposure; does NOT guarantee road is impassable unless verified observation exists."
+    gdf["scientificCaveat"] = (
+        "Modeled catchment exposure; does NOT guarantee road is impassable unless verified observation exists."
+    )
 
-    # 6. Save Outputs
-    # Save canonical Parquet
+    # 6. Save Canonical Parquet
     parquet_out = outputs_dir / "amritsar_roads_prepared.parquet"
     parquet_tmp = outputs_dir / "amritsar_roads_prepared.parquet.tmp"
     save_cols = [
         "segmentId", "osmid", "name", "highway", "length_m",
         "is_underpass", "is_bridge", "from_node", "to_node",
-        "primaryCellId", "cellSusceptibility", "modeledRiskClass",
-        "scientificCaveat", "geometry"
+        "primaryCellId", "cellSusceptibility", "maxCellSusceptibility",
+        "weightedCellSusceptibility", "unmatchedFraction", "modeledRiskClass",
+        "intersectingCellsJson", "scientificCaveat", "geometry"
     ]
     gdf[save_cols].to_parquet(parquet_tmp, compression="snappy")
     if parquet_out.exists():
         parquet_out.unlink()
     parquet_tmp.rename(parquet_out)
 
-    # Save summary JSON for frontend and routing architecture
+    # 7. Export Major Corridors GeoJSON for Interactive Map (773 major arterial/highway/underpass segments)
+    major_mask = (
+        gdf["highway"].isin([
+            "primary", "trunk", "secondary", "tertiary",
+            "primary_link", "trunk_link", "secondary_link", "tertiary_link"
+        ])
+        | (gdf["is_underpass"] == True)
+    )
+    major_gdf = gdf[major_mask].copy()
+    major_geojson_path = public_roads_dir / "major_corridors.geojson"
+    major_gdf[[
+        "segmentId", "name", "highway", "length_m", "is_underpass", "is_bridge",
+        "primaryCellId", "maxCellSusceptibility", "weightedCellSusceptibility",
+        "modeledRiskClass", "geometry"
+    ]].to_file(major_geojson_path, driver="GeoJSON")
+    print(f"[ROADS] Exported {len(major_gdf)} major corridors to {major_geojson_path}")
+
+    # 8. Export Lightweight Road Segments Index (all 14,853 segments for API & client queries)
+    segments_index = {}
+    for row in gdf.itertuples():
+        coords = list(row.geometry.coords)
+        segments_index[row.segmentId] = {
+            "segmentId": row.segmentId,
+            "osmid": row.osmid,
+            "name": row.name,
+            "highway": row.highway,
+            "lengthM": float(row.length_m),
+            "isUnderpass": bool(row.is_underpass),
+            "isBridge": bool(row.is_bridge),
+            "fromNode": int(row.from_node),
+            "toNode": int(row.to_node),
+            "primaryCellId": row.primaryCellId,
+            "maxCellSusceptibility": float(row.maxCellSusceptibility),
+            "weightedCellSusceptibility": float(row.weightedCellSusceptibility),
+            "unmatchedFraction": float(row.unmatchedFraction),
+            "modeledRiskClass": row.modeledRiskClass,
+            "intersectingCells": intersections_by_segment.get(row.segmentId, []),
+            "startCoord": {"lng": round(coords[0][0], 5), "lat": round(coords[0][1], 5)},
+            "endCoord": {"lng": round(coords[-1][0], 5), "lat": round(coords[-1][1], 5)},
+        }
+
+    index_out = public_roads_dir / "road_segments_index.json"
+    with open(index_out, "w", encoding="utf-8") as f:
+        json.dump(segments_index, f)
+    print(f"[ROADS] Exported {len(segments_index)} segments index to {index_out}")
+
+    # 9. Export Topological Road Graph for Routing
+    graph_edges = []
+    for row in gdf.itertuples():
+        graph_edges.append({
+            "segmentId": row.segmentId,
+            "fromNode": int(row.from_node),
+            "toNode": int(row.to_node),
+            "lengthM": float(row.length_m),
+            "highway": row.highway,
+            "isUnderpass": bool(row.is_underpass),
+            "isBridge": bool(row.is_bridge),
+            "maxS": float(row.maxCellSusceptibility),
+            "riskClass": row.modeledRiskClass,
+        })
+
+    # Only include nodes that are part of junctions or major routes to keep graph tight
+    road_graph = {
+        "status": "success",
+        "cityId": "amritsar",
+        "totalNodes": total_unique_nodes,
+        "totalEdges": len(graph_edges),
+        "junctionNodesCount": junction_nodes,
+        "edges": graph_edges,
+        "nodes": node_coords,
+    }
+
+    graph_out = public_roads_dir / "road_graph.json"
+    with open(graph_out, "w", encoding="utf-8") as f:
+        json.dump(road_graph, f)
+    print(f"[ROADS] Exported road network graph to {graph_out}")
+
+    # 10. Save summary JSON
     highway_dist = gdf["highway"].value_counts().to_dict()
     risk_dist = gdf["modeledRiskClass"].value_counts().to_dict()
+    multi_cell_count = sum(1 for cells in intersections_by_segment.values() if len(cells) > 1)
 
     summary = {
         "status": "success",
@@ -212,6 +345,8 @@ def prepare_roads(source_gpkg: str = None) -> dict:
         "deadEndNodesCount": dead_end_nodes,
         "underpassCount": underpass_count,
         "bridgeCount": bridge_count,
+        "multiCellSegmentsCount": multi_cell_count,
+        "majorCorridorsCount": len(major_gdf),
         "highwayClassificationCounts": highway_dist,
         "modeledRiskDistribution": risk_dist,
         "canonicalParquetPath": str(parquet_out),
