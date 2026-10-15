@@ -1,47 +1,89 @@
-# Hackathon Starter — Reusable Technical Foundation
+# NEXSTORM — Urban Waterlogging & Heavy-Rainfall Early-Warning System
 
-> **GOVERNING DIRECTIVE**:
-> **THE STARTER SERVES THE FUTURE PRODUCT. THE FUTURE PRODUCT DOES NOT SERVE THE STARTER.**
-> This repository is a reusable technical skeleton designed to be cloned or copied for future hackathons. It is NOT a standalone SaaS product, an MVP, or an end-user application.
+> **DISCLAIMER**: Experimental research prototype. Not an official weather forecast or emergency warning. For official alerts see IMD and NDMA SACHET. NEXSTORM does not predict flood depth, provide verified street-level forecasts, model underground drainage hydraulics, or predict riverine flooding.
 
----
-
-## 1. What This Repository Is (and Is Not)
-
-- **What it IS**:
-  - The "bones and internal systems" of an application: routing, authentication session handling, type safety, environment validation, testing pipelines, and responsive layouts.
-  - A clean starting baseline designed for rapid transformation when a hackathon challenge brief is provided.
-- **What it IS NOT**:
-  - A finished product with invented domain workflows or fake business data.
-  - A rigid architecture: authentication, databases, and AI providers are modular capabilities to keep or remove as your specific challenge requires.
+**Hackathon**: BuildFest 2.0  
+**Problem Statement**: PS-18 — AI-Powered Heavy-Rainfall Forecasting and Urban Waterlogging Early-Warning System for Indian Cities  
+**Pilot City**: Amritsar, Punjab, India ($31.634^\circ\text{ N}, 74.872^\circ\text{ E}$)  
+**Secondary View**: Guru Nanak Dev University (GNDU) Campus  
+**Repository**: [https://github.com/sakshamgupta005/NEXSTORM](https://github.com/sakshamgupta005/NEXSTORM)  
 
 ---
 
-## 2. Technology Stack
+## 1. Project Overview
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack, React 19)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (strict mode)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with semantic CSS variables
-- **UI Components**: Accessible primitives styled in the shadcn/ui pattern (`src/components/ui/`)
-- **Authentication & Database**: [Supabase](https://supabase.com/) via official `@supabase/ssr` (Edge proxy session refresh, cookies, and PKCE callback)
-- **Validation**: [Zod](https://zod.dev/) for form and input schemas
-- **Testing**: [Vitest](https://vitest.dev/) (unit & component tests) and [Playwright](https://playwright.dev/) (E2E browser smoke tests)
-- **Continuous Integration**: GitHub Actions (`.github/workflows/ci.yml`)
+NEXSTORM is an experimental, read-only web application and hydrometeorological risk engine estimating relative urban waterlogging risk across 250m grid cells from numerical weather forecasts and static geospatial susceptibility.
+
+The system combines:
+1. **Static Susceptibility ($S \in [0, 1]$)**: Multi-criteria geospatial factor weights capturing built-up density (ESA WorldCover), building fabric pressure (OpenStreetMap), terrain depression depth, and slope flatness (Copernicus DEM GLO-30).
+2. **Dynamic Rainfall Trigger Index (RTI)**: Multi-window trailing precipitation accumulations normalized against 15-year monsoon climatology thresholds:
+   $$\text{RTI} = \max\left(\frac{P_{1\text{h}}}{T_{1\text{h}}}, \frac{P_{3\text{h}}}{T_{3\text{h}}}, \frac{P_{24\text{h}}}{64.5}, \frac{P_{72\text{h}} + \text{antecedent}_{72\text{h}}}{T_{72\text{h}}}\right)$$
+3. **2D Classification Matrix**: Continuous RTI and susceptibility are mapped into intensity bands (`none`, `elevated`, `severe`, `extreme` $\times$ `low`, `mid`, `high`) to produce relative risk classes: **`low`**, **`moderate`**, and **`high`**.
 
 ---
 
-## 3. Getting Started Locally
+## 2. Architecture & Tech Stack
+
+```
+NEXSTORM Architecture
+┌─────────────────────────────────────────────────────────────┐
+│ Next.js 16 App Router (React 19, TypeScript strict, Tailwind v4) │
+├──────────────────────────────┬──────────────────────────────┤
+│ Frontend Views & Map Layer   │ API Route Handlers           │
+│ • Interactive 250m Grid Map  │ • GET /api/risk (live/replay)│
+│ • Hyetograph Timeline        │ • GET /api/cell/[cellId]     │
+│ • Factor Explanations        │ • GET /api/evaluation        │
+│ • NDMA SACHET Alerts Feed    │ • POST /api/scenario         │
+├──────────────────────────────┴──────────────────────────────┤
+│ TypeScript Hydrometeorological Risk Engine                  │
+│ • Precomputed matrix lookups (<40ms for 51 mbrs x 2.5k cells)│
+│ • Truthful confidence reporting (unavailable on single series)│
+│ • Canonical SHA-256 frozen configuration verification       │
+├─────────────────────────────────────────────────────────────┤
+│ Resilience & Weather Adapters (Open-Meteo, ECMWF, GFS)       │
+│ • Multi-model ensemble fallback with cached snapshot fallback│
+│ • Zero synthetic data injection in degraded mode            │
+├─────────────────────────────────────────────────────────────┤
+│ Offline Geospatial Pipeline (Python 3.11 under pipeline/)   │
+│ • Copernicus DEM GLO-30, ESA WorldCover, OSM Overpass       │
+│ • 1,998 Amritsar cells, 699 GNDU subgrid cells, 15 hotspots  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- **Frontend & Server**: Next.js 16.4 (App Router, Turbopack), React 19, TypeScript (strict mode), Tailwind CSS v4, Leaflet.
+- **Data Pipeline**: Python 3.11 (`pipeline/`) using GeoPandas, Shapely, Rasterio, SciPy.
+- **Static Artifacts**: Versioned under `public/data/` (GeoJSON grids, frozen configurations, evaluation summaries, and historical replay series).
+- **Validation & Integrity**: Zod schemas on all API boundaries; bit-for-bit canonical SHA-256 config hash enforcement (`74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49`).
+- **Testing**: Vitest (80 test files, 784 unit & component tests) and Playwright (E2E browser smoke tests).
+
+---
+
+## 3. Key Completed Stages & Roadmap
+
+| Stage Tag | Status | Deliverables |
+|---|---|---|
+| `p0-clean` | **Done** | Template audit, removed unrelated speech/camera/payments toolkits |
+| `p1-core` | **Done** | Core RTI calculations, scenario simulator, Amritsar interactive map prototype |
+| `p2-adapters`| **Done** | Open-Meteo forecast adapters, multi-model ensemble fallbacks, NDMA Sachet feeds, snapshot cache |
+| `p3-data` | **Done** | Offline Python pipeline, 1,998 real Amritsar cells, 699 GNDU campus cells |
+| `p4b-eval` | **Done** | E1–E3 evaluation framework, 72h historical replay (`2025-09-01_amritsar.json`), 46 shared cross-language test vectors |
+| `p5-risk` | **Done** | Real risk engine, cell factor explanations (`/api/cell/[cellId]`), contingency metrics, and `/api/evaluation` API |
+
+---
+
+## 4. Getting Started Locally
 
 ### Prerequisites
 - Node.js 20+ (tested on Node 22 & 24)
 - npm 10+
+- Python 3.11+ (optional, only needed if re-running the offline geospatial data pipeline)
 
 ### Installation & Run
 
 ```bash
-# 1. Clone or copy into your workspace
-git clone https://github.com/sakshamgupta005/Hackathon-starter.git
-cd Hackathon-starter
+# 1. Clone the repository
+git clone https://github.com/sakshamgupta005/NEXSTORM.git
+cd NEXSTORM
 
 # 2. Install dependencies
 npm install
@@ -50,101 +92,55 @@ npm install
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to view the infrastructure verification screen.
+Visit [http://localhost:3000](http://localhost:3000) to view the application or [http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) for the city console.
 
 ---
 
-## 4. Environment Variables & Secret Management
+## 5. Verification Commands
 
-Copy the documented template:
+Run the full verification suite defined by the project:
 
 ```bash
-cp .env.example .env.local
+# Typecheck TypeScript codebase
+npm run typecheck
+
+# Lint check (zero errors, zero warnings)
+npm run lint
+
+# Run Vitest test suite (80 test files, 784 tests)
+npm test
+
+# Build production bundle with Next.js Turbopack
+npm run build
+
+# Run Playwright E2E browser smoke tests
+npm run test:e2e
 ```
 
-Fill in **only the keys required by your project**. The starter is designed to boot safely in preview mode without crashing if optional provider keys are absent.
+---
 
-### Safe Offline Environment Check
+## 6. API Documentation
 
-Run the offline diagnostic tool to check which providers are configured:
-
-```bash
-npm run env:check
-```
-
-- **What it checks**: Validates that required syntax and non-placeholder values exist in `.env.local`.
-- **What it CANNOT check**: It does **not** make live network calls and does **not** verify whether your provider account has active billing credits or valid quota. You must verify credits on the provider's dashboard.
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/risk?cityId=amritsar&mode=live` | `GET` | Evaluates real-time risk grid and timeline from live ensemble/deterministic weather forecasts. |
+| `/api/risk?cityId=amritsar&mode=replay&event=2025-09-01_amritsar&t=1` | `GET` | Evaluates historical monsoon event replay with verified golden outputs. |
+| `/api/risk?cityId=amritsar&mode=scenario&peakMm1h=40&durationH=4` | `GET` | Evaluates synthetic triangular hyetograph scenario over verified susceptibility grid. |
+| `/api/cell/[cellId]?cityId=amritsar` | `GET` | Returns cell factor contributions, terrain override note, nearest historical hotspot ($\le 500\text{ m}$), and scientific limitations. |
+| `/api/evaluation?cityId=amritsar` | `GET` | Serves offline pipeline evaluation summary verified against frozen configuration hash. |
+| `/api/official-alerts?state=Punjab` | `GET` | Normalized NDMA SACHET CAP alert feed for official flood/weather advisories. |
+| `/api/health` | `GET` | Operational health probe with system memory, uptime, and cache statuses. |
 
 ---
 
-## 5. Verification & Test Commands
-
-Always verify changes using the standard npm scripts:
-
-| Command | Purpose |
-| :--- | :--- |
-| `npm run lint` | Runs ESLint across all source and test files. |
-| `npm run typecheck` | Runs TypeScript compiler checks without emitting files (`tsc --noEmit`). |
-| `npm test` | Runs the Vitest unit and component test suite. |
-| `npm run test:watch` | Starts interactive Vitest runner for test-driven development. |
-| `npm run test:e2e` | Runs Playwright browser smoke tests (Chromium). |
-| `npm run build` | Compiles production bundle with Next.js Turbopack. |
-| `npm run env:check` | Inspects local environment configuration without leaking secrets. |
-
-### Reusable Test Fixtures & Offline Testing
-
-The test harness is designed to execute **100% offline** without live provider credentials or billable API costs:
-- **Auth Fixtures** ([`tests/fixtures/auth.ts`](file:///c:/Users/rspma/Downloads/Hackathon-starter/tests/fixtures/auth.ts)): Deterministic mock users, sessions, and tokens.
-- **API Fixtures** ([`tests/fixtures/api.ts`](file:///c:/Users/rspma/Downloads/Hackathon-starter/tests/fixtures/api.ts)): Mock JSON, error, and streaming HTTP responses.
-- **AI Fixtures** ([`tests/fixtures/ai.ts`](file:///c:/Users/rspma/Downloads/Hackathon-starter/tests/fixtures/ai.ts)): Deterministic OpenAI and Gemini response payloads with token usage.
-
-### Test Troubleshooting & Tips
-
-- **Playwright Missing Browsers**: If E2E tests fail with missing browser executable, run:
-  ```bash
-  npx playwright install --with-deps chromium
-  ```
-- **Port 3000 in Use**: Playwright automatically starts `next dev` on port 3000. If port 3000 is occupied by a prior process, kill it before running `npm run test:e2e`:
-  ```powershell
-  # Windows PowerShell:
-  Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process
-  ```
-- **Single Test File**: Run a single unit test during rapid iterations:
-  ```bash
-  npx vitest run tests/unit/api-client.test.ts
-  ```
+## 7. Permanent Governance & Safety Guardrails
+- **Permanent Disclaimer**: Displayed on all views and payloads: *"Experimental research prototype. Not an official weather forecast or emergency warning. For official alerts see IMD and NDMA SACHET."*
+- **Restricted Terminology**: Alert text strictly avoids panic words (*Emergency, Evacuate, Evacuation, Danger, Safe, Unsafe*); allowed tiers are only **Watch** and **Warning**.
+- **No Hallucinated Data**: Degraded upstream connections fall back to versioned snapshots (`kind: "cached"`) or return explicit 503 degraded states. Zero synthetic rainfall is fabricated.
+- **Truthful Confidence**: Single deterministic series explicitly report `confidence: "unavailable"` without fabricating artificial ensemble spreads.
 
 ---
 
-## 6. How to Start a Real Hackathon Project
-
-Never develop project-specific hackathon features directly on the master template.
-
-1. **Create an Independent Repository**:
-   - On GitHub, click **Use this template** -> **Create a new repository**, or:
-   - Locally clone or copy this repository into a new folder and re-initialize Git:
-     ```bash
-     cp -r Hackathon-starter my-hackathon-project
-     cd my-hackathon-project
-     rm -rf .git && git init
-     ```
-2. **Follow the Transformation Workflow**:
-   - Consult [TEMPLATE_GUIDE.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/TEMPLATE_GUIDE.md) and [docs/HACKATHON-KICKOFF.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/HACKATHON-KICKOFF.md).
-   - Categorize existing elements into **KEEP**, **MODIFY**, **REPLACE**, or **REMOVE**.
-   - **KEEP** reusable infrastructure: `src/lib/supabase/`, `src/lib/env.ts`, `src/lib/utils/`, UI primitives in `src/components/ui/`, test setups.
-   - **REPLACE** demonstration screens: replace `src/app/page.tsx` and `src/components/dashboard/` with your actual challenge UI.
-   - **REMOVE** unneeded infrastructure: if your solution is a public tool without accounts, remove authentication routes without breaking routing.
-
----
-
-## 7. Key Documentation Index
-
-- [docs/CAPABILITY-CATALOG.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/CAPABILITY-CATALOG.md) — Inventory of modular capabilities (reliability, security, AI, testing).
-- [AGENTS.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/AGENTS.md) — Operating guide and rules for AI coding assistants.
-- [TEMPLATE_GUIDE.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/TEMPLATE_GUIDE.md) — Template identity, infrastructure boundaries, and transformation rules.
-- [docs/HACKATHON-KICKOFF.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/HACKATHON-KICKOFF.md) — Copy-ready hackathon day launch runbook.
-- [docs/SECURITY-AND-QUALITY-AUDIT.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/SECURITY-AND-QUALITY-AUDIT.md) — Security audit findings, headers, and safe redirect controls.
-- [docs/API-KEY-SETUP.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/API-KEY-SETUP.md) — Provider setup, dashboard links, safe verification, and credit limits.
-- [docs/ARCHITECTURE.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/ARCHITECTURE.md) — System architecture, cookie flow, and request lifecycle.
-- [docs/SETUP.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/SETUP.md) — Setup and deployment guide (Vercel & Supabase).
-- [docs/AGENT-WORKFLOW.md](file:///c:/Users/rspma/Downloads/Hackathon-starter/docs/AGENT-WORKFLOW.md) — Standard 8-step agent development loop.
+## 8. License
+Research and hackathon prototype developed for BuildFest 2.0 (PS-18).
+Data sources: Open-Meteo (CC BY 4.0), OpenStreetMap (ODbL), Copernicus DEM GLO-30, ESA WorldCover 2021.
