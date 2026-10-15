@@ -1,0 +1,101 @@
+{
+  "id": "jalandhar",
+  "name": "Jalandhar",
+  "state": "Punjab",
+  "country": "India",
+  "timezone": "Asia/Kolkata",
+  "locale": "en-IN",
+  "bbox": [
+    75.52,
+    31.28,
+    75.66,
+    31.38
+  ],
+  "center": [
+    31.33,
+    75.59
+  ],
+  "crs": "EPSG:4326",
+  "utmCrs": "EPSG:32643",
+  "gridSizeM": 250,
+  "cellCount": 2354,
+  "readinessState": "evidence_insufficient",
+  "weights": {
+    "depression": 0.3,
+    "flatness": 0.1,
+    "builtUp": 0.3,
+    "lowPoint": 0.15,
+    "densityProxy": 0.15
+  },
+  "terrainOverride": {
+    "applied": false,
+    "reason": "Standard terrain variance std=0.083",
+    "std": 0.083
+  },
+  "sBandCutoffs": [
+    0.33,
+    0.66
+  ],
+  "rtiBandCutoffs": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "matrix": [
+    [
+      "low",
+      "low",
+      "low"
+    ],
+    [
+      "low",
+      "low",
+      "moderate"
+    ],
+    [
+      "low",
+      "moderate",
+      "high"
+    ],
+    [
+      "moderate",
+      "high",
+      "high"
+    ]
+  ],
+  "thresholds": {
+    "T1h": 3.5,
+    "T3h": 8.9,
+    "T24h": 64.5,
+    "T72h": 44.8,
+    "provisional": true,
+    "derivedFrom": "Regional Punjab ERA5-Land Reanalysis baseline",
+    "span": "2010-2024 Monsoon Baseline"
+  },
+  "displayThreshold": 0.4,
+  "confidenceCutoffs": [
+    0.8,
+    0.5
+  ],
+  "sources": [
+    "OpenStreetMap (ODbL 1.0)",
+    "Copernicus DEM GLO-30 (Copernicus Open Access)",
+    "ESA WorldCover 2021 (CC BY 4.0)",
+    "Open-Meteo ERA5-Land Reanalysis (CC BY 4.0)"
+  ],
+  "provenance": {
+    "demSource": "Copernicus DEM GLO-30",
+    "landCoverSource": "ESA WorldCover 2021",
+    "osmSource": "OpenStreetMap 2024 Extracts",
+    "weatherSource": "Open-Meteo Numerical Weather API",
+    "incidentSource": "Pending ground-truth municipal logging",
+    "bootstrappedAt": "2026-10-15T19:40:53.976833+00:00"
+  },
+  "operationalStatus": {
+    "alertsAllowed": false,
+    "rolloutModeDefault": "evaluation_only",
+    "restrictionsNote": "City is in evidence_insufficient state. External alert dispatch blocked."
+  },
+  "version": "1.0.0",
+  "configHash": "a04f66566a7f200ec9a60f79569607f30b2a66b3aaa3d8420ce39da6e197a207"
+}

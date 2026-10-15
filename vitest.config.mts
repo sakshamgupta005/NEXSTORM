@@ -14,6 +14,7 @@ export default defineConfig({
       'tests/integration/**/*.{test,spec}.ts',
     ],
     exclude: ['tests/e2e/**', 'node_modules/**'],
+    fileParallelism: false,
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
     },

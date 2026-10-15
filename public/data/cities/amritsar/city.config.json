@@ -1,14 +1,25 @@
 {
   "id": "amritsar",
   "name": "Amritsar",
+  "state": "Punjab",
+  "country": "India",
+  "timezone": "Asia/Kolkata",
+  "locale": "en-IN",
   "bbox": [
     74.8,
     31.575,
     74.935,
     31.685
   ],
+  "center": [
+    31.63,
+    74.87
+  ],
+  "crs": "EPSG:4326",
+  "utmCrs": "EPSG:32643",
   "gridSizeM": 250,
   "cellCount": 1998,
+  "readinessState": "evaluation_ready",
   "weights": {
     "depression": 0.3,
     "flatness": 0.1,
@@ -72,6 +83,19 @@
     "ESA WorldCover 2021 (CC BY 4.0)",
     "Open-Meteo ERA5-Land Reanalysis Archive (CC BY 4.0)"
   ],
+  "provenance": {
+    "demSource": "Copernicus DEM GLO-30",
+    "landCoverSource": "ESA WorldCover 2021",
+    "osmSource": "OpenStreetMap 2024 Extracts",
+    "weatherSource": "Open-Meteo ERA5-Land Reanalysis Archive",
+    "incidentSource": "Verified Municipal News & Ground Truth Inventory (13 locations, 7 storms)",
+    "bootstrappedAt": "2024-09-30T00:00:00Z"
+  },
+  "operationalStatus": {
+    "alertsAllowed": false,
+    "rolloutModeDefault": "evaluation_only",
+    "restrictionsNote": "Operational alert dispatch restricted to evaluation_only by default."
+  },
   "version": "1.0.0",
   "configHash": "74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49"
 }

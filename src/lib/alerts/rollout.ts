@@ -94,13 +94,20 @@ export function isDeliveryPermittedForSubscriber(
  */
 export function createAlertMessagePayload(
   decision: AlertDecision,
-  areaDescription: string = 'Amritsar Municipal Perimeter'
+  areaDescription?: string
 ): AlertMessagePayload {
   const isSevere = decision.state === 'severe_risk' || decision.maxRti >= 1.5
+  const isAmritsar = (decision.cityId || '').toLowerCase() === 'amritsar'
+  const defaultArea = isAmritsar ? 'Amritsar Municipal Perimeter' : `${decision.cityId.toUpperCase()} Municipal Perimeter`
+  const resolvedArea = areaDescription || defaultArea
 
   const safetyGuidance = isSevere
-    ? 'Severe modeled rainfall hazard: Avoid travel through railway underpasses (SSSS Chowk), Walled City gates, and low-lying arterial corridors. Do not enter standing water.'
-    : 'Elevated modeled hazard: Slow down on arterial corridors. Watch for localized water accumulation in commercial bazaars and low-lying underpasses.'
+    ? isAmritsar
+      ? 'Severe modeled rainfall hazard: Avoid travel through railway underpasses (SSSS Chowk), Walled City gates, and low-lying arterial corridors. Do not enter standing water.'
+      : `Severe modeled rainfall hazard: Avoid travel through railway underpasses, low-lying arterial corridors, and waterlogged intersections in ${decision.cityId.toUpperCase()}. Do not enter standing water.`
+    : isAmritsar
+      ? 'Elevated modeled hazard: Slow down on arterial corridors. Watch for localized water accumulation in commercial bazaars and low-lying underpasses.'
+      : `Elevated modeled hazard: Slow down on arterial corridors in ${decision.cityId.toUpperCase()}. Watch for localized water accumulation in low-lying intersections and underpasses.`
 
   return {
     alertType: 'modeled_risk_alert',
@@ -109,7 +116,7 @@ export function createAlertMessagePayload(
     severity: isSevere ? 'severe' : 'elevated',
     maxRti: decision.maxRti,
     thresholdApplied: decision.thresholdApplied,
-    affectedAreaDescription: areaDescription,
+    affectedAreaDescription: resolvedArea,
     affectedCellsCount: decision.affectedCells.length,
     evaluatedAt: decision.evaluatedAt,
     weatherFreshnessNote: `Weather input: ${decision.weatherSource} (age: ${decision.weatherFreshness.ageSeconds}s, degraded: ${decision.isDegraded})`,

@@ -114,6 +114,67 @@ if (hasSupabase) {
   })
 }
 
+// 6. City Readiness & Evidence Audit
+import fs from 'node:fs'
+import path from 'node:path'
+
+const cityArg = process.argv.find((a) => a.startsWith('--city='))
+const targetCity = cityArg ? cityArg.split('=')[1].toLowerCase() : null
+
+const citiesDir = path.join(process.cwd(), 'public', 'data', 'cities')
+const discoveredCities = fs.existsSync(citiesDir)
+  ? fs
+      .readdirSync(citiesDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && fs.existsSync(path.join(citiesDir, d.name, 'city.config.json')))
+      .map((d) => d.name.toLowerCase())
+  : ['amritsar']
+
+const citiesToCheck = targetCity ? [targetCity] : discoveredCities
+
+for (const c of citiesToCheck) {
+  const confPath = path.join(citiesDir, c, 'city.config.json')
+  const invPath = path.join(citiesDir, c, 'incidents_inventory.json')
+  const hasConf = fs.existsSync(confPath)
+  const hasInv = fs.existsSync(invPath)
+
+  if (!hasConf) {
+    checks.push({
+      name: `City Readiness Gate (${c})`,
+      status: 'FAIL',
+      msg: `city.config.json missing for city '${c}'.`,
+    })
+    continue
+  }
+
+  let incidentCount = 0
+  if (hasInv) {
+    try {
+      const inv = JSON.parse(fs.readFileSync(invPath, 'utf-8'))
+      incidentCount = Array.isArray(inv) ? inv.length : 0
+    } catch {}
+  }
+
+  if (targetMode !== 'evaluation_only' && incidentCount < 5) {
+    checks.push({
+      name: `City Readiness Gate (${c})`,
+      status: 'FAIL',
+      msg: `City '${c}' has insufficient ground-truth evidence (${incidentCount} incidents); non-evaluation rollout blocked.`,
+    })
+  } else if (incidentCount < 5) {
+    checks.push({
+      name: `City Readiness Gate (${c})`,
+      status: 'WARN',
+      msg: `City '${c}' is in evidence_insufficient state; model outputs restricted to internal exploratory use.`,
+    })
+  } else {
+    checks.push({
+      name: `City Readiness Gate (${c})`,
+      status: 'PASS',
+      msg: `City '${c}' has verified ground-truth evidence (${incidentCount} verified locations).`,
+    })
+  }
+}
+
 // Print results
 let fails = 0
 let warns = 0

@@ -11,6 +11,8 @@ import { createClient as createSupabaseClient, SupabaseClient } from '@supabase/
 import { logger } from '../logging/logger'
 import type { DeliveryRecord, SubscriberPreference } from './types'
 
+import { listSupportedCities } from '../city/registry'
+
 export interface IAlertRepository {
   readonly storageType: 'supabase_postgres' | 'local_file_dev'
   isDurable(): boolean
@@ -46,8 +48,25 @@ export class FileAlertRepository implements IAlertRepository {
     return false
   }
 
+  private getAllCityIds(): string[] {
+    try {
+      const cities = listSupportedCities()
+      const citiesDir = path.join(process.cwd(), 'public', 'data', 'cities')
+      if (fs.existsSync(citiesDir)) {
+        const dirs = fs
+          .readdirSync(citiesDir, { withFileTypes: true })
+          .filter((d) => d.isDirectory())
+          .map((d) => d.name.toLowerCase())
+        return Array.from(new Set([...cities, ...dirs]))
+      }
+      return cities.length > 0 ? cities : ['amritsar']
+    } catch {
+      return ['amritsar']
+    }
+  }
+
   private getStorageDir(cityId: string = 'amritsar'): string {
-    const dir = path.join(process.cwd(), 'public', 'data', 'cities', cityId, 'alerts')
+    const dir = path.join(process.cwd(), 'public', 'data', 'cities', cityId.toLowerCase(), 'alerts')
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
     }
@@ -96,9 +115,14 @@ export class FileAlertRepository implements IAlertRepository {
   }
 
   public async getSubscriberById(id: string): Promise<SubscriberPreference | null> {
-    // Search across amritsar subscribers
-    const subs = this.readJson<SubscriberPreference>(this.getSubscribersPath('amritsar'))
-    return subs.find((s) => s.id === id) || null
+    // Search across all supported cities
+    const cities = this.getAllCityIds()
+    for (const city of cities) {
+      const subs = this.readJson<SubscriberPreference>(this.getSubscribersPath(city))
+      const found = subs.find((s) => s.id === id)
+      if (found) return found
+    }
+    return null
   }
 
   public async getSubscribersByCity(
@@ -128,22 +152,27 @@ export class FileAlertRepository implements IAlertRepository {
 
   public async unsubscribe(id: string): Promise<boolean> {
     return this.enqueue(async () => {
-      const filePath = this.getSubscribersPath('amritsar')
-      const subs = this.readJson<SubscriberPreference>(filePath)
-      const sub = subs.find((s) => s.id === id)
-      if (!sub) return false
-
-      sub.isOptedIn = false
-      sub.unsubscribedAt = new Date().toISOString()
-      sub.updatedAt = new Date().toISOString()
-      this.writeAtomic(filePath, subs)
-      return true
+      const cities = this.getAllCityIds()
+      for (const city of cities) {
+        const filePath = this.getSubscribersPath(city)
+        const subs = this.readJson<SubscriberPreference>(filePath)
+        const sub = subs.find((s) => s.id === id)
+        if (sub) {
+          sub.isOptedIn = false
+          sub.unsubscribedAt = new Date().toISOString()
+          sub.updatedAt = new Date().toISOString()
+          this.writeAtomic(filePath, subs)
+          return true
+        }
+      }
+      return false
     })
   }
 
   public async addDelivery(delivery: DeliveryRecord): Promise<void> {
     return this.enqueue(async () => {
-      const filePath = this.getDeliveriesPath('amritsar')
+      const cityId = (delivery.payload?.cityId || 'amritsar').toLowerCase()
+      const filePath = this.getDeliveriesPath(cityId)
       const deliveries = this.readJson<DeliveryRecord>(filePath)
       const existing = deliveries.find(
         (d) => d.idempotencyKey === delivery.idempotencyKey || d.deliveryId === delivery.deliveryId
@@ -157,14 +186,25 @@ export class FileAlertRepository implements IAlertRepository {
   }
 
   public async getDeliveryById(id: string): Promise<DeliveryRecord | null> {
-    const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath('amritsar'))
-    return deliveries.find((d) => d.deliveryId === id) || null
+    const cities = this.getAllCityIds()
+    for (const city of cities) {
+      const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath(city))
+      const found = deliveries.find((d) => d.deliveryId === id)
+      if (found) return found
+    }
+    return null
   }
 
   public async getDeliveriesBySubscriber(subscriberId: string, limit: number = 50): Promise<DeliveryRecord[]> {
-    const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath('amritsar'))
-    return deliveries
-      .filter((d) => d.subscriberId === subscriberId)
+    const sub = await this.getSubscriberById(subscriberId)
+    const targetCities = sub ? [sub.cityId.toLowerCase()] : this.getAllCityIds()
+    const allDeliveries: DeliveryRecord[] = []
+    for (const city of targetCities) {
+      const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath(city))
+      allDeliveries.push(...deliveries.filter((d) => d.subscriberId === subscriberId))
+    }
+    return allDeliveries
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
       .slice(-limit)
       .reverse()
   }
@@ -175,40 +215,61 @@ export class FileAlertRepository implements IAlertRepository {
     options?: { failureReason?: string; deliveredAt?: string }
   ): Promise<boolean> {
     return this.enqueue(async () => {
-      const filePath = this.getDeliveriesPath('amritsar')
-      const deliveries = this.readJson<DeliveryRecord>(filePath)
-      const d = deliveries.find((x) => x.deliveryId === deliveryId)
-      if (!d) return false
-
-      d.status = status
-      d.updatedAt = new Date().toISOString()
-      if (options?.failureReason) d.failureReason = options.failureReason
-      if (options?.deliveredAt) d.deliveredAt = options.deliveredAt
-      this.writeAtomic(filePath, deliveries)
-      return true
+      const cities = this.getAllCityIds()
+      for (const city of cities) {
+        const filePath = this.getDeliveriesPath(city)
+        const deliveries = this.readJson<DeliveryRecord>(filePath)
+        const d = deliveries.find((x) => x.deliveryId === deliveryId)
+        if (d) {
+          d.status = status
+          d.updatedAt = new Date().toISOString()
+          if (options?.failureReason) d.failureReason = options.failureReason
+          if (options?.deliveredAt) d.deliveredAt = options.deliveredAt
+          this.writeAtomic(filePath, deliveries)
+          return true
+        }
+      }
+      return false
     })
   }
 
   public async isIdempotencyKeyDelivered(key: string): Promise<boolean> {
-    const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath('amritsar'))
-    const match = deliveries.find((d) => d.idempotencyKey === key)
-    return Boolean(match && (match.status === 'delivered' || match.status === 'pending'))
+    const cities = this.getAllCityIds()
+    for (const city of cities) {
+      const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath(city))
+      const match = deliveries.find((d) => d.idempotencyKey === key)
+      if (match && (match.status === 'delivered' || match.status === 'pending')) {
+        return true
+      }
+    }
+    return false
   }
 
   public async getRecentDeliveriesForSubscriber(subscriberId: string, withinSeconds: number): Promise<DeliveryRecord[]> {
-    const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath('amritsar'))
+    const sub = await this.getSubscriberById(subscriberId)
+    const targetCities = sub ? [sub.cityId.toLowerCase()] : this.getAllCityIds()
     const thresholdTime = Date.now() - withinSeconds * 1000
-    return deliveries.filter(
-      (d) => d.subscriberId === subscriberId && new Date(d.createdAt).getTime() >= thresholdTime
-    )
+    const matched: DeliveryRecord[] = []
+    for (const city of targetCities) {
+      const deliveries = this.readJson<DeliveryRecord>(this.getDeliveriesPath(city))
+      for (const d of deliveries) {
+        if (d.subscriberId === subscriberId && new Date(d.createdAt).getTime() >= thresholdTime) {
+          matched.push(d)
+        }
+      }
+    }
+    return matched
   }
 
-  public async reset(cityId: string = 'amritsar'): Promise<void> {
+  public async reset(cityId?: string): Promise<void> {
     return this.enqueue(async () => {
-      const subPath = this.getSubscribersPath(cityId)
-      const delPath = this.getDeliveriesPath(cityId)
-      if (fs.existsSync(subPath)) fs.unlinkSync(subPath)
-      if (fs.existsSync(delPath)) fs.unlinkSync(delPath)
+      const targetCities = cityId ? [cityId.toLowerCase()] : this.getAllCityIds()
+      for (const city of targetCities) {
+        const subPath = this.getSubscribersPath(city)
+        const delPath = this.getDeliveriesPath(city)
+        if (fs.existsSync(subPath)) fs.unlinkSync(subPath)
+        if (fs.existsSync(delPath)) fs.unlinkSync(delPath)
+      }
     })
   }
 }

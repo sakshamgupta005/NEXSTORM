@@ -6,6 +6,8 @@
  */
 
 import { isSupabaseConfigured } from '../supabase/config'
+import { evaluateCityReadiness } from '../city/readiness'
+import { listSupportedCities } from '../city/registry'
 import { EmailProvider, SmsProvider, WebhookProvider } from './providers/base'
 import { getAlertRepository } from './repository'
 import { getRolloutMode, isKillSwitchActive } from './rollout'
@@ -56,7 +58,8 @@ function isPlaceholderSecret(val?: string | null): boolean {
  * Fails closed if production dispatch is attempted without required security and infrastructure.
  */
 export async function runDeploymentPreflight(
-  targetMode?: RolloutMode
+  targetMode?: RolloutMode,
+  targetCityId?: string
 ): Promise<PreflightReport> {
   const rolloutMode = targetMode || getRolloutMode()
   const killSwitch = isKillSwitchActive()
@@ -238,6 +241,46 @@ export async function runDeploymentPreflight(
         name: 'Outbound Provider Readiness',
         status: 'PASS',
         message: `Configured outbound providers: ${activeChannels}.`,
+      })
+    }
+  }
+
+  // 7. City Configuration & Geographic Readiness Gate
+  const targetCities = targetCityId ? [targetCityId.toLowerCase()] : listSupportedCities()
+  for (const cid of targetCities) {
+    try {
+      const readiness = evaluateCityReadiness(cid)
+      if (rolloutMode !== 'evaluation_only' && readiness.determinedState !== 'pilot_eligible') {
+        checks.push({
+          id: `city_readiness_${cid}`,
+          name: `City Readiness Gate (${cid})`,
+          status: 'FAIL',
+          message: `City '${cid}' is in '${readiness.determinedState}' readiness state; non-evaluation rollout requires 'pilot_eligible'.`,
+          remediation: `Keep rollout mode as 'evaluation_only' until verified historical incident evidence is established for ${cid}.`,
+        })
+      } else if (readiness.determinedState === 'evidence_insufficient') {
+        checks.push({
+          id: `city_readiness_${cid}`,
+          name: `City Readiness Gate (${cid})`,
+          status: 'WARN',
+          message: `City '${cid}' lacks historical ground-truth flood evidence; outputs permitted for internal research only.`,
+          remediation: `Conduct historical municipal event collection to advance ${cid} to evaluation_ready.`,
+        })
+      } else {
+        checks.push({
+          id: `city_readiness_${cid}`,
+          name: `City Readiness Gate (${cid})`,
+          status: 'PASS',
+          message: `City '${cid}' readiness is '${readiness.determinedState}' (${readiness.summary.passedCount}/${readiness.summary.totalCount} checks passed).`,
+        })
+      }
+    } catch (err) {
+      checks.push({
+        id: `city_readiness_${cid}`,
+        name: `City Readiness Gate (${cid})`,
+        status: 'FAIL',
+        message: `City readiness evaluation error for '${cid}': ${err instanceof Error ? err.message : String(err)}`,
+        remediation: `Inspect city artifacts in public/data/cities/${cid}/.`,
       })
     }
   }

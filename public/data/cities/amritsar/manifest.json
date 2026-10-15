@@ -1,0 +1,62 @@
+{
+  "manifestVersion": "1.0.0",
+  "cityId": "amritsar",
+  "cityName": "Amritsar",
+  "state": "Punjab",
+  "country": "India",
+  "timezone": "Asia/Kolkata",
+  "bootstrappedAt": "2024-09-30T00:00:00Z",
+  "readinessState": "evaluation_ready",
+  "geographicBounds": {
+    "bbox": [
+      74.8,
+      31.575,
+      74.935,
+      31.685
+    ],
+    "crs": "EPSG:4326",
+    "targetUtmCrs": "EPSG:32643",
+    "cellResolutionMeters": 250,
+    "totalCells": 1998
+  },
+  "datasetProvenance": {
+    "boundaryFile": "city_boundary.geojson",
+    "gridFile": "grid.geojson",
+    "susceptibilityFile": "susceptibility.geojson",
+    "featuresFile": "features.geojson",
+    "checksums": {
+      "grid.geojson": "16241befb45333fe916a132da74db04afe685dcae9e9ba6d46e7529e1a45346e",
+      "susceptibility.geojson": "f19a6f8f7cf9b88a7e7f09f393186bf2788558f7712d14be37ca1c8bd08e05d6",
+      "city.config.json": "f380ba5c0c4a84d69c1e9820625024a5001a566d2554ad718924af7d9bd0e3f9"
+    }
+  },
+  "featureDistributionSummary": {
+    "meanSusceptibility": 0.472,
+    "stdSusceptibility": 0.178,
+    "lowBandPercent": 23.4,
+    "midBandPercent": 61.2,
+    "highBandPercent": 15.4
+  },
+  "evidenceAudit": {
+    "incidentCount": 13,
+    "rainfallStormCount": 7,
+    "hasHistoricalEvidence": true,
+    "evidenceAssessment": "Sufficient historical evidence: 13 locations across 7 verified storms."
+  },
+  "operationalPolicy": {
+    "isPilotEligible": false,
+    "alertsPermitted": false,
+    "defaultRolloutMode": "evaluation_only",
+    "restrictions": [
+      "Alert dispatch restricted to evaluation_only until explicit municipal authority sign-off."
+    ]
+  },
+  "warnings": [],
+  "passedChecks": [
+    "BBOX_GEOGRAPHIC_BOUNDS_VALID",
+    "UTM_PROJECTION_TRANSFORMATION_ALIGNED",
+    "METRIC_GRID_DIMENSIONS_VERIFIED",
+    "HISTORICAL_INCIDENTS_EVALUATION_VERIFIED",
+    "CANONICAL_CONFIG_HASH_VERIFIED"
+  ]
+}

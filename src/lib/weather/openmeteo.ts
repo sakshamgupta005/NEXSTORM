@@ -6,6 +6,7 @@
 
 import { createApiClient } from '../api/client';
 import { sharedCache } from '../cache';
+import { getCityConfig } from '../city/registry';
 import { normalizeOpenMeteoResponse } from './normalize';
 import { saveSnapshot, loadSnapshot } from './snapshots';
 import { recordSourceSuccess, recordSourceFailure } from './source-tracker';
@@ -48,9 +49,31 @@ export async function fetchDeterministicForecast(
   options: ForecastFetchOptions = {}
 ): Promise<WeatherAdapterResult<RainfallSeries>> {
   const cityId = options.cityId || 'amritsar';
-  const lat = options.lat ?? DEFAULT_LAT;
-  const lon = options.lon ?? DEFAULT_LON;
-  const timezone = options.timezone || DEFAULT_TIMEZONE;
+  let lat = options.lat;
+  let lon = options.lon;
+  let timezone = options.timezone;
+
+  if (lat === undefined || lon === undefined || timezone === undefined) {
+    try {
+      const cfg = getCityConfig(cityId);
+      if (lat === undefined || lon === undefined) {
+        if (cfg.center) {
+          lat = lat ?? cfg.center[0];
+          lon = lon ?? cfg.center[1];
+        } else if (cfg.bbox) {
+          lat = lat ?? (cfg.bbox[1] + cfg.bbox[3]) / 2;
+          lon = lon ?? (cfg.bbox[0] + cfg.bbox[2]) / 2;
+        }
+      }
+      timezone = timezone ?? cfg.timezone ?? DEFAULT_TIMEZONE;
+    } catch {
+      // Fallback to Amritsar defaults if city config is not available
+    }
+  }
+
+  lat = lat ?? DEFAULT_LAT;
+  lon = lon ?? DEFAULT_LON;
+  timezone = timezone ?? DEFAULT_TIMEZONE;
   const horizonDays = Math.min(16, Math.max(1, Math.ceil((options.horizonH || 48) / 24)));
 
   const ttl = getForecastTtl();

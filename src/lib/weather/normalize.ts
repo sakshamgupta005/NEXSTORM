@@ -85,13 +85,16 @@ export function toIstTimestamp(timeStr: string, defaultUtcOffsetSeconds = 19800)
 }
 
 /**
- * Extracts the calendar date string (YYYY-MM-DD) in Amritsar local time (Asia/Kolkata).
+ * Extracts the calendar date string (YYYY-MM-DD) in city local time (default: Asia/Kolkata).
  * Prevents timezone-shift errors where a UTC evening timestamp maps to the wrong local date.
  */
-export function toAmritsarDateString(isoOrLocal: string): string {
+export function toCityDateString(isoOrLocal: string, _timezone: string = 'Asia/Kolkata'): string {
+  void _timezone;
   const istIso = toIstTimestamp(isoOrLocal);
   return istIso.slice(0, 10);
 }
+
+export const toAmritsarDateString = toCityDateString;
 
 export interface NormalizationOptions {
   cityId: string;

@@ -1,0 +1,69 @@
+{
+  "manifestVersion": "1.0.0",
+  "cityId": "jalandhar",
+  "cityName": "Jalandhar",
+  "state": "Punjab",
+  "country": "India",
+  "timezone": "Asia/Kolkata",
+  "bootstrappedAt": "2026-10-15T19:40:54.055455+00:00",
+  "readinessState": "evidence_insufficient",
+  "geographicBounds": {
+    "bbox": [
+      75.52,
+      31.28,
+      75.66,
+      31.38
+    ],
+    "crs": "EPSG:4326",
+    "targetUtmCrs": "EPSG:32643",
+    "cellResolutionMeters": 250,
+    "totalCells": 2354
+  },
+  "datasetProvenance": {
+    "boundaryFile": "computed_bbox_polygon",
+    "gridFile": "grid.geojson",
+    "susceptibilityFile": "susceptibility.geojson",
+    "featuresFile": "computed_features",
+    "checksums": {
+      "grid.geojson": "57dcdc528fdc3992bb1409ab15e8ff18bbabf8033b8f49e6a911637d6bfee053",
+      "susceptibility.geojson": "1506f3b200a1e2d6f8bd64fd480a0e1b9f0d4136312ca447fee0270f09e72264",
+      "city.config.json": "2189ac696ea3d4b4689552d3727543eaebf5ce882ca07d9726c1f7c6e05c50d5"
+    }
+  },
+  "featureDistributionSummary": {
+    "meanSusceptibility": 0.4557,
+    "stdSusceptibility": 0.0828,
+    "lowBandPercent": 4.33,
+    "midBandPercent": 93.16,
+    "highBandPercent": 2.51
+  },
+  "evidenceAudit": {
+    "incidentCount": 0,
+    "rainfallStormCount": 0,
+    "hasHistoricalEvidence": false,
+    "evidenceAssessment": "No historical waterlogging incident inventory available. Susceptibility map is suitable for internal exploratory analysis only; strictly prohibited from live public alerts."
+  },
+  "operationalPolicy": {
+    "isPilotEligible": false,
+    "alertsPermitted": false,
+    "defaultRolloutMode": "evaluation_only",
+    "restrictions": [
+      "No live external alert delivery permitted.",
+      "Model outputs reserved for internal validation and research.",
+      "Requires ground-truth municipal incident inventory before pilot readiness."
+    ]
+  },
+  "warnings": [
+    "City 'jalandhar' does not possess validated ground-truth flood incident data.",
+    "Susceptibility scores are purely relative within this municipal bounding box.",
+    "Amritsar POD/FAR metrics MUST NOT be attributed to this geography."
+  ],
+  "passedChecks": [
+    "BBOX_GEOGRAPHIC_BOUNDS_VALID",
+    "UTM_PROJECTION_TRANSFORMATION_ALIGNED",
+    "METRIC_GRID_DIMENSIONS_VERIFIED",
+    "SUSCEPTIBILITY_WEIGHTS_NORMALIZED",
+    "CANONICAL_CONFIG_HASH_VERIFIED",
+    "NON_SYNTHETIC_INTEGRITY_CHECK_PASSED"
+  ]
+}

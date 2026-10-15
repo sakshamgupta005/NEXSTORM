@@ -7,106 +7,91 @@
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
-import type { RiskClass, RtiThresholds } from '../risk/types'
-
-
-export interface CityConfig {
-  id: string
-  name: string
-  bbox: [number, number, number, number]
-  gridSizeM: number
-  cellCount: number
-  weights: {
-    depression: number
-    flatness: number
-    builtUp: number
-    lowPoint: number
-    densityProxy: number
-    [key: string]: number
-  }
-  terrainOverride: {
-    applied: boolean
-    reason: string
-    std: number
-  }
-  sBandCutoffs: [number, number]
-  rtiBandCutoffs: [number, number, number]
-  matrix: RiskClass[][]
-  thresholds: RtiThresholds & {
-    derivedFrom?: string
-    span?: string
-  }
-  displayThreshold: number
-  confidenceCutoffs: [number, number]
-  sources: string[]
-  version: string
-  configHash: string
-}
-
-export interface SusceptibilityFeatureProperties {
-  id: string
-  s: number
-  f_depression?: number
-  f_flatness?: number
-  f_builtUp?: number
-  f_lowPoint?: number
-  f_density?: number
-  nearestRoad?: string
-  synthetic?: boolean
-  version?: string
-}
-
-export interface SusceptibilityFeature {
-  type: 'Feature'
-  id?: string
-  geometry: {
-    type: 'Polygon'
-    coordinates: number[][][]
-  }
-  properties: SusceptibilityFeatureProperties
-}
-
-export interface SusceptibilityGeoJson {
-  type: 'FeatureCollection'
-  name?: string
-  crs?: {
-    type: string
-    properties: {
-      name: string
-    }
-  }
-  features: SusceptibilityFeature[]
-}
-
-export interface HotspotRecord {
-  id: string
-  name: string
-  lat: number
-  lon: number
-  cellId: string
-  sourceUrl?: string
-  articleDate?: string
-  evidence: string
-  precision: string
-}
+export * from './types'
+import type {
+  CityBootstrapManifest,
+  CityConfig,
+  HotspotRecord,
+  SusceptibilityGeoJson,
+} from './types'
 
 // In-memory static cache for fast server execution
 const configCache: Record<string, CityConfig> = {}
 const geoJsonCache: Record<string, SusceptibilityGeoJson> = {}
 const hotspotCache: Record<string, HotspotRecord[]> = {}
+const manifestCache: Record<string, CityBootstrapManifest | null> = {}
 
-const SUPPORTED_CITIES = ['amritsar']
+// Runtime registered cities (for test isolation and synthetic fixture testing)
+const runtimeConfigs: Record<string, CityConfig> = {}
+const runtimeGeoJsons: Record<string, SusceptibilityGeoJson> = {}
+
+export function registerCityConfig(config: CityConfig): void {
+  const norm = config.id.toLowerCase()
+  verifyConfigIntegrity(config)
+  runtimeConfigs[norm] = config
+  configCache[norm] = config
+}
+
+export function registerCitySusceptibility(cityId: string, geojson: SusceptibilityGeoJson): void {
+  const norm = cityId.toLowerCase()
+  validateSusceptibilityGeoJson(geojson, norm)
+  runtimeGeoJsons[norm] = geojson
+  geoJsonCache[norm] = geojson
+}
+
+export function clearCityCache(cityId?: string): void {
+  if (cityId) {
+    const norm = cityId.toLowerCase()
+    delete configCache[norm]
+    delete geoJsonCache[norm]
+    delete hotspotCache[norm]
+    delete manifestCache[norm]
+    delete runtimeConfigs[norm]
+    delete runtimeGeoJsons[norm]
+  } else {
+    for (const k of Object.keys(configCache)) delete configCache[k]
+    for (const k of Object.keys(geoJsonCache)) delete geoJsonCache[k]
+    for (const k of Object.keys(hotspotCache)) delete hotspotCache[k]
+    for (const k of Object.keys(manifestCache)) delete manifestCache[k]
+    for (const k of Object.keys(runtimeConfigs)) delete runtimeConfigs[k]
+    for (const k of Object.keys(runtimeGeoJsons)) delete runtimeGeoJsons[k]
+  }
+}
+
+function discoverCitiesOnDisk(): string[] {
+  const citiesDir = path.join(process.cwd(), 'public', 'data', 'cities')
+  if (!fs.existsSync(citiesDir)) return ['amritsar']
+  try {
+    const entries = fs.readdirSync(citiesDir, { withFileTypes: true })
+    const cities: string[] = []
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const confPath = path.join(citiesDir, entry.name, 'city.config.json')
+        if (fs.existsSync(confPath)) {
+          cities.push(entry.name.toLowerCase())
+        }
+      }
+    }
+    return cities.length > 0 ? cities : ['amritsar']
+  } catch {
+    return ['amritsar']
+  }
+}
+
+export function listSupportedCities(): string[] {
+  const onDisk = discoverCitiesOnDisk()
+  const runtime = Object.keys(runtimeConfigs)
+  const all = Array.from(new Set([...onDisk, ...runtime, 'amritsar'])).sort()
+  return all
+}
 
 export function isCitySupported(cityId: string): boolean {
   if (!cityId) return false
-  return SUPPORTED_CITIES.includes(cityId.toLowerCase())
+  const norm = cityId.toLowerCase()
+  return listSupportedCities().includes(norm)
 }
 
 export const isValidCityId = isCitySupported
-
-export function listSupportedCities(): string[] {
-  return [...SUPPORTED_CITIES]
-}
 
 /**
  * Computes canonical SHA-256 hash across the frozen configuration subset:
@@ -179,6 +164,10 @@ export function getCityConfig(cityId: string): CityConfig {
     throw new Error(`Unknown city '${cityId}'. No configuration found.`)
   }
 
+  if (runtimeConfigs[normalized]) {
+    return runtimeConfigs[normalized]
+  }
+
   if (configCache[normalized]) {
     return configCache[normalized]
   }
@@ -245,6 +234,10 @@ export function getCitySusceptibility(cityId: string): SusceptibilityGeoJson {
   const normalized = (cityId || '').toLowerCase()
   if (!isCitySupported(normalized)) {
     throw new Error(`Unknown city '${cityId}'. No susceptibility data found.`)
+  }
+
+  if (runtimeGeoJsons[normalized]) {
+    return runtimeGeoJsons[normalized]
   }
 
   if (geoJsonCache[normalized]) {
@@ -334,5 +327,40 @@ export function getCityHotspots(cityId: string): HotspotRecord[] {
   const hotspots = JSON.parse(content) as HotspotRecord[]
   hotspotCache[normalized] = hotspots
   return hotspots
+}
+
+export function getCityManifest(cityId: string): CityBootstrapManifest | null {
+  const normalized = (cityId || '').toLowerCase()
+  if (!isCitySupported(normalized)) {
+    return null
+  }
+
+  if (manifestCache[normalized] !== undefined) {
+    return manifestCache[normalized]
+  }
+
+  const filePath = path.join(
+    process.cwd(),
+    'public',
+    'data',
+    'cities',
+    normalized,
+    'manifest.json'
+  )
+
+  if (!fs.existsSync(filePath)) {
+    manifestCache[normalized] = null
+    return null
+  }
+
+  try {
+    const content = fs.readFileSync(filePath, 'utf-8')
+    const manifest = JSON.parse(content) as CityBootstrapManifest
+    manifestCache[normalized] = manifest
+    return manifest
+  } catch {
+    manifestCache[normalized] = null
+    return null
+  }
 }
 

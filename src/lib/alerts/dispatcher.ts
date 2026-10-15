@@ -10,6 +10,7 @@ import { evaluateAlertDecision, type AlertEvaluationOptions } from './engine'
 import { isQuietHoursActive, matchSubscriberGeofence } from './geofence'
 import { EmailProvider, SmsProvider, TestAlertProvider, WebhookProvider, type AlertProvider } from './providers/base'
 import { getAlertRepository } from './repository'
+import { evaluateCityReadiness } from '../city/readiness'
 import {
   createAlertMessagePayload,
   getRolloutMode,
@@ -77,6 +78,8 @@ export async function runAlertDispatch(options: DispatchOptions = {}): Promise<D
   const subscribers = await repository.getSubscribersByCity(cityId, { optedInOnly: true })
   summary.totalSubscribersEvaluated = subscribers.length
 
+  const readiness = evaluateCityReadiness(cityId)
+
   // Channel provider instances
   const providers: Record<AlertChannel, AlertProvider> = {
     webhook: options.forceTestProvider || rolloutMode === 'test_mode' ? new TestAlertProvider('webhook') : new WebhookProvider(),
@@ -97,7 +100,13 @@ export async function runAlertDispatch(options: DispatchOptions = {}): Promise<D
     let isSuppressed = !rolloutCheck.permitted
     let suppressionReason = rolloutCheck.reason
 
-    // 3c. Quiet Hours Evaluation
+    // 3c. City Readiness & Evidence Insufficiency Gate
+    if (!isSuppressed && (readiness.determinedState === 'evidence_insufficient' || readiness.determinedState === 'configuration_only')) {
+      isSuppressed = true
+      suppressionReason = `Suppressed: City '${cityId}' readiness state is '${readiness.determinedState}'; operational alerts disabled.`
+    }
+
+    // 3d. Quiet Hours Evaluation
     if (!isSuppressed) {
       const quietCheck = isQuietHoursActive(sub.quietHours, decision.state)
       if (quietCheck.isQuiet) {
