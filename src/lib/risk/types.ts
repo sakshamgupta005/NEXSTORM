@@ -2,6 +2,8 @@
  * NEXSTORM Risk Core Type Contracts
  */
 
+import type { ValueMeta } from '../metadata'
+
 export type RiskClass = 'low' | 'moderate' | 'high'
 export type RtiBand = 'none' | 'elevated' | 'severe' | 'extreme'
 export type SBand = 'low' | 'mid' | 'high'
@@ -14,6 +16,16 @@ export type ProvenanceKind =
   | 'derived'
   | 'official'
 
+export type EvidenceClass =
+  | 'direct_observation'
+  | 'official_record'
+  | 'historical_reanalysis'
+  | 'physical_measurement'
+  | 'remotely_sensed'
+  | 'model_derived'
+  | 'simulated_demo'
+  | 'missing_unavailable'
+
 export interface Provenance {
   kind: ProvenanceKind
   source: string
@@ -22,6 +34,8 @@ export interface Provenance {
   validTo?: string
   ageSeconds?: number
   note?: string
+  evidenceClass?: EvidenceClass
+  methodology?: string
 }
 
 export interface RtiThresholds {
@@ -66,6 +80,7 @@ export interface ScenarioResult {
     high: number
   }
   provenance: Provenance[]
+  valueMeta?: Record<string, ValueMeta>
 }
 
 export interface TimelineHour {

@@ -176,28 +176,24 @@ export async function runAlertDispatch(options: DispatchOptions = {}): Promise<D
       continue
     }
 
-    // 3f. Invariant Re-check: Emergency Kill Switch before Transmission
-    if (isKillSwitchActive()) {
+    const markSuppressed = async (reason: string) => {
       deliveryRecord.status = 'suppressed'
-      deliveryRecord.failureReason = 'Suppressed: Operator emergency kill switch activated prior to transmission'
-      await repository.updateDeliveryStatus(deliveryId, 'suppressed', {
-        failureReason: deliveryRecord.failureReason,
-      })
+      deliveryRecord.failureReason = reason
+      await repository.updateDeliveryStatus(deliveryId, 'suppressed', { failureReason: reason })
       summary.suppressedDeliveries++
       summary.deliveries.push(deliveryRecord)
+    }
+
+    // 3f. Invariant Re-check: Emergency Kill Switch before Transmission
+    if (isKillSwitchActive()) {
+      await markSuppressed('Suppressed: Operator emergency kill switch activated prior to transmission')
       continue
     }
 
     // 3g. Invariant Re-check: Subscriber Opt-in Status before Transmission
     const currentSub = await repository.getSubscriberById(sub.id)
     if (!currentSub || !currentSub.isOptedIn) {
-      deliveryRecord.status = 'suppressed'
-      deliveryRecord.failureReason = 'Suppressed: Subscriber opted out prior to delivery'
-      await repository.updateDeliveryStatus(deliveryId, 'suppressed', {
-        failureReason: deliveryRecord.failureReason,
-      })
-      summary.suppressedDeliveries++
-      summary.deliveries.push(deliveryRecord)
+      await markSuppressed('Suppressed: Subscriber opted out prior to delivery')
       continue
     }
 

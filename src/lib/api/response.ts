@@ -135,3 +135,35 @@ export function apiError(message: string, options: ApiErrorOptions = {}): NextRe
 
   return NextResponse.json(payload, { status, headers: resHeaders })
 }
+
+/**
+ * Detects Next.js dynamic server usage / prerendering bail-out errors.
+ * These must be re-thrown so Next.js handles route lifecycle correctly.
+ */
+export function isDynamicServerError(err: unknown): boolean {
+  if (err instanceof Error) {
+    if (err.message.includes('bail out of prerendering')) return true
+    if ((err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE')) return true
+  }
+  return false
+}
+
+/**
+ * Standard catch handler for API Route Handlers.
+ * Automatically rethrows Next.js dynamic bail-out errors and formats 500 responses.
+ */
+export function handleApiCatch(
+  err: unknown,
+  fallbackMessage: string,
+  options?: Omit<ApiErrorOptions, 'internalError'>
+): NextResponse<ApiErrorPayload> {
+  if (isDynamicServerError(err)) {
+    throw err
+  }
+  const message = err instanceof Error ? err.message : fallbackMessage
+  return apiError(message, {
+    status: 500,
+    ...options,
+    internalError: err,
+  })
+}

@@ -4,19 +4,11 @@
  */
 
 import { NextRequest } from 'next/server'
-import { timingSafeEqual } from 'node:crypto'
-import { apiError, apiSuccess } from '@/lib/api/response'
-import { observationService } from '@/lib/observations/service'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
+import { observationService, sanitizePublicObservation } from '@/lib/observations/service'
 import { verifyObservationSchema } from '@/lib/validations/observation'
 import { logger } from '@/lib/logging/logger'
-
-function timingSafeCompare(a?: string | null, b?: string | null): boolean {
-  if (!a || !b) return false
-  const bufA = Buffer.from(a)
-  const bufB = Buffer.from(b)
-  if (bufA.length !== bufB.length) return false
-  return timingSafeEqual(bufA, bufB)
-}
+import { timingSafeCompare } from '@/lib/security/crypto'
 
 export async function PATCH(
   req: NextRequest,
@@ -95,21 +87,11 @@ export async function PATCH(
         verifiedBy: parsed.data.verifiedBy,
         verificationMethod: parsed.data.verificationMethod,
       })
-      const publicObs = { ...result.observation }
-      delete publicObs.reporterHash
-      return apiSuccess(publicObs)
+      return apiSuccess(sanitizePublicObservation(result.observation))
     }
     return apiSuccess(null)
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Internal error processing verification', {
-      status: 500,
+    return handleApiCatch(err, 'Internal error processing verification', {
       code: 'VERIFICATION_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

@@ -6,6 +6,21 @@
 import { z } from 'zod';
 import type { Provenance } from '../risk/types';
 
+export interface WeatherFetchOptions {
+  cityId?: string;
+  lat?: number;
+  lon?: number;
+  timezone?: string;
+  horizonH?: number;
+  skipCache?: boolean;
+}
+
+export const DEFAULT_WEATHER_COORDS = {
+  lat: 31.63,
+  lon: 74.87,
+  timezone: 'Asia/Kolkata',
+} as const;
+
 export interface DataQualityMetadata {
   nullCount: number;
   completenessRatio: number;

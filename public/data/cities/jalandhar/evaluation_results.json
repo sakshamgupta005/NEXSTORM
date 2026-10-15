@@ -8,7 +8,10 @@
     "totalArchivalRecords": 10,
     "includedRainfallIncidents": 9,
     "excludedNonRainfallIncidents": 1,
+    "distinctStormEvents": 5,
+    "reportedStormEvents": 5,
     "independentStormEvents": 5,
+    "stormEventTerminologyNote": "Storm events are distinct calendar dates deduplicated from newspaper articles (source_reported). Documented as distinctStormEvents; 'independentStormEvents' is maintained solely as a legacy alias and does not imply independent sensor or ground-truth gauge verification.",
     "distinctHotspotLocations": 7
   },
   "incidentLevelMetrics": {
@@ -20,6 +23,8 @@
     "podAtHighThreshold": 0.2222
   },
   "stormLevelMetrics": {
+    "distinctStormCount": 5,
+    "reportedStormCount": 5,
     "independentStormCount": 5,
     "detectedStormCountMid": 5,
     "stormLevelDetectionRate": 1.0,

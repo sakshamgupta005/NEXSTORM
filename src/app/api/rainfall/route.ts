@@ -12,6 +12,7 @@ import { fetchDeterministicForecast } from '@/lib/weather/openmeteo';
 import { calculateRainfallSummary } from '@/lib/weather/normalize';
 import type { RainfallSeries, RainfallSummary } from '@/lib/weather/types';
 import type { Provenance } from '@/lib/risk/types';
+import { ValueMeta, ValueMetaPresets } from '@/lib/metadata';
 
 const QuerySchema = z.object({
   cityId: z.string().min(1, 'cityId is required'),
@@ -27,6 +28,7 @@ export interface RainfallApiResponse {
   series?: RainfallSeries;
   summary: RainfallSummary;
   provenance: Provenance;
+  valueMeta: Record<string, ValueMeta>;
 }
 
 export async function GET(request: NextRequest) {
@@ -62,11 +64,60 @@ export async function GET(request: NextRequest) {
 
   const summary = calculateRainfallSummary(result.data);
 
+  const valueMeta: Record<string, ValueMeta> =
+    result.status === 'ok'
+      ? {
+          max24h: ValueMetaPresets.rainfall24h(
+            'live',
+            result.provenance.kind === 'cached' ? 'Cached snapshot' : 'Current forecast run',
+            result.provenance.source
+          ),
+          total24hMm: ValueMetaPresets.rainfall24h(
+            'live',
+            result.provenance.kind === 'cached' ? 'Cached snapshot' : 'Current forecast run',
+            result.provenance.source
+          ),
+          max1h: ValueMetaPresets.rainfall1h(
+            'live',
+            result.provenance.kind === 'cached' ? 'Cached snapshot' : 'Current forecast run',
+            result.provenance.source
+          ),
+          peak1hRate: ValueMetaPresets.rainfall1h(
+            'live',
+            result.provenance.kind === 'cached' ? 'Cached snapshot' : 'Current forecast run',
+            result.provenance.source
+          ),
+          imdCategory: ValueMetaPresets.imdCategory(),
+        }
+      : {
+          max24h: ValueMetaPresets.unavailable(
+            'Forecast 24h Rainfall',
+            result.error || 'Upstream provider unavailable'
+          ),
+          total24hMm: ValueMetaPresets.unavailable(
+            'Forecast 24h Rainfall',
+            result.error || 'Upstream provider unavailable'
+          ),
+          max1h: ValueMetaPresets.unavailable(
+            'Peak 1h Rainfall Rate',
+            result.error || 'Upstream provider unavailable'
+          ),
+          peak1hRate: ValueMetaPresets.unavailable(
+            'Peak 1h Rainfall Rate',
+            result.error || 'Upstream provider unavailable'
+          ),
+          imdCategory: ValueMetaPresets.unavailable(
+            'Rainfall Intensity Standard',
+            result.error || 'Upstream provider unavailable'
+          ),
+        };
+
   const payload: RainfallApiResponse = {
     status: result.status === 'ok' ? 'ok' : 'degraded',
     series: result.data,
     summary,
     provenance: result.provenance,
+    valueMeta,
   };
 
   return apiSuccess(payload, {

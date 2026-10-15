@@ -71,6 +71,8 @@ export interface ObservationFreshness {
   expiresAt: string
 }
 
+import type { ValueMeta } from '../metadata'
+
 export interface WaterloggingObservation {
   id: string
   schemaVersion: '1.0.0'
@@ -100,6 +102,9 @@ export interface WaterloggingObservation {
   verification: VerificationRecord
   corroboration: ObservationCorroboration
   freshness: ObservationFreshness
+
+  // Value-level metadata for frontend indicators
+  valueMeta?: ValueMeta
 
   // Permanent Scientific Caveat
   scientificCaveat: string

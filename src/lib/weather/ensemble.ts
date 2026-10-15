@@ -9,21 +9,19 @@ import { sharedCache } from '../cache';
 import { normalizeOpenMeteoResponse } from './normalize';
 import { fetchDeterministicForecast, getForecastTtl } from './openmeteo';
 import { recordSourceSuccess, recordSourceFailure } from './source-tracker';
-import type { RainfallSeries, WeatherAdapterResult } from './types';
+import {
+  DEFAULT_WEATHER_COORDS,
+  type RainfallSeries,
+  type WeatherAdapterResult,
+  type WeatherFetchOptions,
+} from './types';
 import type { Provenance } from '../risk/types';
 
-export interface EnsembleFetchOptions {
-  cityId?: string;
-  lat?: number;
-  lon?: number;
-  timezone?: string;
-  horizonH?: number;
-  skipCache?: boolean;
-}
+export type EnsembleFetchOptions = WeatherFetchOptions;
 
-const DEFAULT_LAT = 31.63;
-const DEFAULT_LON = 74.87;
-const DEFAULT_TIMEZONE = 'Asia/Kolkata';
+const DEFAULT_LAT = DEFAULT_WEATHER_COORDS.lat;
+const DEFAULT_LON = DEFAULT_WEATHER_COORDS.lon;
+const DEFAULT_TIMEZONE = DEFAULT_WEATHER_COORDS.timezone;
 
 export function getOpenMeteoEnsembleUrl(): string {
   return process.env.OPENMETEO_ENSEMBLE_URL || 'https://ensemble-api.open-meteo.com/v1/ensemble';

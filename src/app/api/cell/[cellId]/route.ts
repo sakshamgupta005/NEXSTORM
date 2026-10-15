@@ -5,7 +5,7 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { explainCellRisk } from '@/lib/risk/explain'
 
@@ -51,18 +51,8 @@ export async function GET(
       throw err
     }
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    const message = err instanceof Error ? err.message : 'Failed to retrieve cell explanation'
-    return apiError(message, {
-      status: 500,
+    return handleApiCatch(err, 'Failed to retrieve cell explanation', {
       code: 'CELL_EXPLANATION_FAILED',
-      internalError: err,
     })
   }
 

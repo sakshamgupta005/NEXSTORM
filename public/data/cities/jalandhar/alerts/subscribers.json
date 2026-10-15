@@ -11,26 +11,9 @@
     "isOptedIn": true,
     "isVerified": true,
     "isTestSubscriber": true,
-    "consentTimestamp": "2026-10-15T21:11:01.921Z",
-    "createdAt": "2026-10-15T21:11:01.921Z",
-    "updatedAt": "2026-10-15T21:11:01.921Z"
-  },
-  {
-    "id": "sub_jal_test_01",
-    "cityId": "jalandhar",
-    "channel": "sms",
-    "destination": "+919876543210",
-    "sensitivity": "high_sensitivity",
-    "geofence": {
-      "type": "citywide"
-    },
-    "isOptedIn": false,
-    "isVerified": true,
-    "isTestSubscriber": true,
-    "consentTimestamp": "2026-10-15T21:14:07.977Z",
-    "createdAt": "2026-10-15T21:14:07.977Z",
-    "updatedAt": "2026-10-15T21:14:08.074Z",
-    "unsubscribedAt": "2026-10-15T21:14:08.074Z"
+    "consentTimestamp": "2026-10-15T22:24:02.599Z",
+    "createdAt": "2026-10-15T22:24:02.599Z",
+    "updatedAt": "2026-10-15T22:24:02.599Z"
   },
   {
     "id": "sub_p25_jal_test",
@@ -44,9 +27,9 @@
     "isOptedIn": false,
     "isVerified": true,
     "isTestSubscriber": true,
-    "consentTimestamp": "2026-10-15T21:14:11.826Z",
-    "createdAt": "2026-10-15T21:14:11.826Z",
-    "updatedAt": "2026-10-15T21:14:11.969Z",
-    "unsubscribedAt": "2026-10-15T21:14:11.969Z"
+    "consentTimestamp": "2026-10-15T22:24:34.729Z",
+    "createdAt": "2026-10-15T22:24:34.729Z",
+    "updatedAt": "2026-10-15T22:24:34.855Z",
+    "unsubscribedAt": "2026-10-15T22:24:34.855Z"
   }
 ]

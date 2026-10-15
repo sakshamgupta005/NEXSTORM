@@ -59,12 +59,19 @@ export function clearCityCache(cityId?: string): void {
     for (const k of Object.keys(qualityReportCache)) delete qualityReportCache[k]
     for (const k of Object.keys(runtimeConfigs)) delete runtimeConfigs[k]
     for (const k of Object.keys(runtimeGeoJsons)) delete runtimeGeoJsons[k]
+    cachedDiscoveredCities = null
   }
 }
 
+let cachedDiscoveredCities: string[] | null = null
+
 function discoverCitiesOnDisk(): string[] {
+  if (cachedDiscoveredCities) return cachedDiscoveredCities
   const citiesDir = path.join(process.cwd(), 'public', 'data', 'cities')
-  if (!fs.existsSync(citiesDir)) return ['amritsar']
+  if (!fs.existsSync(citiesDir)) {
+    cachedDiscoveredCities = ['amritsar']
+    return cachedDiscoveredCities
+  }
   try {
     const entries = fs.readdirSync(citiesDir, { withFileTypes: true })
     const cities: string[] = []
@@ -76,7 +83,8 @@ function discoverCitiesOnDisk(): string[] {
         }
       }
     }
-    return cities.length > 0 ? cities : ['amritsar']
+    cachedDiscoveredCities = cities.length > 0 ? cities : ['amritsar']
+    return cachedDiscoveredCities
   } catch {
     return ['amritsar']
   }

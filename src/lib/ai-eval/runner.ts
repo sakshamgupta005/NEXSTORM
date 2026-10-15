@@ -9,7 +9,7 @@
  * - Aggregates category metrics, pass rates, and produces machine-readable EvalReport
  */
 
-import { calculateAiCost } from '@/lib/observability/metrics'
+import { calculateAiCost } from './cost'
 import { defaultEvaluatorRegistry, EvaluatorRegistry } from './evaluators'
 import type {
   AIProviderRunner,

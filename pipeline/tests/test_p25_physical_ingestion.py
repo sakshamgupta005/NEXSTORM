@@ -116,6 +116,7 @@ def test_evaluation_workflow_results():
         results = json.load(f)
 
     assert results["cityId"] == "jalandhar"
+    assert results["sampleSize"]["distinctStormEvents"] == 5
     assert results["sampleSize"]["independentStormEvents"] == 5
     assert results["incidentLevelMetrics"]["podAtMidThreshold"] == 1.0
     assert results["stormLevelMetrics"]["stormLevelDetectionRate"] == 1.0

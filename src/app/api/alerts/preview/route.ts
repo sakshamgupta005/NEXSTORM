@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { evaluateAlertDecision, createScenarioRainfallSeries } from '@/lib/alerts/engine'
 import { createAlertMessagePayload } from '@/lib/alerts/rollout'
@@ -77,15 +77,7 @@ export async function POST(req: NextRequest) {
       note: 'Alert preview only. No deliveries were queued or transmitted.',
     })
   } catch (err) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to generate alert preview', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to generate alert preview', {
       code: 'PREVIEW_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

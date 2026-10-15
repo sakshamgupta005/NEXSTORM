@@ -5,14 +5,15 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
-import { observationService } from '@/lib/observations/service'
+import { observationService, sanitizePublicObservation } from '@/lib/observations/service'
 import { rateLimiter, getClientIp } from '@/lib/security/rate-limit'
 import {
   createObservationSchema,
   observationQuerySchema,
 } from '@/lib/validations/observation'
+import { ValueMetaPresets } from '@/lib/metadata'
 
 export async function GET(req: NextRequest) {
   try {
@@ -46,26 +47,18 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    const observations = observationService.queryObservations(parsed.data).map((obs) => {
-      const publicObs = { ...obs }
-      delete publicObs.reporterHash
-      return publicObs
-    })
+    const observations = observationService.queryObservations(parsed.data).map(sanitizePublicObservation)
     return apiSuccess({
       cityId: parsed.data.cityId,
       totalCount: observations.length,
       observations,
+      valueMeta: {
+        observations: ValueMetaPresets.observation(false, false),
+        observationReport: ValueMetaPresets.observation(false, false),
+      },
     })
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to query observations', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to query observations', {
       code: 'OBSERVATIONS_FETCH_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })
@@ -140,22 +133,12 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const publicObservation = { ...result.observation }
-    delete publicObservation.reporterHash
-    return apiSuccess(publicObservation, {
+    return apiSuccess(sanitizePublicObservation(result.observation), {
       status: 201,
       headers: rateCheck.headers,
     })
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Internal server error processing observation', {
-      status: 500,
+    return handleApiCatch(err, 'Internal server error processing observation', {
       code: 'INTERNAL_SERVER_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

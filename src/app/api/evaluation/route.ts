@@ -7,9 +7,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { getCityConfig } from '@/lib/city/registry'
 import { runScientificValidationAudit } from '@/lib/evaluation/validation'
+import { ValueMetaPresets } from '@/lib/metadata'
 
 export async function GET(req: NextRequest) {
 
@@ -26,6 +27,62 @@ export async function GET(req: NextRequest) {
         `Failed to verify city configuration for '${cityId}': ${err instanceof Error ? err.message : String(err)}`,
         { status: 400, code: 'CONFIG_VERIFICATION_FAILED' }
       )
+    }
+
+    if (cityId === 'jalandhar') {
+      const jalEvalPath = path.resolve(
+        process.cwd(),
+        'public',
+        'data',
+        'cities',
+        'jalandhar',
+        'evaluation_results.json'
+      )
+      const jalQualityPath = path.resolve(
+        process.cwd(),
+        'public',
+        'data',
+        'cities',
+        'jalandhar',
+        'quality_report.json'
+      )
+
+      if (!fs.existsSync(jalEvalPath)) {
+        return apiError('Offline evaluation results for Jalandhar are unavailable.', {
+          status: 404,
+          code: 'EVALUATION_RESULTS_MISSING',
+        })
+      }
+
+      let evalData: Record<string, unknown>
+      try {
+        evalData = JSON.parse(fs.readFileSync(jalEvalPath, 'utf-8'))
+      } catch (err) {
+        return apiError('Malformed Jalandhar evaluation JSON file.', {
+          status: 500,
+          code: 'EVALUATION_SUMMARY_CORRUPT',
+          internalError: err,
+        })
+      }
+
+      const qualityReport = fs.existsSync(jalQualityPath)
+        ? JSON.parse(fs.readFileSync(jalQualityPath, 'utf-8'))
+        : null
+
+      return apiSuccess({
+        source: 'static_exploratory',
+        cityId: 'jalandhar',
+        configHash: config.configHash,
+        ...evalData,
+        audit: qualityReport,
+        valueMeta: {
+          ...((evalData.valueMeta as Record<string, unknown>) || {}),
+          evaluationStatus: ValueMetaPresets.unavailable(
+            'Jalandhar Offline Backtest',
+            'ERA5 reanalysis archive and georeferenced incident corpus are not yet established for Jalandhar.'
+          ),
+        },
+      })
     }
 
     const summaryPath = path.resolve(
@@ -85,23 +142,19 @@ export async function GET(req: NextRequest) {
       configHash: config.configHash,
       ...summary,
       audit: auditReport,
+      valueMeta: {
+        ...((summary.valueMeta as Record<string, unknown>) || {}),
+        modelPod: ValueMetaPresets.evaluationMetric('POD (Hit Rate)', 'Probability of detection across 7 verified historical storm events'),
+        baselinePod: ValueMetaPresets.evaluationMetric('Baseline POD', 'Probability of detection using standard 64.5 mm rainfall threshold'),
+        historicalArchive: ValueMetaPresets.historicalReanalysis('Reanalysis Evaluation Span', '2010-2024 ERA5-Land monsoon season reanalysis archive', 'monsoons'),
+      },
     }
 
     return apiSuccess(payload)
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    const message = err instanceof Error ? err.message : 'Failed to retrieve evaluation summary'
-    return apiError(message, {
-      status: 500,
+    return handleApiCatch(err, 'Failed to retrieve evaluation summary', {
       code: 'EVALUATION_QUERY_FAILED',
-      internalError: err,
     })
   }
-
 }
+

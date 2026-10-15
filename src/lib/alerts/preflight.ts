@@ -11,6 +11,24 @@ import { listSupportedCities } from '../city/registry'
 import { EmailProvider, SmsProvider, WebhookProvider } from './providers/base'
 import { getAlertRepository } from './repository'
 import { getRolloutMode, isKillSwitchActive } from './rollout'
+const PLACEHOLDER_PATTERNS = [
+  /^your[-_]?.*$/i,
+  /^placeholder[-_]?.*$/i,
+  /^change[-_]?me.*$/i,
+  /^insert[-_]?.*$/i,
+  /^todo[-_]?.*$/i,
+  /^example[-_]?.*$/i,
+  /^test[-_]?key.*$/i,
+  /^sk[-_]proj[-_]xxxx+.*$/i,
+  /^sk[-_]ant[-_]xxxx+.*$/i,
+]
+
+export function isPlaceholderSecret(val?: string | null): boolean {
+  if (!val) return true
+  const trimmed = val.trim()
+  if (trimmed.length === 0) return true
+  return PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(trimmed))
+}
 import type { RolloutMode } from './types'
 
 export type CheckStatus = 'PASS' | 'WARN' | 'FAIL'
@@ -36,22 +54,6 @@ export interface PreflightReport {
   }
 }
 
-const PLACEHOLDER_PATTERNS = [
-  /^your[-_]?.*$/i,
-  /^placeholder[-_]?.*$/i,
-  /^change[-_]?me.*$/i,
-  /^insert[-_]?.*$/i,
-  /^todo[-_]?.*$/i,
-  /^example[-_]?.*$/i,
-  /^test[-_]?key.*$/i,
-]
-
-function isPlaceholderSecret(val?: string | null): boolean {
-  if (!val) return true
-  const trimmed = val.trim()
-  if (trimmed.length === 0) return true
-  return PLACEHOLDER_PATTERNS.some((pattern) => pattern.test(trimmed))
-}
 
 /**
  * Runs a comprehensive deployment preflight audit.

@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
+import { DisclaimerBanner } from "@/components/layout/DisclaimerBanner";
 
 export const metadata: Metadata = {
   title: "NEXSTORM — AI Heavy-Rainfall & Urban Waterlogging Early Warning",

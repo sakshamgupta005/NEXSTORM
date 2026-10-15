@@ -5,7 +5,7 @@
 
 import { NextRequest } from 'next/server'
 import crypto from 'node:crypto'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { getAlertRepository } from '@/lib/alerts/repository'
 import { validateGeofenceTarget } from '@/lib/alerts/geofence'
@@ -105,15 +105,7 @@ export async function POST(req: NextRequest) {
       note: 'Alert preferences saved. An alert represents modeled elevated risk, never a confirmed flood report.',
     })
   } catch (err) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to save subscriber preferences', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to save subscriber preferences', {
       code: 'SUBSCRIPTION_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

@@ -4,9 +4,10 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { roadRiskService } from '@/lib/roads/service'
 import { roadRiskQuerySchema } from '@/lib/validations/roads'
+import { ValueMetaPresets } from '@/lib/metadata'
 
 export async function GET(req: NextRequest) {
   try {
@@ -71,17 +72,12 @@ export async function GET(req: NextRequest) {
         license: 'ODbL 1.0',
         evidenceKind: 'modeled',
       },
+      valueMeta: {
+        roadRisk: ValueMetaPresets.roadRisk(),
+      },
     })
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to query road segment risk', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to query road segment risk', {
       code: 'ROAD_RISK_QUERY_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

@@ -10,6 +10,7 @@ import { apiSuccess, apiError } from '@/lib/api/response';
 import { fetchSachetAlerts } from '@/lib/weather/sachet';
 import type { SachetAlert } from '@/lib/weather/types';
 import type { Provenance } from '@/lib/risk/types';
+import { ValueMeta, ValueMetaPresets } from '@/lib/metadata';
 
 const QuerySchema = z.object({
   state: z.string().optional().default('punjab'),
@@ -19,6 +20,7 @@ export interface OfficialAlertsApiResponse {
   status: 'ok' | 'unavailable';
   alerts: SachetAlert[];
   provenance: Provenance;
+  valueMeta: Record<string, ValueMeta>;
 }
 
 export async function GET(request: NextRequest) {
@@ -41,10 +43,22 @@ export async function GET(request: NextRequest) {
     stateFilter: state,
   });
 
+  const valueMeta: Record<string, ValueMeta> = {
+    alerts:
+      result.status === 'ok'
+        ? ValueMetaPresets.officialAlert(result.provenance?.source, result.provenance?.note)
+        : ValueMetaPresets.unavailable('Statutory Emergency Alert', 'NDMA SACHET feed unreachable'),
+    officialAlerts:
+      result.status === 'ok'
+        ? ValueMetaPresets.officialAlert(result.provenance?.source, result.provenance?.note)
+        : ValueMetaPresets.unavailable('Statutory Emergency Alert', 'NDMA SACHET feed unreachable'),
+  };
+
   const payload: OfficialAlertsApiResponse = {
     status: result.status === 'ok' ? 'ok' : 'unavailable',
     alerts: result.data || [],
     provenance: result.provenance,
+    valueMeta,
   };
 
   return apiSuccess(payload, {

@@ -176,6 +176,7 @@ describe('P25 — Historical Incident Inventory & Evidence Boundaries', () => {
     expect(evalData.cityId).toBe('jalandhar')
     expect(evalData.sampleSize.totalArchivalRecords).toBe(10)
     expect(evalData.sampleSize.includedRainfallIncidents).toBe(9)
+    expect(evalData.sampleSize.distinctStormEvents).toBe(5)
     expect(evalData.sampleSize.independentStormEvents).toBe(5)
 
     // All 9 incidents detected at mid-susceptibility threshold

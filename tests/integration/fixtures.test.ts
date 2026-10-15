@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createMockUser, createMockSession } from '../fixtures/auth'
 import { createMockJsonResponse, createMockErrorResponse } from '../fixtures/api'
-import { createMockOpenAIPayload } from '../fixtures/ai'
 import { safeFetch } from '@/lib/api/client'
-import { generateText } from '@/lib/ai/client'
 
 describe('Reusable Test Fixtures Integration', () => {
   beforeEach(() => {
@@ -28,19 +26,6 @@ describe('Reusable Test Fixtures Integration', () => {
     const res = await safeFetch<{ status: string; score: number }>('https://api.test/data')
     expect(res.ok).toBe(true)
     expect(res.data?.score).toBe(99)
-  })
-
-  it('mocks AI provider responses using createMockOpenAIPayload', async () => {
-    process.env.OPENAI_API_KEY = 'mock-key-for-fixture-test'
-    global.fetch = vi.fn().mockResolvedValue(
-      createMockJsonResponse(createMockOpenAIPayload('Generated hackathon solution', 50))
-    )
-
-    const res = await generateText({ prompt: 'Build an app', provider: 'openai' })
-    expect(res.success).toBe(true)
-    expect(res.data).toBe('Generated hackathon solution')
-    expect(res.usage?.totalTokens).toBe(50)
-    delete process.env.OPENAI_API_KEY
   })
 
   it('handles simulated HTTP 500 error fixtures without uncaught exceptions', async () => {

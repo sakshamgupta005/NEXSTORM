@@ -10,13 +10,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { getCityCampusSusceptibility, getCityConfig, getCitySusceptibility, isCitySupported } from '@/lib/city/registry'
 import {
   createDerivedRiskProvenance,
   createDerivedSusceptibilityProvenance,
   createSimulatedRainfallProvenance,
   PERMANENT_DISCLAIMER,
+  ValueMetaPresets,
 } from '@/lib/provenance'
 import { computeRiskGrid, computeTimeline } from '@/lib/risk/engine'
 import { rollingSum } from '@/lib/risk/rti'
@@ -330,22 +331,17 @@ export async function GET(req: NextRequest) {
       classDistribution: gridResult.classDistribution,
       classShare: gridResult.classShare,
       provenance: provenanceList,
+      valueMeta: {
+        rainfall24h: ValueMetaPresets.rainfall24h(mode, undefined, series.provenance?.source),
+        rainfall1h: ValueMetaPresets.rainfall1h(mode, undefined, series.provenance?.source),
+        susceptibility: ValueMetaPresets.susceptibility(config.name),
+        riskClass: ValueMetaPresets.riskClass(mode),
+        rti: ValueMetaPresets.rti(mode),
+      },
     }
 
     return apiSuccess(payload)
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    const message = err instanceof Error ? err.message : 'Failed to query risk'
-    return apiError(message, {
-      status: 500,
-      code: 'RISK_QUERY_FAILED',
-      internalError: err,
-    })
+    return handleApiCatch(err, 'Failed to query risk', { code: 'RISK_QUERY_FAILED' })
   }
 }

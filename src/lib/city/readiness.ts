@@ -223,15 +223,15 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
           hasSufficientEvidence = true
           checks.push({
             id: 'incident_evidence',
-            name: 'Historical Incident Ground Truth Available',
+            name: 'Historical Incident Evidence Available',
             passed: true,
-            message: `Verified incident inventory present (${validRainfall.length} locations across ${distinctStorms.size} distinct storms)`,
+            message: `Documented archival incident inventory present (${validRainfall.length} locations across ${distinctStorms.size} distinct storms, newspaper-reported baseline)`,
           })
           determinedState = 'evaluation_ready'
         } else if (distinctStorms.size >= 5) {
           checks.push({
             id: 'incident_evidence',
-            name: 'Historical Incident Ground Truth Available',
+            name: 'Historical Incident Evidence Available',
             passed: false,
             message: `Preliminary journalistic evidence inventory present (${validRainfall.length} locations across ${distinctStorms.size} storms, source_reported), but lacks historical ground-truth waterlogging data from independent field gauges or municipal registers`,
           })
@@ -239,7 +239,7 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
         } else {
           checks.push({
             id: 'incident_evidence',
-            name: 'Historical Incident Ground Truth Available',
+            name: 'Historical Incident Evidence Available',
             passed: false,
             message: `Insufficient historical incidents (${distinctStorms.size} storms < 5 storm threshold); lacks historical ground-truth waterlogging data to validate model skill`,
           })
@@ -248,7 +248,7 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
       } catch {
         checks.push({
           id: 'incident_evidence',
-          name: 'Historical Incident Ground Truth Available',
+          name: 'Historical Incident Evidence Available',
           passed: false,
           message: 'incidents_inventory.json corrupted or malformed',
         })
@@ -257,7 +257,7 @@ export function evaluateCityReadiness(cityId: string): CityReadinessEvaluation {
     } else {
       checks.push({
         id: 'incident_evidence',
-        name: 'Historical Incident Ground Truth Available',
+        name: 'Historical Incident Evidence Available',
         passed: false,
         message: 'No incidents_inventory.json found; city lacks historical ground-truth waterlogging data',
       })

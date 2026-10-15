@@ -18,7 +18,7 @@ import { z } from 'zod'
 import {
   evaluateCitationGrounding,
   validateStructuredOutput,
-} from '@/lib/testing/ai-eval'
+} from './grounding'
 import type {
   EvaluatorConfig,
   EvaluatorResult,

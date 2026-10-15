@@ -5,23 +5,15 @@
  */
 
 import { NextRequest } from 'next/server'
-import { timingSafeEqual } from 'node:crypto'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { runAlertDispatch } from '@/lib/alerts/dispatcher'
 import { createScenarioRainfallSeries } from '@/lib/alerts/engine'
 import { fetchEnsembleForecast } from '@/lib/weather/ensemble'
 import { dispatchRequestSchema } from '@/lib/validations/alerts'
 import { logger } from '@/lib/logging/logger'
+import { timingSafeCompare } from '@/lib/security/crypto'
 import type { RainfallSeries } from '@/lib/weather/types'
-
-function timingSafeCompare(a?: string | null, b?: string | null): boolean {
-  if (!a || !b) return false
-  const bufA = Buffer.from(a)
-  const bufB = Buffer.from(b)
-  if (bufA.length !== bufB.length) return false
-  return timingSafeEqual(bufA, bufB)
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -119,15 +111,7 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess(summary)
   } catch (err) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Internal error executing alert dispatch', {
-      status: 500,
+    return handleApiCatch(err, 'Internal error executing alert dispatch', {
       code: 'DISPATCH_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

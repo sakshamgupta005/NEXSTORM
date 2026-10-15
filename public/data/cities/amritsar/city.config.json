@@ -88,7 +88,7 @@
     "landCoverSource": "ESA WorldCover 2021",
     "osmSource": "OpenStreetMap 2024 Extracts",
     "weatherSource": "Open-Meteo ERA5-Land Reanalysis Archive",
-    "incidentSource": "Verified Municipal News & Ground Truth Inventory (13 locations, 7 storms)",
+    "incidentSource": "The Tribune (Amritsar Edition) Archival Reports (13 valid locations, 7 storms; source_reported)",
     "bootstrappedAt": "2024-09-30T00:00:00Z"
   },
   "operationalStatus": {

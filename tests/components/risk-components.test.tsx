@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { DisclaimerBanner } from '@/components/compliance/DisclaimerBanner'
+import { DisclaimerBanner } from '@/components/layout/DisclaimerBanner'
 import { ScenarioPanel } from '@/components/modes/ScenarioPanel'
 import { Legend } from '@/components/map/Legend'
 import { ProvenanceBadge } from '@/components/risk/ProvenanceBadge'

@@ -17,6 +17,7 @@ import {
 } from '../city/registry'
 import { sBand } from './matrix'
 import type { SBand } from './types'
+import { ValueMeta, ValueMetaPresets } from '../metadata'
 
 export interface FactorContribution {
   factor: string
@@ -59,6 +60,14 @@ export interface CellExplanation {
   }
   nearbyHotspot: NearbyHotspotResult | null
   buildingExposure?: CellBuildingExposure
+  provenance: {
+    elevationSource: string
+    landCoverSource: string
+    roadSource: string
+    evidenceClass: string
+    methodology: string
+  }
+  valueMeta: Record<string, ValueMeta>
   limitations: string[]
 }
 
@@ -272,6 +281,24 @@ export function explainCellRisk(cellId: string, cityId: string = 'amritsar'): Ce
     // Non-fatal if index file is absent or during build
   }
 
+  const provenance = {
+    elevationSource: 'Copernicus DEM GLO-30 (30m)',
+    landCoverSource: 'ESA WorldCover 2021 (10m)',
+    roadSource: 'OpenStreetMap Vectors',
+    evidenceClass: 'remotely_sensed',
+    methodology: 'Multi-scale Topographic Position Index (TPI) & raster sampling',
+  }
+
+  const valueMeta: Record<string, ValueMeta> = {
+    susceptibility: ValueMetaPresets.susceptibility(provenance.elevationSource),
+    ...(nearbyHotspot && {
+      nearbyHotspot: ValueMetaPresets.observation(false, true),
+    }),
+    ...(buildingExposure && {
+      buildingExposure: ValueMetaPresets.buildingExposure(),
+    }),
+  }
+
   return {
     cellId,
     cityId,
@@ -282,6 +309,8 @@ export function explainCellRisk(cellId: string, cityId: string = 'amritsar'): Ce
     terrainOverride,
     nearbyHotspot,
     buildingExposure,
+    provenance,
+    valueMeta,
     limitations: [...EXPLANATION_LIMITATIONS],
   }
 }

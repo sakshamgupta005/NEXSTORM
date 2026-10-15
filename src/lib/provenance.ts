@@ -10,6 +10,7 @@
  */
 
 import type { Provenance } from './risk/types'
+export * from './metadata'
 
 export const PERMANENT_DISCLAIMER =
   'Experimental research prototype. Not an official weather forecast or emergency warning. For official alerts see IMD and NDMA SACHET.'
@@ -133,6 +134,8 @@ export function evaluateObservationFreshness(observedAt: string): {
 export function createSimulatedRainfallProvenance(source: string = 'NEXSTORM Triangular Hyetograph Generator'): Provenance {
   return {
     kind: 'simulated',
+    evidenceClass: 'simulated_demo',
+    methodology: 'Synthetic triangular hyetograph storm simulation',
     source,
     fetchedAt: new Date().toISOString(),
     note: 'DEMO DATA — Deterministic triangular hyetograph simulation for research and stress-testing.',
@@ -145,6 +148,8 @@ export function createSimulatedRainfallProvenance(source: string = 'NEXSTORM Tri
 export function createSyntheticSusceptibilityProvenance(source: string = 'NEXSTORM Seeded Spatial Grid (250m)'): Provenance {
   return {
     kind: 'derived',
+    evidenceClass: 'simulated_demo',
+    methodology: 'Synthetic spatial coordinate seed (uncalibrated)',
     source,
     fetchedAt: new Date().toISOString(),
     note: 'DEMO DATA — Synthetic seeded susceptibility baseline. Not verified municipal drainage or surveyed elevation data.',
@@ -157,6 +162,8 @@ export function createSyntheticSusceptibilityProvenance(source: string = 'NEXSTO
 export function createDerivedSusceptibilityProvenance(configHash: string, source: string = 'susceptibility'): Provenance {
   return {
     kind: 'derived',
+    evidenceClass: 'remotely_sensed',
+    methodology: 'Topographic Position Index (TPI) & raster sampling (Copernicus DEM GLO-30 30m, ESA WorldCover 2021 10m, OSM vectors)',
     source,
     fetchedAt: new Date().toISOString(),
     note: configHash,
@@ -169,8 +176,66 @@ export function createDerivedSusceptibilityProvenance(configHash: string, source
 export function createDerivedRiskProvenance(note: string = 'Relative waterlogging risk estimate based on frozen configuration matrix.'): Provenance {
   return {
     kind: 'derived',
+    evidenceClass: 'model_derived',
+    methodology: 'Multi-window Rainfall Trigger Index (RTI) & 2D decision matrix',
     source: 'NEXSTORM Multi-Window RTI & Risk Matrix Engine v1.0',
     fetchedAt: new Date().toISOString(),
     note,
+  }
+}
+
+/**
+ * Creates standardized provenance descriptor for historical meteorological reanalysis.
+ */
+export function createHistoricalReanalysisProvenance(source: string = 'Open-Meteo ERA5-Land Reanalysis Archive', note?: string): Provenance {
+  return {
+    kind: 'replay',
+    evidenceClass: 'historical_reanalysis',
+    methodology: 'ECMWF ERA5-Land hourly gridded atmospheric reanalysis (~11 km resolution)',
+    source,
+    fetchedAt: new Date().toISOString(),
+    note: note || 'Retrospective meteorological reanalysis; not direct local rain gauge telemetry.',
+  }
+}
+
+/**
+ * Creates standardized provenance descriptor for official emergency broadcasts (CAP).
+ */
+export function createOfficialAlertProvenance(source: string = 'NDMA SACHET (CAP Feed)'): Provenance {
+  return {
+    kind: 'official',
+    evidenceClass: 'official_record',
+    methodology: 'Common Alerting Protocol (CAP) official emergency broadcast feed',
+    source,
+    fetchedAt: new Date().toISOString(),
+    note: 'Official statutory alert issued by authorized disaster management authority.',
+  }
+}
+
+/**
+ * Creates standardized provenance descriptor for direct community observations or field inspections.
+ */
+export function createDirectObservationProvenance(source: string = 'Community Field Report', isVerified: boolean = false): Provenance {
+  return {
+    kind: isVerified ? 'official' : 'live',
+    evidenceClass: isVerified ? 'official_record' : 'direct_observation',
+    methodology: isVerified ? 'Authorized municipal field inspection' : 'Crowdsourced community observation report',
+    source,
+    fetchedAt: new Date().toISOString(),
+    note: isVerified ? 'Verified direct field observation' : 'Unverified community report under review',
+  }
+}
+
+/**
+ * Creates standardized provenance descriptor for unavailable or degraded upstream data.
+ */
+export function createUnavailableDataProvenance(source: string, reason: string): Provenance {
+  return {
+    kind: 'derived',
+    evidenceClass: 'missing_unavailable',
+    methodology: 'Fail-closed missing data handler',
+    source,
+    fetchedAt: new Date().toISOString(),
+    note: `DEGRADED / UNAVAILABLE — ${reason}. No fake data generated.`,
   }
 }

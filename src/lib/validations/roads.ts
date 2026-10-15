@@ -4,29 +4,11 @@
  */
 
 import { z } from 'zod'
+import { spatialBboxFields } from './geo'
 
 export const roadRiskQuerySchema = z.object({
   cityId: z.string().optional().default('amritsar'),
-  bbox: z
-    .union([
-      z.string().transform((str, ctx) => {
-        const parts = str.split(',').map((x) => parseFloat(x.trim()))
-        if (parts.length !== 4 || parts.some((n) => isNaN(n))) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'bbox must be 4 comma-separated numbers: minLng,minLat,maxLng,maxLat',
-          })
-          return z.NEVER
-        }
-        return parts as [number, number, number, number]
-      }),
-      z.tuple([z.number(), z.number(), z.number(), z.number()]),
-    ])
-    .optional(),
-  minLng: z.coerce.number().min(74.0).max(76.0).optional(),
-  minLat: z.coerce.number().min(31.0).max(33.0).optional(),
-  maxLng: z.coerce.number().min(74.0).max(76.0).optional(),
-  maxLat: z.coerce.number().min(31.0).max(33.0).optional(),
+  ...spatialBboxFields,
   highway: z
     .union([
       z.string().transform((s) => s.split(',').map((x) => x.trim())),

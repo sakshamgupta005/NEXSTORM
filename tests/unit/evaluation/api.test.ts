@@ -53,4 +53,43 @@ describe('GET /api/evaluation', () => {
     expect(json.success).toBe(false)
     expect(json.error.code).toBe('CONFIG_VERIFICATION_FAILED')
   })
+
+  it('returns HTTP 200 with honest offline evaluation results for Jalandhar', async () => {
+    const req = new NextRequest('http://localhost:3000/api/evaluation?cityId=jalandhar', {
+      method: 'GET',
+    })
+
+    const res = await handleEvaluationGet(req)
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json.success).toBe(true)
+
+    const data = json.data
+    expect(data.cityId).toBe('jalandhar')
+    expect(data.status).toBe('exploratory_pre_calibration')
+    expect(data.source).toBe('static_exploratory')
+    expect(data.sampleSize.distinctStormEvents).toBe(5)
+    expect(data.sampleSize.includedRainfallIncidents).toBe(9)
+    expect(data.sampleSize.excludedNonRainfallIncidents).toBe(1)
+    expect(data.scientificCaveat).toContain('evidence_insufficient until official municipal waterlogging complaint logs')
+
+    // Quality report audit attached
+    expect(data.audit).toBeDefined()
+    expect(data.audit.auditVerdict.calibrationStatus).toBe('uncalibrated_exploratory')
+    expect(data.audit.auditVerdict.readinessState).toBe('evidence_insufficient')
+  })
+
+  it('rejects GET /api/evaluation/backtest for Jalandhar with BACKTEST_CITY_UNAVAILABLE', async () => {
+    const { GET: handleBacktestGet } = await import('@/app/api/evaluation/backtest/route')
+    const req = new NextRequest('http://localhost:3000/api/evaluation/backtest?cityId=jalandhar', {
+      method: 'GET',
+    })
+
+    const res = await handleBacktestGet(req)
+    expect(res.status).toBe(400)
+    const json = await res.json()
+    expect(json.success).toBe(false)
+    expect(json.error.code).toBe('BACKTEST_CITY_UNAVAILABLE')
+    expect(json.error.message).toContain('only available for calibrated baseline city')
+  })
 })

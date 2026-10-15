@@ -15,6 +15,7 @@ import type { RainfallSeries } from '../weather/types'
 import { toAmritsarDateString } from '../weather/normalize'
 import { loadAmritsarHistoricalArchive } from '../weather/historical'
 import { wilsonInterval } from './metrics'
+import { type ValueMeta, ValueMetaPresets } from '../metadata'
 
 export interface HistoricalIncident {
   id: string
@@ -176,6 +177,7 @@ export interface BacktestReport {
   excludedEvents?: ExcludedEventRecord[]
   scientificNonClaims: string[]
   limitations: string[]
+  valueMeta?: Record<string, ValueMeta>
 }
 
 /**
@@ -255,6 +257,9 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
   if (options.customSeries) {
     series = options.customSeries
   } else {
+    if (cityId !== 'amritsar') {
+      throw new Error(`Historical weather reanalysis archive is only available for 'amritsar'. Cannot backtest city '${cityId}' without customSeries.`)
+    }
     const archiveResult = loadAmritsarHistoricalArchive({
       startDate: options.startDate || '2023-06-01',
       endDate: options.endDate || '2024-09-30',
@@ -677,6 +682,12 @@ export function runHistoricalBacktest(options: BacktestOptions = {}): BacktestRe
     thresholdSensitivity,
     locationMetrics,
     excludedEvents,
+    valueMeta: {
+      modelPod: ValueMetaPresets.evaluationMetric('POD (Hit Rate)', 'Probability of detection across verified historical storm events'),
+      baselinePod: ValueMetaPresets.evaluationMetric('Baseline POD', 'Probability of detection using standard 64.5 mm rainfall threshold'),
+      stormCount: ValueMetaPresets.historicalReanalysis('Verified Storm Events', 'Documented localized waterlogging storms with media evidence', 'events'),
+      unreportedDays: ValueMetaPresets.historicalReanalysis('Unreported Alert Days', 'Days with high RTI without documented media reports (unlabelled, not proven non-flooding)', 'days'),
+    },
     scientificNonClaims: [
       'NEXSTORM does not predict flood depth in centimeters.',
       'Model outputs reflect rainfall-driven waterlogging hazard, not verified indoor inundation.',

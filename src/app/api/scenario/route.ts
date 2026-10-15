@@ -5,7 +5,7 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { isCitySupported } from '@/lib/city/registry'
 import { calculateScenarioRisk, ScenarioInputSchema } from '@/lib/risk/scenario'
 
@@ -46,11 +46,8 @@ export async function POST(req: NextRequest) {
     const result = calculateScenarioRisk(input)
     return apiSuccess(result)
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Failed to evaluate scenario risk'
-    return apiError(message, {
-      status: 500,
+    return handleApiCatch(err, 'Failed to evaluate scenario risk', {
       code: 'SCENARIO_EVALUATION_FAILED',
-      internalError: err,
     })
   }
 }

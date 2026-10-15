@@ -15,6 +15,7 @@ import { classDistribution } from './distribution'
 import { riskClass, sBand } from './matrix'
 import { computeRti, rollingSum, rtiBand } from './rti'
 import type { CellRisk, ScenarioResult } from './types'
+import { ValueMetaPresets } from '../metadata'
 
 export const ScenarioInputSchema = z.object({
   cityId: z.string().min(1, 'cityId is required'),
@@ -145,6 +146,14 @@ export function calculateScenarioRisk(input: ScenarioInput): ScenarioResult {
     ),
   ]
 
+  const valueMeta = {
+    rainfall24h: ValueMetaPresets.rainfall24h('scenario'),
+    rainfall1h: ValueMetaPresets.rainfall1h('scenario'),
+    rti: ValueMetaPresets.rti('scenario'),
+    riskClass: ValueMetaPresets.riskClass('scenario'),
+    susceptibility: ValueMetaPresets.susceptibility(cityConfig.name),
+  }
+
   return {
     rainfall: {
       hours,
@@ -161,5 +170,6 @@ export function calculateScenarioRisk(input: ScenarioInput): ScenarioResult {
     cells,
     classShare,
     provenance,
+    valueMeta,
   }
 }

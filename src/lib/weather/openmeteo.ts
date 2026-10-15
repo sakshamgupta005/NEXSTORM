@@ -10,21 +10,19 @@ import { getCityConfig } from '../city/registry';
 import { normalizeOpenMeteoResponse } from './normalize';
 import { saveSnapshot, loadSnapshot } from './snapshots';
 import { recordSourceSuccess, recordSourceFailure } from './source-tracker';
-import type { RainfallSeries, WeatherAdapterResult } from './types';
+import {
+  DEFAULT_WEATHER_COORDS,
+  type RainfallSeries,
+  type WeatherAdapterResult,
+  type WeatherFetchOptions,
+} from './types';
 import type { Provenance } from '../risk/types';
 
-export interface ForecastFetchOptions {
-  cityId?: string;
-  lat?: number;
-  lon?: number;
-  timezone?: string;
-  horizonH?: number;
-  skipCache?: boolean;
-}
+export type ForecastFetchOptions = WeatherFetchOptions;
 
-const DEFAULT_LAT = 31.63; // Amritsar
-const DEFAULT_LON = 74.87;
-const DEFAULT_TIMEZONE = 'Asia/Kolkata';
+const DEFAULT_LAT = DEFAULT_WEATHER_COORDS.lat;
+const DEFAULT_LON = DEFAULT_WEATHER_COORDS.lon;
+const DEFAULT_TIMEZONE = DEFAULT_WEATHER_COORDS.timezone;
 
 export function getForecastTtl(): number {
   const val = process.env.FORECAST_TTL_SECONDS;

@@ -25,6 +25,7 @@ import type {
   WaterloggingObservation,
 } from './types'
 import { getObservationRepository, type IObservationRepository } from './repository'
+import { getCityHotspots } from '../city/registry'
 import { logger } from '../logging/logger'
 
 const MAX_OBSERVATIONS_STORED = 1000
@@ -167,13 +168,10 @@ export class ObservationService {
    */
   private importHistoricalHotspots(cityId: string): WaterloggingObservation[] {
     try {
-      const hotspotsPath = path.join(process.cwd(), 'public', 'data', 'cities', cityId, 'hotspots.json')
-      if (!fs.existsSync(hotspotsPath)) return []
-
-      const hotspots = JSON.parse(fs.readFileSync(hotspotsPath, 'utf-8'))
-      return hotspots.map((h: Record<string, unknown>, idx: number): WaterloggingObservation => {
+      const hotspots = getCityHotspots(cityId)
+      return hotspots.map((h, idx): WaterloggingObservation => {
         const lat = Number(h.lat)
-        const lng = Number(h.lon ?? h.lng)
+        const lng = Number(h.lon)
         const dateStr = String(h.articleDate || '2023-07-09')
         const observedAt = new Date(`${dateStr}T12:00:00Z`).toISOString()
 
@@ -497,3 +495,19 @@ export class ObservationService {
 }
 
 export const observationService = ObservationService.getInstance()
+
+import { ValueMetaPresets } from '../metadata'
+
+/**
+ * Strips pseudonymous reporter hash before returning observation to client.
+ * Attaches human-readable value metadata.
+ */
+export function sanitizePublicObservation(obs: WaterloggingObservation): Omit<WaterloggingObservation, 'reporterHash'> {
+  const publicObs = { ...obs }
+  delete publicObs.reporterHash
+  publicObs.valueMeta = ValueMetaPresets.observation(
+    obs.verification?.isVerified,
+    obs.sourceType === 'imported_historical_record'
+  )
+  return publicObs
+}

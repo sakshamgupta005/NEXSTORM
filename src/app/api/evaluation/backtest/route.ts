@@ -1,7 +1,7 @@
 /**
  * GET /api/evaluation/backtest
  * Executes reproducible historical backtesting against genuine weather reanalysis
- * and historical incident ground truth for Amritsar.
+ * and historical news-reported incident baseline for Amritsar.
  */
 
 import { NextRequest } from 'next/server'
@@ -19,6 +19,16 @@ export async function GET(req: NextRequest) {
         status: 400,
         code: 'UNKNOWN_CITY',
       })
+    }
+
+    if (cityId !== 'amritsar') {
+      return apiError(
+        `Historical weather reanalysis backtesting is only available for calibrated baseline city 'amritsar' (requested '${cityId}'). '${cityId}' lacks an offline ERA5 reanalysis cache; see /api/evaluation?cityId=${cityId} for offline exploratory evaluation metrics.`,
+        {
+          status: 400,
+          code: 'BACKTEST_CITY_UNAVAILABLE',
+        }
+      )
     }
 
     const rawSeason = searchParams.get('season')

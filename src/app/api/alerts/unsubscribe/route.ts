@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { getAlertRepository } from '@/lib/alerts/repository'
 import { unsubscribeRequestSchema } from '@/lib/validations/alerts'
 
@@ -44,15 +44,7 @@ export async function POST(req: NextRequest) {
       message: 'Successfully unsubscribed from NEXSTORM risk alerts.',
     })
   } catch (err) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to process unsubscribe request', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to process unsubscribe request', {
       code: 'UNSUBSCRIBE_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

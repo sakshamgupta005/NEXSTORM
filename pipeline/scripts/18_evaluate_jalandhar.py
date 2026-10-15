@@ -158,7 +158,14 @@ def evaluate_jalandhar():
             "totalArchivalRecords": total_incidents,
             "includedRainfallIncidents": len(included_incidents),
             "excludedNonRainfallIncidents": len(excluded_incidents),
-            "independentStormEvents": distinct_storms,
+            "distinctStormEvents": distinct_storms,
+            "reportedStormEvents": distinct_storms,
+            "independentStormEvents": distinct_storms,  # Preserved as legacy alias; distinct newspaper dates, not independent ground truth
+            "stormEventTerminologyNote": (
+                "Storm events are distinct calendar dates deduplicated from newspaper articles (source_reported). "
+                "Documented as distinctStormEvents; 'independentStormEvents' is maintained solely as a legacy alias "
+                "and does not imply independent sensor or ground-truth gauge verification."
+            ),
             "distinctHotspotLocations": len(set(r["name"] for r in matched_results)),
         },
         "incidentLevelMetrics": {
@@ -170,7 +177,9 @@ def evaluate_jalandhar():
             "podAtHighThreshold": round(pod_high_incident, 4),
         },
         "stormLevelMetrics": {
-            "independentStormCount": distinct_storms,
+            "distinctStormCount": distinct_storms,
+            "reportedStormCount": distinct_storms,
+            "independentStormCount": distinct_storms,  # Legacy alias
             "detectedStormCountMid": detected_storms_mid,
             "stormLevelDetectionRate": round(pod_storm_mid, 4),
             "storms": storm_eval,

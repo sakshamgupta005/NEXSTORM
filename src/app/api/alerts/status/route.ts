@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { getAlertRepository } from '@/lib/alerts/repository'
 import { getRolloutMode, isKillSwitchActive } from '@/lib/alerts/rollout'
 import { EmailProvider, SmsProvider, WebhookProvider } from '@/lib/alerts/providers/base'
@@ -59,15 +59,7 @@ export async function GET(req: NextRequest) {
       createdAt: delivery.createdAt,
     })
   } catch (err) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to inspect delivery status', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to inspect delivery status', {
       code: 'STATUS_LOOKUP_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })

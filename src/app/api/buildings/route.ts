@@ -4,9 +4,10 @@
  */
 
 import { NextRequest } from 'next/server'
-import { apiError, apiSuccess } from '@/lib/api/response'
+import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { buildingExposureService } from '@/lib/buildings/service'
 import { buildingQuerySchema } from '@/lib/validations/buildings'
+import { ValueMetaPresets } from '@/lib/metadata'
 
 export async function GET(req: NextRequest) {
   try {
@@ -65,17 +66,12 @@ export async function GET(req: NextRequest) {
       },
       scientificCaveat:
         'Building exposure represents macro-catchment terrain runoff propensity. It does NOT predict indoor water depth, structural damage, or plinth elevation clearance.',
+      valueMeta: {
+        buildingExposure: ValueMetaPresets.buildingExposure(),
+      },
     })
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err.message.includes('bail out of prerendering') ||
-        (err as { digest?: string }).digest?.startsWith('DYNAMIC_SERVER_USAGE'))
-    ) {
-      throw err
-    }
-    return apiError('Failed to query building exposure records', {
-      status: 500,
+    return handleApiCatch(err, 'Failed to query building exposure records', {
       code: 'BUILDING_QUERY_ERROR',
       details: err instanceof Error ? err.message : String(err),
     })
