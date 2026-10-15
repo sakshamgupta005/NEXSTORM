@@ -9,6 +9,7 @@ import path from 'node:path'
 import { NextRequest } from 'next/server'
 import { apiError, apiSuccess } from '@/lib/api/response'
 import { getCityConfig } from '@/lib/city/registry'
+import { runScientificValidationAudit } from '@/lib/evaluation/validation'
 
 export async function GET(req: NextRequest) {
 
@@ -77,10 +78,13 @@ export async function GET(req: NextRequest) {
       )
     }
 
+    const auditReport = runScientificValidationAudit(cityId)
+
     const payload = {
       source: 'static',
       configHash: config.configHash,
       ...summary,
+      audit: auditReport,
     }
 
     return apiSuccess(payload)

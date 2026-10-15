@@ -1,0 +1,41 @@
+{
+  "status": "success",
+  "source": "OpenStreetMap contributors (via Overpass/GPKG)",
+  "license": "ODbL 1.0",
+  "totalInputSegments": 14855,
+  "validPreparedSegments": 14853,
+  "totalLengthKm": 2670.55,
+  "totalTopologicalNodes": 26155,
+  "junctionNodesCount": 664,
+  "deadEndNodesCount": 23355,
+  "underpassCount": 5,
+  "bridgeCount": 160,
+  "highwayClassificationCounts": {
+    "residential": 12426,
+    "service": 1128,
+    "tertiary": 236,
+    "primary": 183,
+    "trunk": 152,
+    "unclassified": 149,
+    "footway": 142,
+    "secondary": 123,
+    "track": 107,
+    "living_street": 57,
+    "trunk_link": 45,
+    "path": 40,
+    "steps": 20,
+    "tertiary_link": 13,
+    "primary_link": 13,
+    "pedestrian": 10,
+    "secondary_link": 5,
+    "construction": 4
+  },
+  "modeledRiskDistribution": {
+    "moderate": 7860,
+    "low": 5649,
+    "high": 1344
+  },
+  "canonicalParquetPath": "C:\\Users\\rspma\\Downloads\\NEXSTORM\\pipeline\\outputs\\amritsar_roads_prepared.parquet",
+  "processingDurationSeconds": 3.1,
+  "timestamp": "2026-10-15T11:39:21Z"
+}

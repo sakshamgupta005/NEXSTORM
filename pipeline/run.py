@@ -45,8 +45,14 @@ def run_target(target: str):
         subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "10_build_replay.py")], check=True)
         print("[PIPELINE] Running 11_write_summary.py...")
         subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "11_write_summary.py")], check=True)
+    elif target == "buildings":
+        print("[PIPELINE] Running 12_ingest_buildings.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "12_ingest_buildings.py")], check=True)
+    elif target == "roads":
+        print("[PIPELINE] Running 13_prepare_roads.py...")
+        subprocess.run([PYTHON, str(ROOT / "pipeline" / "scripts" / "13_prepare_roads.py")], check=True)
     else:
-        print(f"Unknown target '{target}'. Available targets: data, test, eval")
+        print(f"Unknown target '{target}'. Available targets: data, test, eval, buildings, roads")
         sys.exit(1)
 
 

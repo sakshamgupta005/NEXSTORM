@@ -75,6 +75,11 @@ export async function loadSnapshot(
       return null;
     }
 
+    if (savedEpoch > Date.now() + 60000) {
+      logger.warn(`Future savedAt timestamp in snapshot at ${filePath} (${parsed.savedAt}); rejecting.`);
+      return null;
+    }
+
     const ageSeconds = Math.max(0, Math.floor((Date.now() - savedEpoch) / 1000));
 
     if (ageSeconds > maxStaleSeconds) {

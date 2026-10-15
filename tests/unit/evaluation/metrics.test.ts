@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { binomialCI, csi, far, frequencyBias, pod, wilsonInterval } from '@/lib/evaluation/metrics'
+import { binomialCI, brierScore, brierSkillScore, csi, far, frequencyBias, liftAtPercentile, pod, rocAuc, wilsonInterval } from '@/lib/evaluation/metrics'
 
 describe('Pure Evaluation Metrics', () => {
   describe('Contingency Metrics (POD, FAR, CSI, Frequency Bias)', () => {
@@ -90,6 +90,35 @@ describe('Pure Evaluation Metrics', () => {
 
     it('handles edge case n=0 gracefully', () => {
       expect(binomialCI(0, 0)).toEqual([0.0, 1.0])
+    })
+  })
+
+  describe('ROC-AUC (Mann-Whitney U Formulation)', () => {
+    it('computes exact analytical values and edge cases', () => {
+      expect(rocAuc([1, 1, 0, 0], [1.0, 0.8, 0.2, 0.0])).toBe(1.0)
+      expect(rocAuc([1, 1, 0, 0], [0.1, 0.2, 0.8, 0.9])).toBe(0.0)
+      expect(rocAuc([1, 0], [0.5, 0.5])).toBe(0.5)
+      expect(rocAuc([1, 1, 0, 0], [0.9, 0.4, 0.6, 0.1])).toBe(0.75)
+    })
+  })
+
+  describe('Brier Score & Skill Score', () => {
+    it('computes probability forecast verification metrics', () => {
+      expect(brierScore([1.0, 0.0], [1, 0])).toBe(0.0)
+      expect(brierScore([0.5, 0.5], [1, 0])).toBe(0.25)
+      expect(brierSkillScore(0.125, 0.25)).toBe(0.5)
+      expect(brierSkillScore(0.25, 0.25)).toBe(0.0)
+    })
+  })
+
+  describe('Lift at Percentile', () => {
+    it('computes lift over null spatial expectation', () => {
+      const scores = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+      const labels = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1]
+      const res = liftAtPercentile(scores, labels, 20)
+      expect(res.captured).toBe(2)
+      expect(res.totalHotspots).toBe(2)
+      expect(res.lift).toBe(5.0)
     })
   })
 })

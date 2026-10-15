@@ -273,6 +273,40 @@ export function getCitySusceptibility(cityId: string): SusceptibilityGeoJson {
   return geojson
 }
 
+const campusGeoJsonCache: Record<string, SusceptibilityGeoJson> = {}
+
+export function getCityCampusSusceptibility(cityId: string): SusceptibilityGeoJson {
+  const normalized = (cityId || '').toLowerCase()
+  if (!isCitySupported(normalized)) {
+    throw new Error(`Unknown city '${cityId}'. No campus susceptibility data found.`)
+  }
+
+  if (campusGeoJsonCache[normalized]) {
+    return campusGeoJsonCache[normalized]
+  }
+
+  const filePath = path.join(
+    process.cwd(),
+    'public',
+    'data',
+    'cities',
+    normalized,
+    'campus_susceptibility.geojson'
+  )
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Campus susceptibility GeoJSON missing at ${filePath}`)
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8')
+  const geojson = JSON.parse(content) as SusceptibilityGeoJson
+
+  validateSusceptibilityGeoJson(geojson, normalized)
+
+  campusGeoJsonCache[normalized] = geojson
+  return geojson
+}
+
 export function getCityHotspots(cityId: string): HotspotRecord[] {
   const normalized = (cityId || '').toLowerCase()
   if (!isCitySupported(normalized)) {

@@ -119,12 +119,17 @@ export function normalizeOpenMeteoResponse(
   const offset = parsed.utc_offset_seconds ?? 19800;
   const hours = times.map((t) => normalizeTimestampToIst(t, offset));
 
+  let note = `${options.model} — Open-Meteo ${options.isCached ? 'cached snapshot' : 'live forecast'}`;
+  if (nullCount > 0) {
+    note += ` (DATA QUALITY WARNING: ${nullCount} missing forecast interval(s) imputed as 0 mm)`;
+  }
+
   const provenance: Provenance = {
     kind: options.isCached ? 'cached' : 'live',
     source: options.source,
     fetchedAt: new Date().toISOString(),
     ageSeconds: options.ageSeconds ?? 0,
-    note: `${options.model} — Open-Meteo ${options.isCached ? 'cached snapshot' : 'live forecast'}`,
+    note,
   };
 
   const series: RainfallSeries = {

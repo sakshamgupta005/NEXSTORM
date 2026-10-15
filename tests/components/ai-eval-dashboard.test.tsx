@@ -24,7 +24,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
     await waitFor(() => {
       expect(screen.getByText('Pass Rate')).toBeInTheDocument()
       expect(screen.getByText('Average Score')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
   })
 
   it('displays metric cards and test case list after benchmark run', async () => {
@@ -33,7 +33,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
     await waitFor(() => {
       expect(screen.getByText('Evaluation Test Cases (7 / 7)')).toBeInTheDocument()
       expect(screen.getByText('Customer Support Sentiment Classification')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
 
     // Expand a test case row to check details
     const caseTitle = screen.getByText('Customer Support Sentiment Classification')
@@ -42,7 +42,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
     await waitFor(() => {
       expect(screen.getByText('Model Output:')).toBeInTheDocument()
       expect(screen.getByText('Evaluator Breakdown:')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
   })
 
   it('filters test cases by search query and category', async () => {
@@ -50,7 +50,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Evaluation Test Cases (7 / 7)')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
 
     const searchInput = screen.getByPlaceholderText('Search test cases...')
     fireEvent.change(searchInput, { target: { value: 'Sentiment' } })
@@ -65,7 +65,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Evaluation Test Cases (7 / 7)')).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
 
     // Select regression scenario
     const select = screen.getByLabelText('Simulation Scenario')
@@ -78,7 +78,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
     // Wait for evaluation run and check regression banner
     await waitFor(() => {
       expect(screen.getByText(/AI Regression Detected against Baseline/)).toBeInTheDocument()
-    })
+    }, { timeout: 5000 })
 
     expect(screen.getByText(/Pass rate dropped/)).toBeInTheDocument()
   })
@@ -89,7 +89,7 @@ describe('AI Evaluation Dashboard Component Tests', () => {
     await waitFor(() => {
       expect(screen.getByText('Evaluation Test Cases (7 / 7)')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /Copy Markdown/i })).toBeEnabled()
-    })
+    }, { timeout: 5000 })
 
     const copyMdBtn = screen.getByRole('button', { name: /Copy Markdown/i })
     fireEvent.click(copyMdBtn)

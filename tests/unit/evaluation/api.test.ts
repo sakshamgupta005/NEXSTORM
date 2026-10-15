@@ -32,6 +32,14 @@ describe('GET /api/evaluation', () => {
     // Limitations
     expect(Array.isArray(data.limitations)).toBe(true)
     expect(data.limitations.length).toBeGreaterThanOrEqual(5)
+
+    // P7 Scientific Validation Audit
+    expect(data.audit).toBeDefined()
+    expect(data.audit.sampleCounts.distinctHotspotCells).toBe(15)
+    expect(data.audit.baselineComparison.length).toBe(4)
+    expect(data.audit.reportingBiasFindings.builtUpRocAuc).toBe(0.8658)
+    expect(data.audit.reportingBiasFindings.terrainSScoreRocAuc).toBe(0.5609)
+    expect(data.audit.alertBurdenAnalysis.modelAlertDaysPerSeason).toBe(45.0)
   })
 
   it('returns HTTP 400 for unsupported city', async () => {

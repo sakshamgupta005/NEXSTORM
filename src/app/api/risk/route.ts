@@ -11,7 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { NextRequest } from 'next/server'
 import { apiError, apiSuccess } from '@/lib/api/response'
-import { getCityConfig, getCitySusceptibility, isCitySupported } from '@/lib/city/registry'
+import { getCityCampusSusceptibility, getCityConfig, getCitySusceptibility, isCitySupported } from '@/lib/city/registry'
 import {
   createDerivedRiskProvenance,
   createDerivedSusceptibilityProvenance,
@@ -61,11 +61,14 @@ export async function GET(req: NextRequest) {
       })
     }
 
+    const rawView = (searchParams.get('view') || searchParams.get('grid') || 'city').toLowerCase()
+    const view = rawView === 'campus' ? 'campus' : 'city'
+
     let config
     let susceptibility
     try {
       config = getCityConfig(cityId)
-      susceptibility = getCitySusceptibility(cityId)
+      susceptibility = view === 'campus' ? getCityCampusSusceptibility(cityId) : getCitySusceptibility(cityId)
     } catch (err: unknown) {
       return apiError(
         `Configuration or susceptibility validation failed: ${err instanceof Error ? err.message : String(err)}`,
@@ -293,6 +296,7 @@ export async function GET(req: NextRequest) {
 
     const payload = {
       cityId,
+      view,
       mode,
       status: adapterStatus,
       disclaimer: PERMANENT_DISCLAIMER,

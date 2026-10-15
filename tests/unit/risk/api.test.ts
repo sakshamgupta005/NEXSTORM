@@ -81,6 +81,20 @@ describe('Scenario & Risk Route Handlers', () => {
       expect(json.data.cells.length).toBeGreaterThan(1000)
     })
 
+    it('supports view=campus returning 699 GNDU sub-grid cells', async () => {
+      const url =
+        'http://localhost:3000/api/risk?cityId=amritsar&view=campus&mode=scenario&peakMm1h=40&durationH=4'
+      const req = new NextRequest(url, { method: 'GET' })
+
+      const res = await handleRiskGet(req)
+      expect(res.status).toBe(200)
+      const json = await res.json()
+      expect(json.success).toBe(true)
+      expect(json.data.view).toBe('campus')
+      expect(json.data.cells.length).toBe(699)
+      expect(json.data.cells[0].id).toBe('G-0001')
+    })
+
     it('processes live mode using weather adapter without crashing', async () => {
       const url = 'http://localhost:3000/api/risk?cityId=amritsar&mode=live'
       const req = new NextRequest(url, { method: 'GET' })

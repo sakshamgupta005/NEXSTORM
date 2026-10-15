@@ -41,6 +41,13 @@ describe('Cell Explanations & Factor Contributions', () => {
     expect(exp.nearbyHotspot).toBeNull()
   })
 
+  it('explains GNDU campus cell G-0001 successfully', () => {
+    const exp = explainCellRisk('G-0001', 'amritsar')
+    expect(exp.cellId).toBe('G-0001')
+    expect(exp.sValue).toBeCloseTo(0.8535, 3)
+    expect(exp.factorContributions.length).toBe(5)
+  })
+
   describe('GET /api/cell/[cellId]', () => {
     it('returns HTTP 200 with full explanation for valid cell A-0590', async () => {
       const req = new NextRequest('http://localhost:3000/api/cell/A-0590', { method: 'GET' })

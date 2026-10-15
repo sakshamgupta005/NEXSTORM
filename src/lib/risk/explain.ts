@@ -4,7 +4,10 @@
  * and scientific limitations.
  */
 
+import fs from 'node:fs'
+import path from 'node:path'
 import {
+  getCityCampusSusceptibility,
   getCityConfig,
   getCityHotspots,
   getCitySusceptibility,
@@ -33,6 +36,15 @@ export interface NearbyHotspotResult {
   precision: string
 }
 
+export interface CellBuildingExposure {
+  buildingCount: number
+  totalFootprintAreaM2: number
+  meanFootprintAreaM2: number
+  highConfidenceCount: number
+  exposureCategory: 'minimal' | 'moderate_catchment' | 'high_catchment' | 'none'
+  scientificCaveat: string
+}
+
 export interface CellExplanation {
   cellId: string
   cityId: string
@@ -46,6 +58,7 @@ export interface CellExplanation {
     note?: string
   }
   nearbyHotspot: NearbyHotspotResult | null
+  buildingExposure?: CellBuildingExposure
   limitations: string[]
 }
 
@@ -183,7 +196,15 @@ export function explainCellRisk(cellId: string, cityId: string = 'amritsar'): Ce
   const susceptibility = getCitySusceptibility(cityId)
   const hotspots = getCityHotspots(cityId)
 
-  const feature = susceptibility.features.find((f) => f.properties.id === cellId)
+  let feature = susceptibility.features.find((f) => f.properties.id === cellId)
+  if (!feature) {
+    try {
+      const campus = getCityCampusSusceptibility(cityId)
+      feature = campus.features.find((f) => f.properties.id === cellId)
+    } catch {
+      // campus not available
+    }
+  }
   if (!feature) {
     throw new Error(`Cell '${cellId}' not found in susceptibility grid for city '${cityId}'.`)
   }
@@ -221,6 +242,36 @@ export function explainCellRisk(cellId: string, cityId: string = 'amritsar'): Ce
 
   const nearbyHotspot = findNearbyHotspot(feature, hotspots, 500)
 
+  let buildingExposure: CellBuildingExposure | undefined
+  try {
+    const indexPath = path.join(
+      process.cwd(),
+      'public',
+      'data',
+      'cities',
+      cityId,
+      'buildings',
+      'cell_index.json'
+    )
+    if (fs.existsSync(indexPath)) {
+      const indexJson = JSON.parse(fs.readFileSync(indexPath, 'utf-8'))
+      const cellEntry = indexJson.cells?.[cellId]
+      if (cellEntry) {
+        buildingExposure = {
+          buildingCount: cellEntry.buildingCount,
+          totalFootprintAreaM2: cellEntry.totalFootprintAreaM2,
+          meanFootprintAreaM2: cellEntry.meanFootprintAreaM2,
+          highConfidenceCount: cellEntry.highConfidenceCount,
+          exposureCategory: cellEntry.exposureCategory,
+          scientificCaveat:
+            'Macro-catchment exposure only; does NOT predict indoor water depth or structural safety.',
+        }
+      }
+    }
+  } catch {
+    // Non-fatal if index file is absent or during build
+  }
+
   return {
     cellId,
     cityId,
@@ -230,6 +281,7 @@ export function explainCellRisk(cellId: string, cityId: string = 'amritsar'): Ce
     factorContributions,
     terrainOverride,
     nearbyHotspot,
+    buildingExposure,
     limitations: [...EXPLANATION_LIMITATIONS],
   }
 }

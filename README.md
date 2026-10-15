@@ -68,6 +68,11 @@ NEXSTORM Architecture
 | `p3-data` | **Done** | Offline Python pipeline, 1,998 real Amritsar cells, 699 GNDU campus cells |
 | `p4b-eval` | **Done** | E1–E3 evaluation framework, 72h historical replay (`2025-09-01_amritsar.json`), 46 shared cross-language test vectors |
 | `p5-risk` | **Done** | Real risk engine, cell factor explanations (`/api/cell/[cellId]`), contingency metrics, and `/api/evaluation` API |
+| `p6-console` | **Done** | City console view, interactive risk map, NDMA alerts feed, Punjab overview |
+| `p7-validation` | **Done** | Scientific validation, risk calibration, temporal holdouts, data reliability safeguards |
+| `p8-spatial` | **Done** | Amritsar data foundation audit, geodetic CRS engine, spatial matching, unified 3-pillar contracts & routing architecture |
+| `p9-ingest` | **Done** | Ingested 360,252 Google Open Buildings V3 footprints, metric areas in UTM 43N, cell index, prepared 14,853 roads with 26,155 topological nodes |
+| `p10-routes` | **Roadmap** | Unified multi-layer console & flood-aware route exposure comparison engine |
 
 ---
 

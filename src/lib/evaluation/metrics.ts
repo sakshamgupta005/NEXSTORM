@@ -140,3 +140,145 @@ export function binomialCI(
 
   return [lower, upper]
 }
+
+/**
+ * Computes Area Under the ROC Curve (ROC-AUC) via Mann-Whitney U statistic.
+ * Validates array lengths and non-empty classes.
+ */
+export function rocAuc(yTrue: number[], yScores: number[]): number {
+  if (!Array.isArray(yTrue) || !Array.isArray(yScores) || yTrue.length !== yScores.length) {
+    throw new Error('Array lengths must match for ROC-AUC computation')
+  }
+
+  const pos: number[] = []
+  const neg: number[] = []
+
+  for (let i = 0; i < yTrue.length; i++) {
+    const val = yTrue[i]
+    const score = yScores[i]
+    if (typeof score !== 'number' || !Number.isFinite(score)) {
+      throw new Error(`Invalid score at index ${i}: ${score}`)
+    }
+    if (val === 1) {
+      pos.push(score)
+    } else if (val === 0) {
+      neg.push(score)
+    } else {
+      throw new Error(`yTrue values must be 0 or 1, received ${val} at index ${i}`)
+    }
+  }
+
+  if (pos.length === 0 || neg.length === 0) {
+    return 0.5
+  }
+
+  let u = 0
+  for (let i = 0; i < pos.length; i++) {
+    for (let j = 0; j < neg.length; j++) {
+      if (pos[i] > neg[j]) {
+        u += 1.0
+      } else if (pos[i] === neg[j]) {
+        u += 0.5
+      }
+    }
+  }
+
+  return Math.round((u / (pos.length * neg.length)) * 10000) / 10000
+}
+
+/**
+ * Computes Brier Score: Mean squared error between forecast probabilities and binary outcomes.
+ * Lower is better (0.0 = perfect probabilistic forecast).
+ */
+export function brierScore(forecasts: number[], observed: number[]): number {
+  if (!Array.isArray(forecasts) || !Array.isArray(observed) || forecasts.length !== observed.length) {
+    throw new Error('Array lengths must match for Brier score computation')
+  }
+  if (forecasts.length === 0) {
+    throw new Error('Cannot compute Brier score on empty arrays')
+  }
+
+  let sumSqErr = 0
+  for (let i = 0; i < forecasts.length; i++) {
+    const f = forecasts[i]
+    const o = observed[i]
+    if (typeof f !== 'number' || !Number.isFinite(f) || f < 0 || f > 1) {
+      throw new Error(`Invalid forecast probability at index ${i}: ${f}`)
+    }
+    if (o !== 0 && o !== 1) {
+      throw new Error(`Invalid observed binary outcome at index ${i}: ${o}`)
+    }
+    sumSqErr += Math.pow(f - o, 2)
+  }
+
+  return Math.round((sumSqErr / forecasts.length) * 10000) / 10000
+}
+
+/**
+ * Computes Brier Skill Score (BSS) relative to a reference / climatological baseline forecast.
+ * BSS = 1 - (BrierScore / BrierScoreRef)
+ */
+export function brierSkillScore(brier: number, brierRef: number): number | null {
+  if (brierRef <= 0) return null
+  return Math.round((1.0 - brier / brierRef) * 10000) / 10000
+}
+
+/**
+ * Computes lift and capture rate at a specific top percentile cutoff.
+ */
+export function liftAtPercentile(
+  scores: number[],
+  isHotspot: number[],
+  topPercent: number
+): {
+  cutoff: number
+  captured: number
+  totalHotspots: number
+  captureRate: number
+  expectedRate: number
+  lift: number
+} {
+  if (topPercent <= 0 || topPercent >= 100) {
+    throw new Error('topPercent must be between 0 and 100')
+  }
+  if (scores.length !== isHotspot.length || scores.length === 0) {
+    throw new Error('Arrays must be non-empty and of equal length')
+  }
+
+  const totalHotspots = isHotspot.reduce((acc, v) => acc + (v === 1 ? 1 : 0), 0)
+  if (totalHotspots === 0) {
+    return {
+      cutoff: 0,
+      captured: 0,
+      totalHotspots: 0,
+      captureRate: 0,
+      expectedRate: topPercent / 100,
+      lift: 1.0,
+    }
+  }
+
+  const sortedScores = [...scores].sort((a, b) => a - b)
+  const cutIndex = Math.floor(sortedScores.length * (1.0 - topPercent / 100))
+  const cutoff = sortedScores[cutIndex]
+
+  let captured = 0
+  for (let i = 0; i < scores.length; i++) {
+    if (isHotspot[i] === 1 && scores[i] >= cutoff) {
+      captured++
+    }
+  }
+
+  const captureRate = Math.round((captured / totalHotspots) * 10000) / 10000
+  const expectedRate = Math.round((topPercent / 100) * 10000) / 10000
+  const lift = Math.round((captureRate / expectedRate) * 100) / 100
+
+  return {
+    cutoff: Math.round(cutoff * 10000) / 10000,
+    captured,
+    totalHotspots,
+    captureRate,
+    expectedRate,
+    lift,
+  }
+}
+

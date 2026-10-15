@@ -1,0 +1,24 @@
+{
+  "status": "success",
+  "source": "Google Open Buildings V3",
+  "license": "CC-BY-4.0",
+  "attribution": "Google Research (Open Buildings V3)",
+  "retrievalUrl": "/vsicurl/https://data.source.coop/cholmes/google-open-buildings/fgb-s2/391_buildings.fgb",
+  "boundingBox": [
+    74.8,
+    31.575,
+    74.935,
+    31.685
+  ],
+  "totalInputFeatures": 360252,
+  "validBuildingsRetained": 360252,
+  "duplicatesRemoved": 0,
+  "matchedToGridCount": 334476,
+  "unmatchedOutsideGrid": 25776,
+  "gnduCampusBuildings": 1337,
+  "hotspotClusterBuildings": 17961,
+  "cellsWithBuildings": 1893,
+  "canonicalParquetSizeMb": 32.93,
+  "processingDurationSeconds": 277.77,
+  "timestamp": "2026-10-15T11:50:29Z"
+}
