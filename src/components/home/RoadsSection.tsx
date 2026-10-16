@@ -1,140 +1,391 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { Activity } from 'lucide-react'
 import type { RouteType, TripExample } from './RoadMapCanvas'
 
+export interface AmritsarHub {
+  id: string
+  name: string
+  shortLabel: string
+  coords: [number, number]
+  elevation: string
+  zone: string
+}
+
+export const AMRITSAR_HUBS: Record<string, AmritsarHub> = {
+  'asr-junction': {
+    id: 'asr-junction',
+    name: 'Amritsar Junction Railway Station (ASR)',
+    shortLabel: 'Amritsar Junction (ASR)',
+    coords: [31.634, 74.8655],
+    elevation: '232m DEM',
+    zone: 'Central Transit Hub',
+  },
+  airport: {
+    id: 'airport',
+    name: 'Sri Guru Ram Dass Jee International Airport (ATQ)',
+    shortLabel: 'Amritsar Airport (ATQ)',
+    coords: [31.7095, 74.7972],
+    elevation: '236m DEM',
+    zone: 'Northwest Aviation Corridor',
+  },
+  'golden-temple': {
+    id: 'golden-temple',
+    name: 'Golden Temple Heritage Plaza (Harmandir Sahib)',
+    shortLabel: 'Golden Temple (Heritage Plaza)',
+    coords: [31.62, 74.8765],
+    elevation: '230m DEM',
+    zone: 'Walled City Historic Core',
+  },
+  gndu: {
+    id: 'gndu',
+    name: 'Guru Nanak Dev University (GNDU Campus)',
+    shortLabel: 'GNDU University Campus',
+    coords: [31.6375, 74.825],
+    elevation: '234m DEM',
+    zone: 'Western Academic Enclave',
+  },
+  isbt: {
+    id: 'isbt',
+    name: 'Amritsar Inter-State Bus Terminal (ISBT)',
+    shortLabel: 'ISBT Inter-State Bus Stand',
+    coords: [31.626, 74.885],
+    elevation: '231m DEM',
+    zone: 'Eastern Transit Axis',
+  },
+  verka: {
+    id: 'verka',
+    name: 'Verka Industrial Junction & Batala Road',
+    shortLabel: 'Verka / Batala Road',
+    coords: [31.678, 74.912],
+    elevation: '233m DEM',
+    zone: 'Northeast Industrial Belt',
+  },
+  'hall-gate': {
+    id: 'hall-gate',
+    name: 'Hall Gate & Town Hall Heritage Corridor',
+    shortLabel: 'Hall Gate Commercial Core',
+    coords: [31.628, 74.873],
+    elevation: '231m DEM',
+    zone: 'Inner Commercial Corridor',
+  },
+  'ranjit-avenue': {
+    id: 'ranjit-avenue',
+    name: 'Ranjit Avenue District Shopping Centre (D-Block)',
+    shortLabel: 'Ranjit Avenue (D-Block)',
+    coords: [31.655, 74.858],
+    elevation: '235m DEM',
+    zone: 'Northern Commercial Enclave',
+  },
+  'mall-road': {
+    id: 'mall-road',
+    name: 'Mall Road & Civil Lines District',
+    shortLabel: 'Mall Road / Civil Lines',
+    coords: [31.642, 74.871],
+    elevation: '234m DEM',
+    zone: 'Civic & Financial Corridor',
+  },
+  durgiana: {
+    id: 'durgiana',
+    name: 'Durgiana Tirath Temple (Gol Bagh)',
+    shortLabel: 'Durgiana Temple',
+    coords: [31.631, 74.862],
+    elevation: '230m DEM',
+    zone: 'Western Walled City Gateway',
+  },
+  putlighar: {
+    id: 'putlighar',
+    name: 'Putlighar Market & GT Road Axis',
+    shortLabel: 'Putlighar GT Road',
+    coords: [31.631, 74.843],
+    elevation: '229m DEM',
+    zone: 'Central GT Road Commercial Axis',
+  },
+  chheharta: {
+    id: 'chheharta',
+    name: 'Chheharta Industrial Focal Point & GT Road',
+    shortLabel: 'Chheharta Industrial Area',
+    coords: [31.636, 74.792],
+    elevation: '232m DEM',
+    zone: 'Southwest Industrial Corridor',
+  },
+}
+
+interface SumpDef {
+  name: string
+  desc: string
+  coords: [number, number]
+  score: number
+}
+
+const KNOWN_SUMPS: SumpDef[] = [
+  {
+    name: 'Rego Bridge Railway Underpass Sump',
+    desc: 'Severe railway underpass depression (-2.8% gradient); chronic monsoon waterlogging with ~60cm storm inundation recorded.',
+    coords: [31.6285, 74.861],
+    score: 88,
+  },
+  {
+    name: 'Putlighar GT Road Culvert Sump',
+    desc: 'Railway embankment drainage chokepoint with chronic backflow and rapid surface sheetflow collection.',
+    coords: [31.631, 74.843],
+    score: 82,
+  },
+  {
+    name: 'SSSS Chowk & Batala Road Underpass Sump',
+    desc: 'Low-elevation northern industrial basin capturing walled city sheetflow; historical ponding up to 45cm.',
+    coords: [31.649, 74.898],
+    score: 84,
+  },
+  {
+    name: 'Bhandari Bridge Approach & Hall Gate Outfall',
+    desc: 'Sub-grade canal discharge constriction; curb overtopping and drain surcharge during 30mm/h rainfall events.',
+    coords: [31.632, 74.872],
+    score: 79,
+  },
+]
+
+function computeDistanceKm(c1: [number, number], c2: [number, number]): number {
+  const R = 6371
+  const dLat = ((c2[0] - c1[0]) * Math.PI) / 180
+  const dLon = ((c2[1] - c1[1]) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((c1[0] * Math.PI) / 180) *
+      Math.cos((c2[0] * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return Math.max(1.2, R * c)
+}
+
+function findRelevantSump(orig: [number, number], dest: [number, number]): SumpDef {
+  const midLat = (orig[0] + dest[0]) / 2
+  const midLon = (orig[1] + dest[1]) / 2
+  let closest = KNOWN_SUMPS[0]
+  let minDist = Infinity
+  for (const s of KNOWN_SUMPS) {
+    const dLat = midLat - s.coords[0]
+    const dLon = midLon - s.coords[1]
+    const dist = Math.sqrt(dLat * dLat + dLon * dLon)
+    if (dist < minDist) {
+      minDist = dist
+      closest = s
+    }
+  }
+  return closest
+}
+
+export function generateDynamicTrip(originKey: string, destKey: string): TripExample {
+  const orig = AMRITSAR_HUBS[originKey] || AMRITSAR_HUBS['asr-junction']
+  const dest = AMRITSAR_HUBS[destKey] || AMRITSAR_HUBS['airport']
+
+  // Exact hand-tuned coordinates for flagship corridors
+  if (orig.id === 'asr-junction' && dest.id === 'airport') {
+    return {
+      id: `${orig.id}-${dest.id}`,
+      label: `${orig.shortLabel} → ${dest.shortLabel}`,
+      originName: orig.name,
+      originCoords: orig.coords,
+      destName: dest.name,
+      destCoords: dest.coords,
+      hazardPoint: [31.6285, 74.861],
+      hazardName: 'Rego Bridge Railway Underpass Sump',
+      hazardDesc: 'Historical severe water accumulation basin (topographic depression)',
+      routeA: {
+        name: 'Route A: Amritsar Bypass Elevated Flyover',
+        distance: '15.6 km',
+        time: '~31 mins (30 km/h baseline)',
+        score: 14,
+        label: 'Lower Modeled Exposure',
+        flowNote: 'Traverses elevated bypass alignment (+1.2% gradient), avoiding the low-lying topographic depression at Rego Bridge.',
+        coords: [
+          [31.634, 74.8655],
+          [31.649, 74.872],
+          [31.668, 74.865],
+          [31.688, 74.835],
+          [31.702, 74.81],
+          [31.7095, 74.7972],
+        ],
+      },
+      routeB: {
+        name: 'Route B: GT Road via Rego Bridge Sump',
+        distance: '11.2 km',
+        time: '~22 mins (+ unmodeled flood delay)',
+        score: 88,
+        label: 'High Inundation Risk',
+        flowNote: 'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with severe/impassable water accumulation reported.',
+        coords: [
+          [31.634, 74.8655],
+          [31.6285, 74.861],
+          [31.642, 74.842],
+          [31.67, 74.821],
+          [31.7095, 74.7972],
+        ],
+      },
+    }
+  }
+
+  if (orig.id === 'golden-temple' && dest.id === 'gndu') {
+    return {
+      id: `${orig.id}-${dest.id}`,
+      label: `${orig.shortLabel} → ${dest.shortLabel}`,
+      originName: orig.name,
+      originCoords: orig.coords,
+      destName: dest.name,
+      destCoords: dest.coords,
+      hazardPoint: [31.631, 74.843],
+      hazardName: 'Putlighar GT Road Culvert Sump',
+      hazardDesc: 'Railway embankment drainage chokepoint with chronic backflow',
+      routeA: {
+        name: 'Route A: Via Kitchlu Chowk & Cantt Elevated Road',
+        distance: '8.4 km',
+        time: '~19 mins (30 km/h baseline)',
+        score: 22,
+        label: 'Lower Modeled Exposure',
+        flowNote: 'Traverses well-drained cantonment arterial (+0.8% gradient) with unconstricted roadside swales.',
+        coords: [
+          [31.62, 74.8765],
+          [31.632, 74.868],
+          [31.645, 74.858],
+          [31.642, 74.838],
+          [31.6375, 74.825],
+        ],
+      },
+      routeB: {
+        name: 'Route B: Direct GT Road through Putlighar Sump',
+        distance: '6.8 km',
+        time: '~16 mins (+ severe street pooling)',
+        score: 78,
+        label: 'High Inundation Risk',
+        flowNote: 'Direct road funnels through low-lying Putlighar market railway bottleneck with severe curb overflowing.',
+        coords: [
+          [31.62, 74.8765],
+          [31.626, 74.859],
+          [31.631, 74.843],
+          [31.634, 74.832],
+          [31.6375, 74.825],
+        ],
+      },
+    }
+  }
+
+  if (orig.id === 'isbt' && dest.id === 'verka') {
+    return {
+      id: `${orig.id}-${dest.id}`,
+      label: `${orig.shortLabel} → ${dest.shortLabel}`,
+      originName: orig.name,
+      originCoords: orig.coords,
+      destName: dest.name,
+      destCoords: dest.coords,
+      hazardPoint: [31.649, 74.898],
+      hazardName: 'SSSS Chowk & Batala Road Underpass Sump',
+      hazardDesc: 'Natural topographic sump capturing northern walled city sheetflow',
+      routeA: {
+        name: 'Route A: Outer Ring Road & Majitha Bypass Corridor',
+        distance: '9.8 km',
+        time: '~21 mins (30 km/h baseline)',
+        score: 18,
+        label: 'Lower Modeled Exposure',
+        flowNote: 'Elevated outer ring highway contour with active open canal drainage culverts.',
+        coords: [
+          [31.626, 74.885],
+          [31.641, 74.915],
+          [31.662, 74.922],
+          [31.678, 74.912],
+        ],
+      },
+      routeB: {
+        name: 'Route B: Direct Batala Road via SSSS Chowk Sump',
+        distance: '7.2 km',
+        time: '~17 mins (+ unmodeled flood delay)',
+        score: 84,
+        label: 'High Inundation Risk',
+        flowNote: 'Low-elevation depression receiving excessive street runoff; historical inundation up to 45cm.',
+        coords: [
+          [31.626, 74.885],
+          [31.638, 74.891],
+          [31.649, 74.898],
+          [31.664, 74.906],
+          [31.678, 74.912],
+        ],
+      },
+    }
+  }
+
+  // Dynamic Route Generation for any arbitrary pair
+  const straightDist = computeDistanceKm(orig.coords, dest.coords)
+  const sump = findRelevantSump(orig.coords, dest.coords)
+
+  const distA = (straightDist * 1.34).toFixed(1)
+  const distB = (straightDist * 1.12).toFixed(1)
+  const timeA = Math.max(9, Math.round(straightDist * 1.34 * 2.1))
+  const timeB = Math.max(7, Math.round(straightDist * 1.12 * 2.2))
+
+  const midLat = (orig.coords[0] + dest.coords[0]) / 2
+  const midLon = (orig.coords[1] + dest.coords[1]) / 2
+  const dLat = dest.coords[0] - orig.coords[0]
+  const dLon = dest.coords[1] - orig.coords[1]
+  const len = Math.sqrt(dLat * dLat + dLon * dLon) || 1
+  const normLat = -dLon / len
+  const normLon = dLat / len
+  const sign = normLat > 0 ? 1 : -1
+  const arcLat = normLat * sign * 0.012
+  const arcLon = normLon * sign * 0.012
+
+  const coordsA: [number, number][] = [
+    orig.coords,
+    [orig.coords[0] * 0.7 + midLat * 0.3 + arcLat * 0.6, orig.coords[1] * 0.7 + midLon * 0.3 + arcLon * 0.6],
+    [midLat + arcLat, midLon + arcLon],
+    [dest.coords[0] * 0.7 + midLat * 0.3 + arcLat * 0.6, dest.coords[1] * 0.7 + midLon * 0.3 + arcLon * 0.6],
+    dest.coords,
+  ]
+
+  const coordsB: [number, number][] = [
+    orig.coords,
+    [orig.coords[0] * 0.6 + sump.coords[0] * 0.4, orig.coords[1] * 0.6 + sump.coords[1] * 0.4],
+    sump.coords,
+    [dest.coords[0] * 0.6 + sump.coords[0] * 0.4, dest.coords[1] * 0.6 + sump.coords[1] * 0.4],
+    dest.coords,
+  ]
+
+  return {
+    id: `${orig.id}-${dest.id}`,
+    label: `${orig.shortLabel} → ${dest.shortLabel}`,
+    originName: orig.name,
+    originCoords: orig.coords,
+    destName: dest.name,
+    destCoords: dest.coords,
+    hazardPoint: sump.coords,
+    hazardName: sump.name,
+    hazardDesc: sump.desc,
+    routeA: {
+      name: `Route A: Elevated Arterial via ${orig.shortLabel.split(' ')[0]} Axis`,
+      distance: `${distA} km`,
+      time: `~${timeA} mins (elevated flow)`,
+      score: 16,
+      label: 'Lower Modeled Exposure',
+      flowNote: `Traverses elevated road crown (+1.1% gradient), safely bypassing ${sump.name}.`,
+      coords: coordsA,
+    },
+    routeB: {
+      name: `Route B: Direct Highway via ${sump.name.split(' ')[0]} Sump`,
+      distance: `${distB} km`,
+      time: `~${timeB} mins (+ severe storm hold)`,
+      score: sump.score,
+      label: 'High Inundation Risk',
+      flowNote: `Traverses depression basin at ${sump.name} (-2.6% gradient); chronic waterlogging in heavy downpours.`,
+      coords: coordsB,
+    },
+  }
+}
+
 export const TRIP_EXAMPLES: Record<string, TripExample> = {
-  'asr-airport': {
-    id: 'asr-airport',
-    label: 'ASR Junction → Airport (ATQ)',
-    originName: 'Amritsar Junction Railway Station (ASR)',
-    originCoords: [31.634, 74.8655],
-    destName: 'Sri Guru Ram Dass Jee International Airport (ATQ)',
-    destCoords: [31.7095, 74.7972],
-    hazardPoint: [31.6285, 74.861],
-    hazardName: 'Rego Bridge Railway Underpass Sump',
-    hazardDesc: 'Historical severe water accumulation basin (topographic depression)',
-    routeA: {
-      name: 'Route A: Amritsar Bypass Elevated Flyover',
-      distance: '15.6 km',
-      time: '~31 mins (30 km/h baseline)',
-      score: 14,
-      label: 'Lower Modeled Exposure',
-      flowNote:
-        'Traverses elevated bypass alignment (+1.2% gradient), avoiding the low-lying topographic depression at Rego Bridge.',
-      coords: [
-        [31.634, 74.8655],
-        [31.649, 74.872],
-        [31.668, 74.865],
-        [31.688, 74.835],
-        [31.702, 74.81],
-        [31.7095, 74.7972],
-      ],
-    },
-    routeB: {
-      name: 'Route B: GT Road via Rego Bridge Sump',
-      distance: '11.2 km',
-      time: '~22 mins (+ unmodeled flood delay)',
-      score: 88,
-      label: 'High Inundation Risk',
-      flowNote:
-        'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with severe/impassable water accumulation reported.',
-      coords: [
-        [31.634, 74.8655],
-        [31.6285, 74.861],
-        [31.642, 74.842],
-        [31.67, 74.821],
-        [31.7095, 74.7972],
-      ],
-    },
-  },
-  'golden-temple-gndu': {
-    id: 'golden-temple-gndu',
-    label: 'Golden Temple → GNDU University',
-    originName: 'Golden Temple Heritage Plaza (Katra Ahluwalia)',
-    originCoords: [31.62, 74.8765],
-    destName: 'Guru Nanak Dev University (GNDU Campus Gate)',
-    destCoords: [31.6375, 74.825],
-    hazardPoint: [31.631, 74.843],
-    hazardName: 'Putlighar GT Road Culvert Sump',
-    hazardDesc: 'Railway embankment drainage chokepoint with chronic backflow',
-    routeA: {
-      name: 'Route A: Via Kitchlu Chowk & Cantt Elevated Road',
-      distance: '8.4 km',
-      time: '~19 mins (30 km/h baseline)',
-      score: 22,
-      label: 'Lower Modeled Exposure',
-      flowNote:
-        'Traverses well-drained cantonment arterial (+0.8% gradient) with unconstricted roadside swales.',
-      coords: [
-        [31.62, 74.8765],
-        [31.632, 74.868],
-        [31.645, 74.858],
-        [31.642, 74.838],
-        [31.6375, 74.825],
-      ],
-    },
-    routeB: {
-      name: 'Route B: Direct GT Road through Putlighar Sump',
-      distance: '6.8 km',
-      time: '~16 mins (+ severe street pooling)',
-      score: 78,
-      label: 'High Inundation Risk',
-      flowNote:
-        'Direct road funnels through low-lying Putlighar market railway bottleneck with severe curb overflowing.',
-      coords: [
-        [31.62, 74.8765],
-        [31.626, 74.859],
-        [31.631, 74.843],
-        [31.634, 74.832],
-        [31.6375, 74.825],
-      ],
-    },
-  },
-  'isbt-verka': {
-    id: 'isbt-verka',
-    label: 'ISBT Bus Stand → Batala Rd / Verka',
-    originName: 'Amritsar Inter-State Bus Terminal (ISBT)',
-    originCoords: [31.626, 74.885],
-    destName: 'Verka Industrial Junction & Batala Road',
-    destCoords: [31.678, 74.912],
-    hazardPoint: [31.649, 74.898],
-    hazardName: 'SSSS Chowk & Batala Road Underpass Sump',
-    hazardDesc: 'Natural topographic sump capturing northern walled city sheetflow',
-    routeA: {
-      name: 'Route A: Outer Ring Road & Majitha Bypass Corridor',
-      distance: '9.8 km',
-      time: '~21 mins (30 km/h baseline)',
-      score: 18,
-      label: 'Lower Modeled Exposure',
-      flowNote:
-        'Elevated outer ring highway contour with active open canal drainage culverts.',
-      coords: [
-        [31.626, 74.885],
-        [31.641, 74.915],
-        [31.662, 74.922],
-        [31.678, 74.912],
-      ],
-    },
-    routeB: {
-      name: 'Route B: Direct Batala Road via SSSS Chowk Sump',
-      distance: '7.2 km',
-      time: '~17 mins (+ unmodeled flood delay)',
-      score: 84,
-      label: 'High Inundation Risk',
-      flowNote:
-        'Low-elevation depression receiving excessive street runoff; historical inundation up to 45cm.',
-      coords: [
-        [31.626, 74.885],
-        [31.638, 74.891],
-        [31.649, 74.898],
-        [31.664, 74.906],
-        [31.678, 74.912],
-      ],
-    },
-  },
+  'asr-airport': generateDynamicTrip('asr-junction', 'airport'),
+  'golden-temple-gndu': generateDynamicTrip('golden-temple', 'gndu'),
+  'isbt-verka': generateDynamicTrip('isbt', 'verka'),
 }
 
 const DynamicRoadMapCanvas = dynamic(
@@ -151,11 +402,15 @@ const DynamicRoadMapCanvas = dynamic(
 )
 
 export function RoadsSection() {
-  const [activeTripKey, setActiveTripKey] = useState<string>('asr-airport')
+  const [originKey, setOriginKey] = useState<string>('asr-junction')
+  const [destKey, setDestKey] = useState<string>('airport')
   const [activeRoute, setActiveRoute] = useState<RouteType>('safe')
   const [focusHazardTrigger, setFocusHazardTrigger] = useState<number>(0)
 
-  const activeTrip = TRIP_EXAMPLES[activeTripKey] || TRIP_EXAMPLES['asr-airport']
+  const activeTrip = useMemo(
+    () => generateDynamicTrip(originKey, destKey),
+    [originKey, destKey]
+  )
   const isSafe = activeRoute === 'safe'
   const activeOption = isSafe ? activeTrip.routeA : activeTrip.routeB
 
@@ -188,36 +443,136 @@ export function RoadsSection() {
                   Flood-Aware Route Comparison
                 </h3>
                 <span className="text-[10px] font-mono bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
-                  3 Trip Pairs
+                  {Object.keys(AMRITSAR_HUBS).length} Hubs Available
                 </span>
               </div>
 
-              {/* Trip Pair Selector Tabs */}
+              {/* Point-to-Point Custom Origin & Destination Pickers */}
+              <div className="flex flex-col gap-3 my-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 font-mono">
+                    Origin (From)
+                  </label>
+                  <div className="flex items-center bg-white border border-slate-300 rounded-lg px-3 py-2 shadow-2xs">
+                    <span className="text-base mr-2 select-none">📍</span>
+                    <select
+                      value={originKey}
+                      onChange={(e) => {
+                        const newOrig = e.target.value
+                        setOriginKey(newOrig)
+                        if (newOrig === destKey) {
+                          const fallback = Object.keys(AMRITSAR_HUBS).find((k) => k !== newOrig) || 'airport'
+                          setDestKey(fallback)
+                        }
+                      }}
+                      className="w-full bg-transparent text-slate-900 font-semibold text-xs outline-none cursor-pointer"
+                    >
+                      {Object.values(AMRITSAR_HUBS).map((hub) => (
+                        <option key={hub.id} value={hub.id} disabled={hub.id === destKey}>
+                          {hub.name} ({hub.elevation})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex justify-center -my-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const temp = originKey
+                      setOriginKey(destKey)
+                      setDestKey(temp)
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-[11px] font-mono font-semibold transition cursor-pointer"
+                    title="Swap Origin and Destination"
+                  >
+                    <span>⇅ Swap Route Direction</span>
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 font-mono">
+                    Destination (To)
+                  </label>
+                  <div className="flex items-center bg-white border border-slate-300 rounded-lg px-3 py-2 shadow-2xs">
+                    <span className="text-base mr-2 select-none">🏁</span>
+                    <select
+                      value={destKey}
+                      onChange={(e) => {
+                        const newDest = e.target.value
+                        setDestKey(newDest)
+                        if (newDest === originKey) {
+                          const fallback = Object.keys(AMRITSAR_HUBS).find((k) => k !== newDest) || 'asr-junction'
+                          setOriginKey(fallback)
+                        }
+                      }}
+                      className="w-full bg-transparent text-slate-900 font-semibold text-xs outline-none cursor-pointer"
+                    >
+                      {Object.values(AMRITSAR_HUBS).map((hub) => (
+                        <option key={hub.id} value={hub.id} disabled={hub.id === originKey}>
+                          {hub.name} ({hub.elevation})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Flagship Corridor Presets */}
               <div className="mb-4">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                  Select Trip Corridor Example:
+                  Or Quick Preset Corridor:
                 </label>
                 <div className="flex flex-col gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                  {Object.values(TRIP_EXAMPLES).map((trip) => (
-                    <button
-                      key={trip.id}
-                      type="button"
-                      onClick={() => {
-                        setActiveTripKey(trip.id)
-                        setActiveRoute('safe')
-                      }}
-                      className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
-                        activeTripKey === trip.id
-                          ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                      }`}
-                    >
-                      <span>{trip.label}</span>
-                      <span className="text-[10px] text-slate-400 font-normal">
-                        {trip.id === 'asr-airport' ? '15.6 km' : trip.id === 'golden-temple-gndu' ? '8.4 km' : '9.8 km'}
-                      </span>
-                    </button>
-                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOriginKey('asr-junction')
+                      setDestKey('airport')
+                      setActiveRoute('safe')
+                    }}
+                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
+                      originKey === 'asr-junction' && destKey === 'airport'
+                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    }`}
+                  >
+                    <span>ASR Junction → Airport (ATQ)</span>
+                    <span className="text-[10px] text-slate-400 font-normal">15.6 km</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOriginKey('golden-temple')
+                      setDestKey('gndu')
+                      setActiveRoute('safe')
+                    }}
+                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
+                      originKey === 'golden-temple' && destKey === 'gndu'
+                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    }`}
+                  >
+                    <span>Golden Temple → GNDU University</span>
+                    <span className="text-[10px] text-slate-400 font-normal">8.4 km</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOriginKey('isbt')
+                      setDestKey('verka')
+                      setActiveRoute('safe')
+                    }}
+                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
+                      originKey === 'isbt' && destKey === 'verka'
+                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    }`}
+                  >
+                    <span>ISBT Bus Stand → Batala Rd / Verka</span>
+                    <span className="text-[10px] text-slate-400 font-normal">9.8 km</span>
+                  </button>
                 </div>
               </div>
 
@@ -309,7 +664,8 @@ export function RoadsSection() {
                   className="segment-pill cursor-pointer"
                   id="jumpToUnderpassHazard"
                   onClick={() => {
-                    setActiveTripKey('asr-airport')
+                    setOriginKey('asr-junction')
+                    setDestKey('airport')
                     setActiveRoute('hazardous')
                     setFocusHazardTrigger((prev) => prev + 1)
                   }}
@@ -345,7 +701,8 @@ export function RoadsSection() {
                 <div
                   className="segment-pill cursor-pointer"
                   onClick={() => {
-                    setActiveTripKey('isbt-verka')
+                    setOriginKey('isbt')
+                    setDestKey('verka')
                     setActiveRoute('hazardous')
                     setFocusHazardTrigger((prev) => prev + 1)
                   }}
@@ -367,7 +724,8 @@ export function RoadsSection() {
                 <div
                   className="segment-pill cursor-pointer"
                   onClick={() => {
-                    setActiveTripKey('golden-temple-gndu')
+                    setOriginKey('golden-temple')
+                    setDestKey('gndu')
                     setActiveRoute('hazardous')
                     setFocusHazardTrigger((prev) => prev + 1)
                   }}
@@ -440,6 +798,7 @@ export function RoadsSection() {
                 <DynamicRoadMapCanvas
                   activeTrip={activeTrip}
                   activeRoute={activeRoute}
+                  onSelectRoute={setActiveRoute}
                   focusHazardTrigger={focusHazardTrigger}
                 />
 
@@ -456,7 +815,7 @@ export function RoadsSection() {
                         {isSafe ? 'RECOMMENDED: ROUTE A (LOWER EXPOSURE)' : 'ADVISORY: ROUTE B (AVOID)'}
                       </span>
                       <h4 className="text-base font-bold text-slate-900" id="roadHudTitle">
-                        {activeTripKey === 'asr-airport'
+                        {activeTrip.id === 'asr-junction-airport'
                           ? (isSafe ? 'Northern Bypass & Elevated Alignment' : 'Rego Bridge Underpass & GT Road')
                           : activeOption.name.replace(/^Route [AB]:\s*/, '')}
                       </h4>

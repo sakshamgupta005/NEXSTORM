@@ -25,6 +25,7 @@ export interface AreaData {
   drainCap: string
   actionStatus: string
   statusMsg: string
+  photoUrl?: string
 }
 
 interface ProbeUpdateData {
@@ -91,18 +92,22 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
   }, [])
 
   // Create custom icons
-  const createProbeIcon = (label: string = 'ACTIVE PROBE') => {
+  const createGoogleMapsPinIcon = (label: string = 'DRAG OR CLICK') => {
     return L.divIcon({
-      className: 'custom-leaflet-marker',
+      className: 'custom-gmaps-pin',
       html: `
-        <div class="dynamic-node-wrapper">
-          <div class="node-pulse-ring"></div>
-          <div class="node-floating-tag">${label}</div>
-          <div class="node-core-badge">📍</div>
+        <div class="gmaps-pin-container pin-drop-anim" title="Click or drag around the area">
+          <div class="gmaps-pin-label">${label}</div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 44" width="32" height="44" class="gmaps-pin-svg">
+            <path fill="#EA4335" d="M16 0C7.16 0 0 7.16 0 16c0 11.2 14.25 26.68 15.35 27.86.36.39.94.39 1.3 0C17.75 42.68 32 27.2 32 16 32 7.16 24.84 0 16 0z"/>
+            <circle fill="#ffffff" cx="16" cy="16" r="6.2"/>
+            <circle fill="#B31412" cx="16" cy="16" r="3.4"/>
+          </svg>
+          <div class="gmaps-pin-shadow"></div>
         </div>
       `,
-      iconSize: [44, 44],
-      iconAnchor: [22, 22],
+      iconSize: [32, 44],
+      iconAnchor: [16, 44],
     })
   }
 
@@ -143,9 +148,14 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
         probeMarkerRef.current.setLatLng([lat, lng])
       } else {
         probeMarkerRef.current = L.marker([lat, lng], {
-          icon: createProbeIcon('ACTIVE PROBE'),
+          icon: createGoogleMapsPinIcon('DRAG OR CLICK'),
+          draggable: true,
           zIndexOffset: 1000,
         }).addTo(map)
+
+        probeMarkerRef.current.on('drag', (e: any) => {
+          updateProbeAndVectors(e.latlng, true)
+        })
       }
 
       // 2. Sink marker

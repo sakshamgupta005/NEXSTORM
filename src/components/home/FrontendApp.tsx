@@ -26,6 +26,7 @@ export function FrontendApp() {
   })
   const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(false)
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false)
+  const [showGnduBanner, setShowGnduBanner] = useState<boolean>(true)
 
   React.useEffect(() => {
     const handlePopState = () => {
@@ -69,6 +70,32 @@ export function FrontendApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f8fb] text-[#090e17]">
+      {/* Dynamic GNDU Campaign Announcement Banner */}
+      {showGnduBanner && (
+        <div className="bg-gradient-to-r from-blue-950 via-indigo-900 to-slate-900 text-white px-4 py-2 text-xs font-medium flex items-center justify-between border-b border-blue-800/40 relative z-30">
+          <div className="flex items-center gap-2 mx-auto truncate">
+            <span className="text-sm select-none">🎓</span>
+            <span className="font-semibold text-blue-200">GNDU Campus Campaign 2026:</span>
+            <span className="text-slate-300 hidden md:inline">
+              Empowering students with 50m micro-topography flood intelligence across 699 university cells.
+            </span>
+            <a
+              href="/campaign/gndu"
+              className="text-white underline underline-offset-2 hover:text-blue-200 font-bold ml-1 inline-flex items-center gap-0.5"
+            >
+              Learn More ↗
+            </a>
+          </div>
+          <button
+            onClick={() => setShowGnduBanner(false)}
+            className="text-slate-400 hover:text-white p-1 text-xs shrink-0 cursor-pointer"
+            aria-label="Dismiss banner"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* High-Precision Header Navigation */}
       <FrontendNavbar
         activeTab={activeTab}

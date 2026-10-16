@@ -376,6 +376,27 @@ export default function CityDashboardPage() {
               <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
                 Catchment-scale hydrometeorological simulation and waterlogging vulnerability across {cityId === 'amritsar' ? "Amritsar's" : `${cityId}'s`} urban grid cells.
               </p>
+
+              {/* Data Integrity & Scientific Grounding Bar */}
+              <div className="flex flex-wrap items-center gap-2 pt-2 text-[11px]">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium bg-slate-100 text-slate-700 border border-slate-200/90">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Model: <strong>Relative Susceptibility (0–100)</strong> (Runoff propensity, not flood depth)</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium bg-slate-100 text-slate-700 border border-slate-200/90">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  <span>Weather Feed: <strong>{mode === 'scenario' ? 'Synthetic Scenario Hyetograph' : mode === 'replay' ? 'ERA5-Land Reanalysis (Historical)' : 'ECMWF/GFS Deterministic Forecast (Live)'}</strong></span>
+                </span>
+                {cityId === 'jalandhar' ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                    <span>Evidence Status: <strong>Exploratory / Uncalibrated</strong> (Alerts Suppressed)</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span>Evidence Status: <strong>Evaluation Ready</strong> (15 Monsoon Storm Backtests)</span>
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -390,7 +411,7 @@ export default function CityDashboardPage() {
               <div
                 role="group"
                 aria-label="Geographic Scope"
-                className="grid grid-cols-2 gap-2 p-1.5 rounded-xl bg-slate-100 border border-slate-200"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-slate-100 border border-slate-200"
               >
                 <button
                   type="button"
@@ -432,7 +453,7 @@ export default function CityDashboardPage() {
         </div>
 
         {/* 4 Executive Metric Callouts */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <CloudRain className="w-3.5 h-3.5 text-blue-600" />

@@ -33,6 +33,25 @@ export function AboutSection(props: AboutSectionProps = {}) {
             </p>
           </header>
 
+          {/* Quick Table of Contents / Section Navigator */}
+          <nav aria-label="Documentation Sections" className="p-4 rounded-2xl bg-slate-100/80 border border-slate-200/90 shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500 px-1">
+              <span>Technical Reference Directory</span>
+              <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80 font-mono">9 Sections</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a href="#section-about" className="toc-pill">1. About NEXSTORM</a>
+              <a href="#section-how-it-works" className="toc-pill">2. Six-Stage Pipeline</a>
+              <a href="#section-data-sources" className="toc-pill">3. Data Foundation</a>
+              <a href="#section-methodology" className="toc-pill">4. Algorithms &amp; Math</a>
+              <a href="#section-understanding-risk" className="toc-pill">5. Risk Interpretation</a>
+              <a href="#section-buildings-routes" className="toc-pill">6. Buildings &amp; Routes</a>
+              <a href="#section-technical" className="toc-pill">7. Implementation</a>
+              <a href="#section-limitations" className="toc-pill">8. Limitations &amp; Roadmap</a>
+              <a href="#section-the-team" className="toc-pill">9. The Team</a>
+            </div>
+          </nav>
+
           {/* 1. About NEXSTORM */}
           <section aria-labelledby="section-about" className="space-y-5 pt-2">
             <h2
@@ -366,8 +385,14 @@ export function AboutSection(props: AboutSectionProps = {}) {
                   Static runoff accumulation propensity is evaluated for each cell as a linear weighted
                   sum of five normalized geospatial factors:
                 </p>
-                <div className="p-3.5 my-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-sm text-slate-900 overflow-x-auto">
-                  S = 0.30·f_depression + 0.30·f_builtUp + 0.15·f_lowPoint + 0.15·f_density + 0.10·f_flatness
+                <div className="formula-card p-4 sm:p-5 my-3 space-y-2.5">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">
+                    <span>Multi-Criteria Runoff Propensity (S)</span>
+                    <span className="text-[10px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Linear Weighted Sum</span>
+                  </div>
+                  <div className="p-3.5 bg-white border border-slate-200 rounded-lg font-mono text-sm sm:text-base font-bold text-slate-900 overflow-x-auto shadow-2xs">
+                    S = 0.30·f_depression + 0.30·f_builtUp + 0.15·f_lowPoint + 0.15·f_density + 0.10·f_flatness
+                  </div>
                 </div>
                 <ul className="list-disc pl-6 space-y-1 text-sm text-slate-700">
                   <li>
@@ -406,8 +431,14 @@ export function AboutSection(props: AboutSectionProps = {}) {
                   soil saturation from antecedent rainfall. NEXSTORM evaluates rolling trailing accumulations
                   across four temporal windows:
                 </p>
-                <div className="p-3.5 my-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-sm text-slate-900 overflow-x-auto">
-                  RTI = max( P_1h / 3.5, P_3h / 8.9, P_24h / 64.5, (P_72h + antecedent_72h) / 44.8 )
+                <div className="formula-card p-4 sm:p-5 my-3 space-y-2.5">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">
+                    <span>Dynamic Rainfall Trigger Index (RTI)</span>
+                    <span className="text-[10px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Multi-Window Envelope</span>
+                  </div>
+                  <div className="p-3.5 bg-white border border-slate-200 rounded-lg font-mono text-sm sm:text-base font-bold text-slate-900 overflow-x-auto shadow-2xs">
+                    RTI = max( P_1h / 3.5, P_3h / 8.9, P_24h / 64.5, (P_72h + antecedent_72h) / 44.8 )
+                  </div>
                 </div>
                 <p className="text-sm text-slate-600">
                   Threshold denominators are calibrated against 15 monsoon seasons (2010–2024 JJAS ERA5-Land
@@ -424,38 +455,38 @@ export function AboutSection(props: AboutSectionProps = {}) {
                 <p>
                   Continuous RTI and susceptibility bands are combined deterministically through a 12-cell matrix:
                 </p>
-                <div className="overflow-x-auto border border-slate-200 rounded-lg bg-white my-3">
+                <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white my-3 shadow-xs">
                   <table className="w-full text-center border-collapse text-sm">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                       <tr>
-                        <th className="py-2.5 px-3.5 text-left">Susceptibility Band (S)</th>
-                        <th className="py-2.5 px-3.5">RTI: None (&lt;0.5)</th>
-                        <th className="py-2.5 px-3.5">RTI: Elevated (0.5–1.0)</th>
-                        <th className="py-2.5 px-3.5">RTI: Severe (1.0–1.5)</th>
-                        <th className="py-2.5 px-3.5">RTI: Extreme (≥1.5)</th>
+                        <th className="py-3 px-3.5 text-left font-bold">Susceptibility Band (S)</th>
+                        <th className="py-3 px-3.5">RTI: None (&lt;0.5)</th>
+                        <th className="py-3 px-3.5">RTI: Elevated (0.5–1.0)</th>
+                        <th className="py-3 px-3.5">RTI: Severe (1.0–1.5)</th>
+                        <th className="py-3 px-3.5">RTI: Extreme (≥1.5)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium">
                       <tr>
-                        <td className="py-2.5 px-3.5 text-left font-bold text-slate-800">Low (S &lt; 0.33)</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-amber-700">Moderate</td>
+                        <td className="py-3 px-3.5 text-left font-bold text-slate-800">Low (S &lt; 0.33)</td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">Moderate</span></td>
                       </tr>
                       <tr>
-                        <td className="py-2.5 px-3.5 text-left font-bold text-slate-800">Mid (0.33 ≤ S ≤ 0.66)</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-amber-700">Moderate</td>
-                        <td className="py-2.5 px-3.5 text-rose-700">High</td>
+                        <td className="py-3 px-3.5 text-left font-bold text-slate-800">Mid (0.33 ≤ S ≤ 0.66)</td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">Moderate</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">High</span></td>
                       </tr>
                       <tr>
-                        <td className="py-2.5 px-3.5 text-left font-bold text-slate-800">High (S &gt; 0.66)</td>
-                        <td className="py-2.5 px-3.5 text-emerald-700">Low</td>
-                        <td className="py-2.5 px-3.5 text-amber-700">Moderate</td>
-                        <td className="py-2.5 px-3.5 text-rose-700">High</td>
-                        <td className="py-2.5 px-3.5 text-rose-700">High</td>
+                        <td className="py-3 px-3.5 text-left font-bold text-slate-800">High (S &gt; 0.66)</td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Low</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">Moderate</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">High</span></td>
+                        <td className="py-3 px-3.5"><span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">High</span></td>
                       </tr>
                     </tbody>
                   </table>
@@ -471,8 +502,14 @@ export function AboutSection(props: AboutSectionProps = {}) {
                   Gemini 1.5 Flash, OpenAI GPT-4o-mini, or deterministic rules) extract qualitative physical
                   proxies (e.g. road passability, curb ponding, doorstep inundation) validated strictly with Zod.
                 </p>
-                <div className="p-3.5 my-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-sm text-slate-900 overflow-x-auto">
-                  R_final = clamp( (1 - w·q)·R_base + (w·q)·R_visual, 0, 100 )
+                <div className="formula-card p-4 sm:p-5 my-3 space-y-2.5">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">
+                    <span>Multimodal Risk Fusion Formula</span>
+                    <span className="text-[10px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Asymmetric Convex Combination</span>
+                  </div>
+                  <div className="p-3.5 bg-white border border-slate-200 rounded-lg font-mono text-sm sm:text-base font-bold text-slate-900 overflow-x-auto shadow-2xs">
+                    R_final = clamp( (1 - w·q)·R_base + (w·q)·R_visual, 0, 100 )
+                  </div>
                 </div>
                 <p className="text-sm text-slate-600">
                   Reliability <code>q</code> combines distance decay (≤25m for roads, ≤35m for buildings)
@@ -718,6 +755,40 @@ export function AboutSection(props: AboutSectionProps = {}) {
               practical solutions to real-world challenges. The team behind the project is Saksham Gupta,
               Roopanshi Sharma, Jasmine Kaur, and Manvi.
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                <div className="w-9 h-9 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center font-display text-sm">
+                  SG
+                </div>
+                <div className="font-bold text-slate-900 pt-1 text-sm">Saksham Gupta</div>
+                <div className="text-xs text-blue-700 font-medium">Core Engineering &amp; Geospatial Systems</div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center font-display text-sm">
+                  RS
+                </div>
+                <div className="font-bold text-slate-900 pt-1 text-sm">Roopanshi Sharma</div>
+                <div className="text-xs text-indigo-700 font-medium">UI/UX Architecture &amp; Data Analysis</div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center font-display text-sm">
+                  JK
+                </div>
+                <div className="font-bold text-slate-900 pt-1 text-sm">Jasmine Kaur</div>
+                <div className="text-xs text-emerald-700 font-medium">Hydrology Research &amp; Model Integration</div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                <div className="w-9 h-9 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center font-display text-sm">
+                  M
+                </div>
+                <div className="font-bold text-slate-900 pt-1 text-sm">Manvi</div>
+                <div className="text-xs text-purple-700 font-medium">Field Data Validation &amp; Quality QA</div>
+              </div>
+            </div>
           </section>
         </article>
       </div>

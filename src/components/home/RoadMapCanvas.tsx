@@ -165,10 +165,16 @@ export const TRIP_EXAMPLES: Record<string, TripExample> = {
 interface RoadMapCanvasProps {
   activeTrip: TripExample
   activeRoute: RouteType
+  onSelectRoute?: (route: RouteType) => void
   focusHazardTrigger?: number
 }
 
-export function RoadMapCanvas({ activeTrip, activeRoute, focusHazardTrigger }: RoadMapCanvasProps) {
+export function RoadMapCanvas({
+  activeTrip,
+  activeRoute,
+  onSelectRoute,
+  focusHazardTrigger,
+}: RoadMapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const originMarkerRef = useRef<L.Marker | null>(null)
@@ -176,6 +182,11 @@ export function RoadMapCanvas({ activeTrip, activeRoute, focusHazardTrigger }: R
   const hazardMarkerRef = useRef<L.Marker | null>(null)
   const polylineARef = useRef<L.Polyline | null>(null)
   const polylineBRef = useRef<L.Polyline | null>(null)
+  const onSelectRouteRef = useRef(onSelectRoute)
+
+  useEffect(() => {
+    onSelectRouteRef.current = onSelectRoute
+  }, [onSelectRoute])
 
   const initialCenter = useRef(activeTrip.originCoords)
 
@@ -228,25 +239,45 @@ export function RoadMapCanvas({ activeTrip, activeRoute, focusHazardTrigger }: R
     if (polylineARef.current) map.removeLayer(polylineARef.current)
     if (polylineBRef.current) map.removeLayer(polylineBRef.current)
 
-    // Origin Pin
+    // 1. Sleek Origin Pin (Google Maps green theme)
     originMarkerRef.current = L.marker(activeTrip.originCoords, {
       icon: L.divIcon({
-        className: 'custom-hub-pin',
-        html: `<div class="route-hub-badge">📍</div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
+        className: 'custom-gmaps-pin',
+        html: `
+          <div class="gmaps-pin-container pin-drop-anim" title="Origin: ${activeTrip.originName}">
+            <div class="gmaps-pin-label">ORIGIN</div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 44" width="32" height="44" class="gmaps-pin-svg">
+              <path fill="#059669" d="M16 0C7.16 0 0 7.16 0 16c0 11.2 14.25 26.68 15.35 27.86.36.39.94.39 1.3 0C17.75 42.68 32 27.2 32 16 32 7.16 24.84 0 16 0z"/>
+              <circle fill="#ffffff" cx="16" cy="16" r="6.2"/>
+              <circle fill="#047857" cx="16" cy="16" r="3.4"/>
+            </svg>
+            <div class="gmaps-pin-shadow"></div>
+          </div>
+        `,
+        iconSize: [32, 44],
+        iconAnchor: [16, 44],
       }),
     })
       .bindPopup(`<b>Trip Origin:</b> ${activeTrip.originName}`)
       .addTo(map)
 
-    // Destination Pin
+    // 2. Sleek Destination Pin (Google Maps Red pin theme)
     destMarkerRef.current = L.marker(activeTrip.destCoords, {
       icon: L.divIcon({
-        className: 'custom-dest-pin',
-        html: `<div class="route-dest-badge">🏁</div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
+        className: 'custom-gmaps-pin',
+        html: `
+          <div class="gmaps-pin-container pin-drop-anim" title="Destination: ${activeTrip.destName}">
+            <div class="gmaps-pin-label">DESTINATION</div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 44" width="32" height="44" class="gmaps-pin-svg">
+              <path fill="#EA4335" d="M16 0C7.16 0 0 7.16 0 16c0 11.2 14.25 26.68 15.35 27.86.36.39.94.39 1.3 0C17.75 42.68 32 27.2 32 16 32 7.16 24.84 0 16 0z"/>
+              <circle fill="#ffffff" cx="16" cy="16" r="6.2"/>
+              <circle fill="#B31412" cx="16" cy="16" r="3.4"/>
+            </svg>
+            <div class="gmaps-pin-shadow"></div>
+          </div>
+        `,
+        iconSize: [32, 44],
+        iconAnchor: [16, 44],
       }),
     })
       .bindPopup(`<b>Destination:</b> ${activeTrip.destName}`)
@@ -270,15 +301,19 @@ export function RoadMapCanvas({ activeTrip, activeRoute, focusHazardTrigger }: R
       color: isSafe ? '#059669' : '#cbd5e1',
       weight: isSafe ? 6 : 3,
       opacity: isSafe ? 1 : 0.45,
-      className: isSafe ? 'runoff-polyline-anim' : undefined,
-    }).addTo(map)
+      className: isSafe ? 'runoff-polyline-anim cursor-pointer' : 'cursor-pointer',
+    })
+      .on('click', () => onSelectRouteRef.current?.('safe'))
+      .addTo(map)
 
     polylineBRef.current = L.polyline(activeTrip.routeB.coords, {
       color: !isSafe ? '#be123c' : '#cbd5e1',
       weight: !isSafe ? 6 : 3,
       opacity: !isSafe ? 1 : 0.45,
-      className: !isSafe ? 'runoff-polyline-anim' : undefined,
-    }).addTo(map)
+      className: !isSafe ? 'runoff-polyline-anim cursor-pointer' : 'cursor-pointer',
+    })
+      .on('click', () => onSelectRouteRef.current?.('hazardous'))
+      .addTo(map)
 
     const targetPoly = isSafe ? polylineARef.current : polylineBRef.current
     if (targetPoly) {

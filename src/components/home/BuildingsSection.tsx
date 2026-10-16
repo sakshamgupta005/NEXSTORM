@@ -19,7 +19,7 @@ const DynamicBuildingMapCanvas = dynamic(
   }
 )
 
-const AMRITSAR_AREAS: Record<string, AreaData> = {
+export const AMRITSAR_AREAS: Record<string, AreaData> = {
   'hall-gate': {
     key: 'hall-gate',
     code: 'ID: ASR-BLD-0104',
@@ -42,6 +42,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.88',
     actionStatus: 'Unmodeled',
     statusMsg: 'Copernicus DEM 30m topographic depression. Plinth elevation & indoor depth unmodeled.',
+    photoUrl: '/assets/locations/hall-gate.jpg',
   },
   'heritage-street': {
     key: 'heritage-street',
@@ -65,6 +66,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.62',
     actionStatus: 'Unmodeled',
     statusMsg: 'Pedestrian corridor aligned with historic Katra Ahluwalia terrain depression.',
+    photoUrl: '/assets/locations/heritage-street.jpg',
   },
   'mall-road': {
     key: 'mall-road',
@@ -88,6 +90,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.28',
     actionStatus: 'Unmodeled',
     statusMsg: 'Elevated road crown conveys runoff away from building foundations.',
+    photoUrl: '/assets/locations/mall-road.jpg',
   },
   'ranjit-avenue': {
     key: 'ranjit-avenue',
@@ -111,6 +114,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.16',
     actionStatus: 'Unmodeled',
     statusMsg: 'Modern planned sector with high relative ground elevation (234.6m MSL).',
+    photoUrl: '/assets/locations/ranjit-avenue.jpg',
   },
   'gndu-science': {
     key: 'gndu-science',
@@ -134,6 +138,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.19',
     actionStatus: 'Unmodeled',
     statusMsg: 'Elevated university campus terrain with high permeable soil ratio.',
+    photoUrl: '/assets/locations/gndu-science.jpg',
   },
   'putlighar-market': {
     key: 'putlighar-market',
@@ -157,6 +162,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.82',
     actionStatus: 'Unmodeled',
     statusMsg: 'Copernicus DEM 30m confirms local depression pinned by southern railway line.',
+    photoUrl: '/assets/locations/putlighar-market.jpg',
   },
   'batala-road': {
     key: 'batala-road',
@@ -180,6 +186,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.85',
     actionStatus: 'Unmodeled',
     statusMsg: 'Lowest local ground elevation in northern Amritsar industrial sector (226.2m MSL).',
+    photoUrl: '/assets/locations/batala-road.jpg',
   },
   'durgiana-temple': {
     key: 'durgiana-temple',
@@ -203,6 +210,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.68',
     actionStatus: 'Unmodeled',
     statusMsg: 'Topographic depression adjacent to Gol Bagh park and heritage temple precinct.',
+    photoUrl: '/assets/locations/durgiana-temple.jpg',
   },
   'majitha-medical': {
     key: 'majitha-medical',
@@ -226,6 +234,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.24',
     actionStatus: 'Unmodeled',
     statusMsg: 'Critical healthcare asset zone with well-maintained roadside drainage outfalls.',
+    photoUrl: '/assets/locations/majitha-medical.jpg',
   },
   'lawrence-road': {
     key: 'lawrence-road',
@@ -249,6 +258,7 @@ const AMRITSAR_AREAS: Record<string, AreaData> = {
     drainCap: 's = 0.32',
     actionStatus: 'Unmodeled',
     statusMsg: 'Commercial street corridor with moderate elevation (230.8m MSL).',
+    photoUrl: '/assets/locations/lawrence-road.jpg',
   },
 }
 
@@ -311,6 +321,9 @@ export function BuildingsSection() {
     riskLabel = 'Moderate Exposure'
     riskClass = 'text-amber-700'
   }
+
+  const placePhotoUrl = area.photoUrl || '/assets/hall_gate_orig.jpg'
+  const gmapsPlaceSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(area.name + ' Amritsar')}`
 
   return (
     <section className="tab-view active-view" id="view-buildings">
@@ -412,47 +425,87 @@ export function BuildingsSection() {
                   onProbeUpdate={handleProbeUpdate}
                 />
 
-                {/* Dynamic Map HUD Overlay Panel */}
-                <div className="map-hud-dossier" id="mapHudDossier">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <span
-                        className="text-[10px] font-bold text-blue-700 tracking-wider"
-                        id="hudCode"
-                      >
-                        {area.code}
+                {/* Dynamic Map HUD Overlay Panel — With Authentic Landmark Photography */}
+                <div className="map-hud-dossier !p-0 !overflow-hidden !w-[380px] max-w-[calc(100%-40px)] shadow-2xl" id="mapHudDossier">
+                  {/* Authentic Building Landmark Image Banner */}
+                  <div className="relative w-full h-[130px] bg-slate-900 overflow-hidden">
+                    <img
+                      src={placePhotoUrl}
+                      alt={area.name}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement
+                        target.src = '/assets/hall_gate_orig.jpg'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none"></div>
+
+                    {/* Top Left Tag: Area Code */}
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-mono text-white border border-white/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span id="hudCode">{area.code}</span>
+                    </div>
+
+                    {/* Top Right Tag: Dynamic Flood Exposure */}
+                    <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-[10.5px] font-mono font-bold border border-white/20">
+                      <span className={probeState.score > 70 ? 'text-rose-400' : probeState.score > 35 ? 'text-amber-400' : 'text-emerald-400'}>
+                        {probeState.score}% Flood Exposure
                       </span>
-                      <h4 className="text-base font-bold text-slate-900" id="hudName">
-                        {area.name}
-                      </h4>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                        <span
-                          className="text-[11px] font-mono text-blue-900 font-semibold"
-                          id="hudCoords"
-                        >
-                          {probeState.lat.toFixed(5)}° N, {probeState.lng.toFixed(5)}° E
+                    </div>
+
+                    {/* Bottom Overlay on Image: Name & Google Maps Link */}
+                    <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between">
+                      <div className="min-w-0 pr-2">
+                        <h4 className="text-white font-['Outfit'] font-bold text-sm sm:text-base leading-tight drop-shadow-sm truncate" id="hudName">
+                          {area.name}
+                        </h4>
+                        <span className="text-[10px] text-slate-300 font-mono block mt-0.5 truncate">
+                          {area.areaTag.replace('AREA: ', '')}
                         </span>
-                        <span
-                          className={`text-[9px] uppercase tracking-wider font-bold ml-auto ${
-                            probeState.isUserClick ? 'text-blue-700' : 'text-slate-500'
-                          }`}
-                          id="hudProbeStatus"
-                        >
-                          {probeState.isUserClick ? 'NODE RELOCATED' : 'PROBE DOCKED'}
+                      </div>
+                      <a
+                        href={gmapsPlaceSearchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-0.5 rounded bg-blue-600/90 hover:bg-blue-600 text-white text-[10px] font-semibold flex items-center gap-1 shadow-sm transition-all cursor-pointer shrink-0"
+                        title="Open exact place listing on Google Maps"
+                      >
+                        Maps ↗
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-2.5">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                          <span
+                            className="text-[11px] font-mono text-blue-900 font-semibold"
+                            id="hudCoords"
+                          >
+                            {probeState.lat.toFixed(5)}° N, {probeState.lng.toFixed(5)}° E
+                          </span>
+                          <span
+                            className={`text-[9px] uppercase tracking-wider font-bold ml-auto ${
+                              probeState.isUserClick ? 'text-blue-700' : 'text-slate-500'
+                            }`}
+                            id="hudProbeStatus"
+                          >
+                            {probeState.isUserClick ? 'NODE RELOCATED' : 'PROBE DOCKED'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className={`text-2xl font-black ${riskClass}`} id="hudScore">
+                          {probeState.score}
+                          <span className="text-xs text-slate-400 font-normal">/100</span>
+                        </span>
+                        <span className={`block text-[10px] font-bold ${riskClass}`} id="hudRiskLabel">
+                          {riskLabel}
                         </span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className={`text-2xl font-black ${riskClass}`} id="hudScore">
-                        {probeState.score}
-                        <span className="text-xs text-slate-400 font-normal">/100</span>
-                      </span>
-                      <span className={`block text-[10px] font-bold ${riskClass}`} id="hudRiskLabel">
-                        {riskLabel}
-                      </span>
-                    </div>
-                  </div>
 
                   {/* Live Dynamic Spatial Telemetry Grid */}
                   <div className="grid grid-cols-3 gap-2 my-2 py-2 border-y border-slate-200 text-left">
@@ -488,6 +541,7 @@ export function BuildingsSection() {
                   </div>
                 </div>
               </div>
+            </div>
 
               {/* Clean, Centralized Telemetry Bar Under Map */}
               <div className="map-central-telemetry">

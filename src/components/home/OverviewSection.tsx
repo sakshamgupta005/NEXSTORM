@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { Layers, Building2, Route, ArrowRight, ArrowUpRight, CheckCircle2, Play } from 'lucide-react'
 import type { TabKey } from './FrontendNavbar'
+import { SystemTimelineSection } from './SystemTimelineSection'
 
 interface OverviewSectionProps {
   onSwitchTab: (tab: TabKey) => void
@@ -33,13 +34,28 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
   return (
     <main className="tab-view active-view" id="view-overview">
       <div className="page-wrapper">
-        {/* Top Hero Block with Real Flood Imagery Background */}
-        <div className="hero-image-banner">
-          <div className="hero-grid">
+        {/* Top Hero Block with Real Flood Imagery Background & Wave Visual */}
+        <div className="hero-image-banner relative overflow-hidden">
+          {/* Full-coverage Water Wave Background Graphic */}
+          <div
+            className="absolute inset-0 w-full h-full pointer-events-none select-none z-0"
+            aria-hidden="true"
+          >
+            <img
+              src="/hero-water-wave.png"
+              alt="Hydrological Inundation Wave"
+              className="w-full h-full object-cover object-bottom sm:object-[80%_bottom] lg:object-bottom mix-blend-multiply opacity-30"
+            />
+          </div>
+
+          <div className="hero-grid relative z-10">
             {/* Left: Model Logic & Scientific Explanation */}
             <section className="hero-left-content">
-              <div className="trust-pill">
-                <span className="pill-sparkle">✦</span>
+              <div className="trust-pill inline-flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                </span>
                 <span className="pill-text">Scientific Multi-Tier Geospatial Intelligence</span>
               </div>
 
@@ -328,6 +344,11 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
             </div>
           </div>
         </section>
+
+        {/* Dynamic System Timeline Section with Generous Spacing Below 3 Pillars */}
+        <div className="w-full mt-24 sm:mt-32 border-t border-slate-200/80 pt-12 sm:pt-16 flex flex-col items-center">
+          <SystemTimelineSection />
+        </div>
       </div>
     </main>
   )

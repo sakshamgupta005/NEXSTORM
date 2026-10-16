@@ -49,6 +49,22 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 
 ---
 
+### 1.1 Hackathon Judge Onboarding & 5-Minute Evaluation Guide
+
+Welcome BuildFest 2.0 Judges! NEXSTORM runs **100% out-of-the-box with zero required API keys** (`npm install && npm run dev`). Use this quick 7-step checklist to evaluate the complete system in under 5 minutes:
+
+| Step | Surface / Route | What to Observe & Test | Key Differentiators |
+| :--- | :--- | :--- | :--- |
+| **1** | **Landing & Overview**<br>[http://localhost:3000](http://localhost:3000) | • Notice the hero water-wave banner, GNDU campaign announcement banner, and live radar ping indicator.<br>• Adjust the **Precipitation Stress-Test Slider** ($0–80\text{ mm/h}$) to see live dynamic risk shifting across the 3 intelligence pillars.<br>• Inspect the **Operational Capabilities Timeline** for system provenance. | Deterministic hyetograph simulation with zero backend lag. |
+| **2** | **About Us & Methodology**<br>[http://localhost:3000/?tab=about](http://localhost:3000/?tab=about) | • Use the top pill Table of Contents to navigate all 9 technical sections.<br>• Inspect the **Mathematical Formula Cards** ($S$, $\text{RTI}$, $R_{\text{final}}$) and the **12-cell 2D Susceptibility-Rainfall Matrix** with high-contrast status badges.<br>• Review team contributions and academic citations. | 100% explainable, zero-hallucination physics-grounded methodology. |
+| **3** | **Amritsar 250m Macro Explorer**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | • Notice the **Data Integrity & Scientific Grounding Bar** clarifying relative susceptibility vs. flood depth.<br>• Switch between **Amritsar City (250m)** and **GNDU Campus (50m)** scopes.<br>• Toggle between **Scenario Simulation**, **Live Forecast** (ECMWF/GFS), and **Historical Replay** (Sep 1, 2025 extreme event).<br>• Scrub the **Rainfall Timeline** to inspect temporal cell risk propagation. | Dual-resolution spatial grids (1,998 macro cells + 699 campus cells). |
+| **4** | **Building Risk & Photo Evidence**<br>[http://localhost:3000/?tab=buildings](http://localhost:3000/?tab=buildings) | • Select landmarks (Golden Temple, Khalsa College, GNDU Science Block).<br>• Drag the red Google Maps pin probe to see live distance-to-sink and runoff vector updates.<br>• Inspect the **Dossier HUD** with landmark photography previews and external Google Maps search links.<br>• Note: Buildings inherit catchment exposure ($m^2$); indoor damage is not falsely claimed. | 360,252 Google Open Buildings V3 footprints in UTM Zone 43N. |
+| **5** | **Dynamic Road Corridor Routing**<br>[http://localhost:3000/?tab=roads](http://localhost:3000/?tab=roads) | • Select origin and destination transit hubs (`AMRITSAR_HUBS`: Airport, Junction, Golden Temple, GNDU, ISBT).<br>• Click the **Swap Route Direction (⇅)** button.<br>• Compare **Route A (Safe/Bypass)** vs **Route B (Hazardous/Underpass)** with exposure penalties.<br>• Inspect the automatic $+20$ pt hazard offset on the Rego Bridge underpass sump. | Graph traversal over 14,855 segments, 28,418 nodes, and 37,924 edges. |
+| **6** | **GNDU 50m Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | • Inspect the 699 high-res micro-cell coverage metric verified from `campus_susceptibility.geojson`.<br>• Review student crowd-sourced ground-truth objectives, ridge crest elevation ($233.8\text{m}$), and 42 mapped facilities. | Hyper-local 50m micro-topography modeling for university climate resilience. |
+| **7** | **Jalandhar Exploratory Readiness**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | • Observe the **`evidence_insufficient`** safety status.<br>• Verify that operational alert dispatches are **strictly suppressed (fail-closed)** because Jalandhar lacks indexed building footprints and sub-daily validation records.<br>• Inspect physical Copernicus DEM and 17.3k road network graph. | Ethical AI guardrails: refuses to issue uncalibrated municipal warnings. |
+
+---
+
 ## 2. Core Pillars Detailed
 
 ### Pillar A: Area-Level Susceptibility & Rainfall Risk
@@ -251,6 +267,7 @@ npm run start
 |---|---|
 | **Main Platform**<br>[http://localhost:3000](http://localhost:3000) | • **Overview Tab**: System hero, synthetic hyetograph scenario simulator ($0–80\text{ mm/h}$), and 3-pillar architectural cards.<br>• **Buildings Tab**: Interactive Google Open Buildings V3 footprint layer, high-risk hotspot selectors, and building dossiers with elevation & catchment susceptibility.<br>• **Roads Tab**: Dynamic flood-aware routing engine, comparing Route A (Bypass) vs Route B (Rego Underpass chokepoint) with exposure penalty scores.<br>• **About Tab**: 6-stage scientific processing pipeline and technology provenance.<br>• **Navbar Actions**: Click **Live Pipeline Status** for live diagnostic telemetry (`/api/health`) or **Report Waterlogging** to submit a ground-truth observation. |
 | **Amritsar City Console**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | Calibrated reference baseline console: interactive 250m cell inspector, live NDMA SACHET warning feed, rainfall intensity timelines, and cell factor breakdowns. |
+| **GNDU Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | Student-led campus resilience campaign: 50m micro-mesh analysis across 699 cells, 42 campus facilities, and student ground-truth verification workflows. |
 | **Jalandhar Pilot Console**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | Secondary physical terrain pilot: demonstrates the `evidence_insufficient` safety gate, displaying physical Copernicus DEM & ESA WorldCover data while strictly suppressing uncalibrated alerts. |
 | **Authentication (Optional)**<br>[http://localhost:3000/login](http://localhost:3000/login) | Clean sign-in and sign-up flows with Supabase auth or fallback demo preview modes. |
 

@@ -2008,3 +2008,133 @@ body.light-premium {
     border-radius: 20px;
   }
 }
+
+/* =========================================================================
+   Google Maps Pin Markers
+   ========================================================================= */
+@keyframes pinDrop {
+  0% {
+    transform: translateY(-24px) scale(0.7);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(3px) scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.pin-drop-anim {
+  animation: pinDrop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.gmaps-pin-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+}
+
+.gmaps-pin-container:active {
+  cursor: grabbing;
+}
+
+.gmaps-pin-svg {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  transition: transform 0.15s ease;
+}
+
+.gmaps-pin-container:hover .gmaps-pin-svg {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.gmaps-pin-label {
+  position: absolute;
+  top: -24px;
+  white-space: nowrap;
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff;
+  font-family: var(--font-mono-tag);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.gmaps-pin-shadow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 5px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* =========================================================================
+   P3 Polish: Smooth Scrolling, Responsive Hardening & Formula Cards
+   ========================================================================= */
+html {
+  scroll-behavior: smooth;
+}
+
+.formula-card {
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.toc-pill {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.toc-pill:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+  .brand-subtag {
+    display: none;
+  }
+  .brand-text {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-container {
+    padding: 0 10px;
+  }
+  .nav-item {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .btn-live-status {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
