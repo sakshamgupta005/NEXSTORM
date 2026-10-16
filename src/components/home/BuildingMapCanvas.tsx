@@ -41,9 +41,14 @@ interface ProbeUpdateData {
 interface BuildingMapCanvasProps {
   activeArea: AreaData
   onProbeUpdate: (data: ProbeUpdateData) => void
+  onProbePosUpdate?: (pos: { x: number; y: number }) => void
 }
 
-export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanvasProps) {
+export function BuildingMapCanvas({
+  activeArea,
+  onProbeUpdate,
+  onProbePosUpdate,
+}: BuildingMapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const probeMarkerRef = useRef<L.Marker | null>(null)
@@ -73,12 +78,26 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
       preferCanvas: true,
     })
 
-    // OpenStreetMap clean standard tiles (reliable, no API key watermark)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
-    }).addTo(map)
+    // Literal Google Maps Tile Layers (Roadmap & Satellite Hybrid)
+    const googleRoadmap = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      subdomains: ['0', '1', '2', '3'],
+      maxZoom: 20,
+      attribution: '&copy; Google Maps',
+    })
+
+    const googleSatellite = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      subdomains: ['0', '1', '2', '3'],
+      maxZoom: 20,
+      attribution: '&copy; Google Maps',
+    })
+
+    googleRoadmap.addTo(map)
+
+    L.control.layers(
+      { 'Google Roadmap': googleRoadmap, 'Google Satellite': googleSatellite },
+      undefined,
+      { position: 'topright' }
+    ).addTo(map)
 
     L.control.zoom({ position: 'topright' }).addTo(map)
 
@@ -91,7 +110,7 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
     }
   }, [])
 
-  // Create custom icons
+  // Create exact Google Maps Red Pin icon
   const createGoogleMapsPinIcon = (label: string = 'DRAG OR CLICK') => {
     return L.divIcon({
       className: 'custom-gmaps-pin',
@@ -127,11 +146,13 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
 
   const activeAreaRef = useRef(activeArea)
   const onProbeUpdateRef = useRef(onProbeUpdate)
+  const onProbePosUpdateRef = useRef(onProbePosUpdate)
 
   useEffect(() => {
     activeAreaRef.current = activeArea
     onProbeUpdateRef.current = onProbeUpdate
-  }, [activeArea, onProbeUpdate])
+    onProbePosUpdateRef.current = onProbePosUpdate
+  }, [activeArea, onProbeUpdate, onProbePosUpdate])
 
   // Update probe and vectors
   const updateProbeAndVectors = React.useCallback(
@@ -143,19 +164,41 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
       const lat = latlng.lat
       const lng = latlng.lng
 
-      // 1. Probe marker
+      // Update screen pixel position
+      const pt = map.latLngToContainerPoint([lat, lng])
+      onProbePosUpdateRef.current?.({ x: Math.round(pt.x), y: Math.round(pt.y) })
+
+      // 1. Draggable Google Maps Probe marker
       if (probeMarkerRef.current) {
         probeMarkerRef.current.setLatLng([lat, lng])
+        probeMarkerRef.current.setIcon(createGoogleMapsPinIcon(isUserClick ? 'RELOCATED PIN' : 'GOOGLE PIN'))
       } else {
-        probeMarkerRef.current = L.marker([lat, lng], {
-          icon: createGoogleMapsPinIcon('DRAG OR CLICK'),
-          draggable: true,
+        const marker = L.marker([lat, lng], {
+          icon: createGoogleMapsPinIcon('GOOGLE PIN'),
           zIndexOffset: 1000,
+          draggable: true,
+          autoPan: true,
         }).addTo(map)
 
-        probeMarkerRef.current.on('drag', (e: any) => {
-          updateProbeAndVectors(e.latlng, true)
+        marker.on('drag', (e: L.LeafletEvent) => {
+          const m = e.target as L.Marker
+          const curPos = m.getLatLng()
+
+          if (polylineRef.current) {
+            polylineRef.current.setLatLngs([
+              [curPos.lat, curPos.lng],
+              [(curPos.lat + currentArea.sink[0]) / 2 + 0.0001, (curPos.lng + currentArea.sink[1]) / 2 - 0.0001],
+              currentArea.sink,
+            ])
+          }
         })
+
+        marker.on('dragend', (e: L.LeafletEvent) => {
+          const m = e.target as L.Marker
+          updateProbeAndVectors(m.getLatLng(), true)
+        })
+
+        probeMarkerRef.current = marker
       }
 
       // 2. Sink marker
@@ -272,7 +315,7 @@ export function BuildingMapCanvas({ activeArea, onProbeUpdate }: BuildingMapCanv
     <div
       ref={containerRef}
       id="buildingRealMap"
-      className="real-map-canvas w-full h-[520px] rounded-2xl overflow-hidden"
+      className="real-map-canvas w-full h-[560px] rounded-2xl overflow-hidden"
     />
   )
 }

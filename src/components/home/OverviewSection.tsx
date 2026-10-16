@@ -1,256 +1,85 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Layers, Building2, Route, ArrowRight, ArrowUpRight, CheckCircle2, Play } from 'lucide-react'
+import React from 'react'
 import type { TabKey } from './FrontendNavbar'
 import { SystemTimelineSection } from './SystemTimelineSection'
+import { PillarSpotlightCard } from './PillarSpotlightCard'
 
 interface OverviewSectionProps {
   onSwitchTab: (tab: TabKey) => void
 }
 
 export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
-  // Interactive Hazard Precipitation Coupling Slider (Scenario Simulation)
-  const [hazardPct, setHazardPct] = useState<number>(78)
-
-  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const clickX = e.clientX - rect.left
-    const pct = Math.min(Math.max(Math.round((clickX / rect.width) * 100), 5), 100)
-    setHazardPct(pct)
-  }
-
-  let hazardBadgeText = 'Severe Storm Stress Test'
-  let hazardBadgeStyle = { color: '#92400e', backgroundColor: '#fef3c7', borderColor: '#fde68a' }
-  if (hazardPct <= 35) {
-    hazardBadgeText = 'Dry Baseline Test'
-    hazardBadgeStyle = { color: '#166534', backgroundColor: '#dcfce7', borderColor: '#bbf7d0' }
-  } else if (hazardPct <= 70) {
-    hazardBadgeText = 'Heavy Rainfall Stress Test'
-    hazardBadgeStyle = { color: '#9a3412', backgroundColor: '#ffedd5', borderColor: '#fed7aa' }
-  }
-
   return (
     <main className="tab-view active-view" id="view-overview">
-      <div className="page-wrapper">
-        {/* Top Hero Block with Real Flood Imagery Background & Wave Visual */}
-        <div className="hero-image-banner relative overflow-hidden">
-          {/* Full-coverage Water Wave Background Graphic */}
-          <div
-            className="absolute inset-0 w-full h-full pointer-events-none select-none z-0"
-            aria-hidden="true"
-          >
-            <img
-              src="/hero-water-wave.png"
-              alt="Hydrological Inundation Wave"
-              className="w-full h-full object-cover object-bottom sm:object-[80%_bottom] lg:object-bottom mix-blend-multiply opacity-30"
-            />
-          </div>
+      {/* Top Hero Block with Full-Bleed Water Wave Background */}
+      <section className="relative w-full overflow-hidden flex flex-col justify-between min-h-[560px] sm:min-h-[620px] lg:min-h-[680px]">
+        {/* Full-coverage Water Wave Background Graphic */}
+        <div 
+          className="absolute inset-0 w-full h-full pointer-events-none select-none z-0"
+          aria-hidden="true"
+        >
+          <img
+            src="/hero-water-wave.png"
+            alt="Hydrological Inundation Wave"
+            className="w-full h-full object-cover object-bottom sm:object-[80%_bottom] lg:object-bottom mix-blend-multiply"
+          />
+        </div>
 
-          <div className="hero-grid relative z-10">
-            {/* Left: Model Logic & Scientific Explanation */}
-            <section className="hero-left-content">
-              <div className="trust-pill inline-flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
-                </span>
-                <span className="pill-text">Scientific Multi-Tier Geospatial Intelligence</span>
-              </div>
+        {/* Hero Content Container Aligned to Navbar Width */}
+        <div className="relative z-10 max-w-[1440px] w-full mx-auto px-6 sm:px-12 pt-4 sm:pt-8 pb-12 sm:pb-16 flex-1 flex flex-col justify-center items-center">
+          <div className="max-w-4xl w-full animate-hero-1 mx-auto text-center flex flex-col items-center -mt-6 sm:-mt-10 lg:-mt-14">
+            {/* Trust Pill with Live Satellite Radar Ping */}
+            <div className="trust-pill !self-center !mx-auto inline-flex items-center gap-2.5 px-4 sm:px-5 py-1.5 sm:py-2 mb-3 sm:mb-4 hover:shadow-xs transition-shadow">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-700"></span>
+              </span>
+              <span className="pill-text font-bold text-sm sm:text-base text-slate-800">Scientific Multi-Tier Geospatial Intelligence</span>
+            </div>
 
-              <h1 className="hero-heading">
-                Urban Flood Risk<br />
-                <span className="heading-accent">Engineered for Reality</span>
-                <span className="sr-only">NEXSTORM Urban Resilience System</span>
-              </h1>
+            <h1 className="hero-heading text-5xl sm:text-7xl md:text-8xl lg:text-[88px] xl:text-[96px] font-extrabold tracking-[-0.04em] text-slate-900 leading-[1.01] mb-2 sm:mb-3 text-center">
+              <span className="inline-block whitespace-normal sm:whitespace-nowrap">Urban Flood Risk</span>
+              <br />
+              <span className="heading-accent inline-block whitespace-normal sm:whitespace-nowrap font-medium tracking-[-0.03em] text-slate-500 mt-0.5 sm:mt-1">
+                Engineered for Reality
+              </span>
+              <span className="sr-only">NEXSTORM Urban Resilience System</span>
+            </h1>
 
-              <p className="hero-lead">
-                Traditional weather forecasts report broad city-wide rainfall averages that fail to
-                identify which streets become impassable or which basements face inundation.
-                NEXSTORM executes deterministic spatial matching across real elevation contours,
-                rainfall intensity, and drainage infrastructure.
-              </p>
-
-              <div className="hero-single-pill">
-                <div className="beacon-pulse-dot"></div>
-                <span className="pill-primary-tag">Operational Coupling</span>
-                <span className="pill-dot-sep">&bull;</span>
-                <span className="pill-sub-info">
-                  Amritsar 250m Grid &bull; Copernicus 30m DEM Sinks &bull; Verified Historical Replay
-                </span>
-              </div>
-
-              <div className="hero-button-row">
-                <button
-                  type="button"
-                  className="btn-solid-primary cursor-pointer"
-                  id="exploreBuildingsCta"
-                  onClick={() => onSwitchTab('buildings')}
-                >
-                  <span>Inspect Building Exposure</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </button>
-                <button
-                  type="button"
-                  className="btn-neumorphic btn-secondary-action cursor-pointer"
-                  id="exploreRoadsCta"
-                  onClick={() => onSwitchTab('roads')}
-                >
-                  <span>Evaluate Road Routes</span>
-                  <Play className="w-3.5 h-3.5 ml-1 fill-current" />
-                </button>
-                <Link
-                  href="/city/amritsar"
-                  className="btn-neumorphic px-5 py-3 text-xs font-bold text-slate-800 hover:text-blue-700 transition flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>Launch 250m Grid Console</span>
-                  <ArrowUpRight className="w-4 h-4 text-blue-600" />
-                </Link>
-              </div>
-
-              {/* Differentiated Color Metrics Row */}
-              <div className="metrics-row">
-                <div className="metric-block">
-                  <span className="metric-number text-slate-900">360,252+</span>
-                  <span className="metric-caption text-blue-700 font-semibold">
-                    Mapped Urban Footprints
-                  </span>
-                </div>
-                <div className="metric-block">
-                  <span className="metric-number text-emerald-800">1,998</span>
-                  <span className="metric-caption text-emerald-700 font-semibold">
-                    Amritsar 250m Grid Cells
-                  </span>
-                </div>
-                <div className="metric-block">
-                  <span className="metric-number text-indigo-900">3-Tier</span>
-                  <span className="metric-caption text-indigo-700 font-semibold">
-                    Area • Building • Road
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            {/* Right: Modern Telemetry Cards */}
-            <section
-              className="hero-right-visualizer"
-              aria-label="Live Model Telemetry Cards"
-            >
-              <div className="visualizer-cards-stack">
-                {/* Card 1: Topographical Elevation Layer */}
-                <div className="neuro-card visualizer-card">
-                  <div className="card-header-flex">
-                    <div className="icon-square-box">
-                      <Layers className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <span className="meta-tag text-blue-700">LAYER 01: TERRAIN HYDROLOGY</span>
-                      <h4 className="card-subhead text-slate-900">
-                        Digital Elevation Model (Copernicus 30m)
-                      </h4>
-                    </div>
-                  </div>
-                  <div className="card-content-block">
-                    <div className="data-indicator-row">
-                      <span className="indicator-title text-slate-600">
-                        Topographic Depressions in Amritsar
-                      </span>
-                      <span className="indicator-highlight text-blue-700 font-bold">
-                        14 Verified Catchment Sinks
-                      </span>
-                    </div>
-                    <div className="skeleton-shimmer bar-wide"></div>
-                    <div className="skeleton-shimmer bar-half"></div>
-                  </div>
-                </div>
-
-                {/* Card 2: Dynamic Scenario Stress Test Slider */}
-                <div className="neuro-card visualizer-card">
-                  <div className="flex justify-between items-baseline mb-3">
-                    <div>
-                      <span className="meta-tag text-indigo-700">
-                        SCENARIO SIMULATOR: PRECIPITATION TEST
-                      </span>
-                      <div className="hazard-readout text-slate-900" id="hazardVal">
-                        {hazardPct.toFixed(1)}%
-                      </div>
-                      <span className="readout-label text-slate-500">
-                        Simulated Hyetograph Intensity
-                      </span>
-                    </div>
-                    <span
-                      className="status-chip chip-warning border px-2.5 py-1 rounded-full text-xs font-bold"
-                      id="hazardRiskBadge"
-                      style={hazardBadgeStyle}
-                    >
-                      {hazardBadgeText}
-                    </span>
-                  </div>
-
-                  <div
-                    className="progress-track cursor-pointer"
-                    id="hazardTrack"
-                    onClick={handleTrackClick}
-                    title="Click or drag to test storm intensity"
-                  >
-                    <div
-                      className="progress-fill"
-                      id="hazardFill"
-                      style={{ width: `${hazardPct}%` }}
-                    >
-                      <div className="progress-thumb"></div>
-                    </div>
-                  </div>
-
-                  <div className="track-scale">
-                    <span className="text-emerald-700 font-medium text-xs">0 mm/h (Dry Baseline)</span>
-                    <span className="text-amber-700 font-medium text-xs">35 mm/h (Heavy Rain)</span>
-                    <span className="text-rose-700 font-medium text-xs">80 mm/h (Cloudburst)</span>
-                  </div>
-                </div>
-
-                {/* Card 3: Multi-Source Evidence Cross-Verification */}
-                <div className="neuro-card visualizer-card">
-                  <div className="card-header-flex">
-                    <div className="dot-indicators-row">
-                      <span className="signal-dot dot-verified" title="Meteorological feed active"></span>
-                      <span className="signal-dot dot-active" title="Topographic sink aligned"></span>
-                      <span className="signal-dot dot-stream" title="Road network matched"></span>
-                    </div>
-                    <div>
-                      <span className="meta-tag text-emerald-700">
-                        LAYER 03: GROUND TRUTH VALIDATION
-                      </span>
-                      <h4 className="card-subhead text-slate-900">
-                        Tri-Source Evidence Verification
-                      </h4>
-                    </div>
-                  </div>
-                  <ul className="evidence-bullets-list">
-                    <li>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span className="text-slate-600 text-xs">
-                        Spatial intersection between road corridors &amp; low-elevation sinks
-                      </span>
-                    </li>
-                    <li>
-                      <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span className="text-slate-600 text-xs">
-                        Strict separation of static hazard, geographic exposure &amp; physical vulnerability
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
+            {/* Concise, Ultra-Premium Paragraph with Multi-Font & Color Accents */}
+            <p className="text-xl sm:text-2xl md:text-[28px] lg:text-[32px] font-light text-slate-600 leading-snug sm:leading-relaxed mb-0 tracking-tight max-w-3xl mx-auto text-center font-sans">
+              Deterministic terrain modeling across{' '}
+              <span className="font-mono text-slate-800 font-medium bg-slate-200/60 px-2 py-0.5 rounded text-[0.85em] border border-slate-300/60">
+                Copernicus 30m
+              </span>{' '}
+              contours to pinpoint{' '}
+              <span className="font-semibold text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4">
+                street-level waterlogging
+              </span>{' '}
+              in real time.
+            </p>
           </div>
         </div>
 
+        {/* Sleek Bottom Transition Bar with Logo Badge and Hairline Divider */}
+        <div className="relative z-10 w-full border-t border-slate-300/60 bg-transparent">
+          <div className="max-w-[1440px] mx-auto px-6 sm:px-12 py-3 flex items-center gap-3">
+            <div className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[11px] shadow-xs">
+              N
+            </div>
+            <span className="text-[11px] font-mono font-bold tracking-wider text-slate-600 uppercase">
+              CORE SYSTEM ARCHITECTURE
+            </span>
+            <div className="flex-1 h-px bg-slate-300/60 ml-2" />
+          </div>
+        </div>
+      </section>
+
+      <div className="page-wrapper pt-8 sm:pt-10">
         {/* Expansive 3-Pillar Architectural Deep-Dive Section */}
-        <section className="deep-dive-section">
+        <section className="deep-dive-section !border-t-0 !border-none">
           <div className="section-title-wrap">
-            <span className="meta-tag text-blue-700">CORE SYSTEM ARCHITECTURE</span>
             <h2 className="sub-section-heading">
               The Three Pillars of Urban Waterlogging Intelligence
             </h2>
@@ -262,95 +91,44 @@ export function OverviewSection({ onSwitchTab }: OverviewSectionProps) {
           </div>
 
           <div className="three-pillars-grid">
-            {/* Pillar A */}
-            <div className="neuro-card pillar-card flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 mb-4">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <h3 className="pillar-title text-slate-900">Pillar A — Area Susceptibility</h3>
-                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                  Combines Copernicus DEM terrain slope, low-lying depression indices, and historical
-                  waterlogging hotspots into a persistent susceptibility grid across metropolitan
-                  zones. Distinguishes baseline vulnerability from dynamic weather hazard.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
-                <Link
-                  href="/city/amritsar"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-900 hover:underline transition"
-                >
-                  <span>Launch 250m Grid Console</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
-                <span className="text-[11px] text-slate-400 font-medium">1,998 Cells</span>
-              </div>
-            </div>
-
-            {/* Pillar B */}
-            <div className="neuro-card pillar-card flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mb-4">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <h3 className="pillar-title text-slate-900">
-                  Pillar B — Building Footprint Exposure
-                </h3>
-                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                  Evaluates individual structure polygons against localized terrain depressions and
-                  macro-catchment overlap in UTM 43N. Explicitly avoids fabricating plinth heights or
-                  indoor damage to maintain scientific honesty.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
-                <button
-                  type="button"
-                  onClick={() => onSwitchTab('buildings')}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition cursor-pointer"
-                >
-                  <span>Inspect Building Footprints</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-[11px] text-slate-400 font-medium">360k+ Buildings</span>
-              </div>
-            </div>
-
-            {/* Pillar C */}
-            <div className="neuro-card pillar-card flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 mb-4">
-                  <Route className="w-5 h-5" />
-                </div>
-                <h3 className="pillar-title text-slate-900">
-                  Pillar C — Road Inundation &amp; Routing
-                </h3>
-                <p className="pillar-body text-slate-600 text-sm leading-relaxed">
-                  Associates connected road network segments with terrain elevation sinks and
-                  underpass sumps. Computes sub-2ms A* flood-aware route comparison prioritizing lower
-                  modeled exposure corridors.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
-                <button
-                  type="button"
-                  onClick={() => onSwitchTab('roads')}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 hover:text-indigo-900 hover:underline transition cursor-pointer"
-                >
-                  <span>Evaluate Road Corridors</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-[11px] text-slate-400 font-medium">14,855 Segments</span>
-              </div>
-            </div>
+            <PillarSpotlightCard
+              index="01"
+              tag="AREA SUSCEPTIBILITY"
+              title="Pillar A — Area Susceptibility"
+              description="Combines Copernicus DEM terrain slope, low-lying depression indices, and historical waterlogging hotspots into a persistent susceptibility grid across metropolitan zones."
+              actionLabel="Launch 250m Grid Console"
+              actionHref="/city/amritsar"
+              metricText="1,998 Cells"
+              theme="grey"
+            />
+            <PillarSpotlightCard
+              index="02"
+              tag="BUILDING EXPOSURE"
+              title="Pillar B — Building Footprint Exposure"
+              description="Evaluates individual structure polygons against localized terrain depressions and macro-catchment overlap in UTM 43N without fabricating synthetic damage."
+              actionLabel="Inspect Building Footprints"
+              onActionClick={() => onSwitchTab('buildings')}
+              metricText="360k+ Buildings"
+              theme="grey"
+            />
+            <PillarSpotlightCard
+              index="03"
+              tag="ROAD INUNDATION"
+              title="Pillar C — Road Inundation & Routing"
+              description="Associates connected road network segments with terrain elevation sinks and underpass sumps, computing sub-2ms flood-aware route comparison."
+              actionLabel="Evaluate Road Corridors"
+              onActionClick={() => onSwitchTab('roads')}
+              metricText="14,855 Segments"
+              theme="grey"
+            />
           </div>
         </section>
 
-        {/* Dynamic System Timeline Section with Generous Spacing Below 3 Pillars */}
-        <div className="w-full mt-24 sm:mt-32 border-t border-slate-200/80 pt-12 sm:pt-16 flex flex-col items-center">
+        {/* Dynamic Timeline Section with Generous Spacing Below 3 Pillars */}
+        <div className="w-full mt-28 sm:mt-40 border-t border-slate-200/80 pt-12 sm:pt-16">
           <SystemTimelineSection />
         </div>
       </div>
     </main>
   )
 }
-

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "savedAt": "2026-10-16T04:56:27.868Z",
+  "savedAt": "2026-10-16T09:42:51.235Z",
   "cityId": "amritsar",
   "source": "Open-Meteo Forecast",
   "data": {
@@ -159,7 +159,7 @@
     "provenance": {
       "kind": "live",
       "source": "Open-Meteo Deterministic Forecast API",
-      "fetchedAt": "2026-10-16T04:56:27.867Z",
+      "fetchedAt": "2026-10-16T09:42:51.235Z",
       "ageSeconds": 0,
       "note": "open_meteo_deterministic — Open-Meteo live forecast"
     },

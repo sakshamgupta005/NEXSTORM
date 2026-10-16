@@ -660,36 +660,36 @@
     "scientificCaveat": "Historical observation imported from news archive; does NOT indicate current road passage status and has not been verified by municipal sensors or field survey."
   },
   {
-    "id": "OBS-20261016-62c0ed43",
+    "id": "OBS-20261016-e1d87e7b",
     "schemaVersion": "1.0.0",
     "cityId": "amritsar",
-    "createdAt": "2026-10-16T04:58:09.463Z",
-    "submittedAt": "2026-10-16T04:58:09.463Z",
-    "observedAt": "2026-10-16T04:38:09.463Z",
+    "createdAt": "2026-10-16T09:45:23.037Z",
+    "submittedAt": "2026-10-16T09:45:23.037Z",
+    "observedAt": "2026-10-16T09:40:23.036Z",
     "coordinates": {
-      "lat": 31.632,
-      "lng": 74.87
+      "lat": 31.634,
+      "lng": 74.872
     },
     "spatialMatch": {
-      "cellId": "A-0933",
-      "cellSusceptibility": 0.8293,
+      "cellId": "A-0884",
+      "cellSusceptibility": 0.8126,
       "roadSegmentId": null,
       "roadName": null,
       "distanceToRoadMeters": null,
       "matchQuality": "exact_inside",
       "unmatchedReason": "No candidate road segments available in search radius."
     },
-    "category": "drain_overflow",
+    "category": "street_flooding",
     "severity": "moderate_ankle",
-    "reporterHash": "test_rep_auth",
+    "reporterHash": "tester_spatial_inside",
     "sourceType": "community_submission",
-    "lifecycleStatus": "verified",
+    "lifecycleStatus": "submitted",
     "verification": {
-      "isVerified": true,
-      "verifiedAt": "2026-10-16T04:58:09.481Z",
-      "verifiedBy": "Municipal Corporation Amritsar Ward 8 Inspector",
-      "verificationMethod": "field_inspection",
-      "verificationNotes": "On-site team confirmed blockage cleared."
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": null,
+      "verificationMethod": null,
+      "verificationNotes": null
     },
     "corroboration": {
       "corroborationCount": 1,
@@ -699,7 +699,51 @@
     "freshness": {
       "isStale": false,
       "isExpired": false,
-      "expiresAt": "2026-10-17T04:38:09.463Z"
+      "expiresAt": "2026-10-17T09:40:23.036Z"
+    },
+    "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
+  },
+  {
+    "id": "OBS-20261016-e67eec65",
+    "schemaVersion": "1.0.0",
+    "cityId": "amritsar",
+    "createdAt": "2026-10-16T09:45:23.056Z",
+    "submittedAt": "2026-10-16T09:45:23.056Z",
+    "observedAt": "2026-10-16T09:40:23.056Z",
+    "coordinates": {
+      "lat": 31.51,
+      "lng": 74.72
+    },
+    "spatialMatch": {
+      "cellId": null,
+      "cellSusceptibility": null,
+      "roadSegmentId": null,
+      "roadName": null,
+      "distanceToRoadMeters": null,
+      "matchQuality": "unmatched",
+      "unmatchedReason": "No candidate road segments available in search radius."
+    },
+    "category": "street_flooding",
+    "severity": "minor_curb",
+    "reporterHash": "tester_spatial_far",
+    "sourceType": "community_submission",
+    "lifecycleStatus": "submitted",
+    "verification": {
+      "isVerified": false,
+      "verifiedAt": null,
+      "verifiedBy": null,
+      "verificationMethod": null,
+      "verificationNotes": null
+    },
+    "corroboration": {
+      "corroborationCount": 1,
+      "corroboratingObservationIds": [],
+      "lastCorroboratedAt": null
+    },
+    "freshness": {
+      "isStale": false,
+      "isExpired": false,
+      "expiresAt": "2026-10-17T09:40:23.056Z"
     },
     "scientificCaveat": "Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth."
   }

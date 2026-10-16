@@ -90,10 +90,10 @@ export function RiskSummaryCards({
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-3">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-bold uppercase tracking-wider">Peak RTI</span>
-            <Zap className="w-4 h-4 text-purple-500" />
+            <Zap className="w-4 h-4 text-indigo-500" />
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">
+            <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
               {rainfallSummary?.maxRti ?? 0}
             </span>
             <Badge

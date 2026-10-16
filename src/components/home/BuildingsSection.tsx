@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { Activity } from 'lucide-react'
 import type { AreaData } from './BuildingMapCanvas'
@@ -266,6 +266,9 @@ export function BuildingsSection() {
   const [activeAreaKey, setActiveAreaKey] = useState<string>('hall-gate')
   const area = AMRITSAR_AREAS[activeAreaKey] || AMRITSAR_AREAS['hall-gate']
 
+  const mapWrapperRef = useRef<HTMLDivElement>(null)
+  const [, setProbeScreenPos] = useState<{ x: number; y: number } | null>(null)
+
   const [probeState, setProbeState] = useState({
     lat: area.center[0],
     lng: area.center[1],
@@ -348,8 +351,10 @@ export function BuildingsSection() {
           <div className="building-selector-column">
             <div className="neuro-card p-7">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="column-heading text-slate-900">Critical Hotspot Structures</h3>
-                <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
+                <h3 className="column-heading text-slate-900 font-['Outfit'] font-bold text-lg">
+                  Critical Hotspot Structures
+                </h3>
+                <span className="text-[10px] font-mono bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200 font-semibold">
                   {Object.keys(AMRITSAR_AREAS).length} Locations
                 </span>
               </div>
@@ -368,13 +373,12 @@ export function BuildingsSection() {
                     <div className="flex justify-between items-center">
                       <strong className="item-name text-slate-900">{item.name}</strong>
                       <span
-                        className={`risk-badge ${
-                          item.baseScore > 70
+                        className={`risk-badge ${item.baseScore > 70
                             ? 'badge-high'
                             : item.baseScore > 35
                               ? 'badge-med'
                               : 'badge-low'
-                        }`}
+                          }`}
                       >
                         {item.risk} ({item.baseScore}%)
                       </span>
@@ -391,7 +395,7 @@ export function BuildingsSection() {
 
             {/* Scientific Integrity Warning Notice */}
             <div className="neuro-card p-6 border-l-4 border-l-blue-700">
-              <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2 font-mono">
                 Amritsar Scientific Integrity Protocol
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -409,26 +413,27 @@ export function BuildingsSection() {
               <div className="map-toolbar">
                 <div className="flex items-center gap-2">
                   <span className="map-live-dot"></span>
-                  <span className="meta-tag text-blue-700" id="currentAreaTitle">
+                  <span className="meta-tag text-blue-700 font-mono font-bold text-xs" id="currentAreaTitle">
                     {area.areaTag}
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+                <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5 font-sans">
                   <span>Interactive: Click anywhere on map to drop dynamic probe node</span>
                 </div>
               </div>
 
               {/* Map Viewport with Floating HUD Overlay */}
-              <div className="map-viewport relative" id="buildingMapWrapper">
+              <div className="map-viewport relative" id="buildingMapWrapper" ref={mapWrapperRef}>
                 <DynamicBuildingMapCanvas
                   activeArea={area}
                   onProbeUpdate={handleProbeUpdate}
+                  onProbePosUpdate={setProbeScreenPos}
                 />
 
-                {/* Dynamic Map HUD Overlay Panel — With Authentic Landmark Photography */}
+                {/* Dynamic Map HUD Overlay Panel — Expanded with Image on Top */}
                 <div className="map-hud-dossier !p-0 !overflow-hidden !w-[380px] max-w-[calc(100%-40px)] shadow-2xl" id="mapHudDossier">
                   {/* Authentic Building Landmark Image Banner */}
-                  <div className="relative w-full h-[130px] bg-slate-900 overflow-hidden">
+                  <div className="relative w-full h-[140px] bg-slate-900 overflow-hidden">
                     <img
                       src={placePhotoUrl}
                       alt={area.name}
@@ -454,12 +459,12 @@ export function BuildingsSection() {
                     </div>
 
                     {/* Bottom Overlay on Image: Name & Google Maps Link */}
-                    <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between">
+                    <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
                       <div className="min-w-0 pr-2">
-                        <h4 className="text-white font-['Outfit'] font-bold text-sm sm:text-base leading-tight drop-shadow-sm truncate" id="hudName">
+                        <h4 className="text-white font-['Outfit'] font-bold text-base leading-tight drop-shadow-sm truncate" id="hudName">
                           {area.name}
                         </h4>
-                        <span className="text-[10px] text-slate-300 font-mono block mt-0.5 truncate">
+                        <span className="text-[10.5px] text-slate-300 font-mono block mt-0.5 truncate">
                           {area.areaTag.replace('AREA: ', '')}
                         </span>
                       </div>
@@ -475,73 +480,77 @@ export function BuildingsSection() {
                     </div>
                   </div>
 
-                  <div className="p-4 space-y-2.5">
-                    <div className="flex justify-between items-start mb-2">
+                  {/* Dynamic Info Body */}
+                  <div className="p-4 sm:p-4.5 space-y-3">
+                    {/* Real-Time Coordinates & Score Header */}
+                    <div className="flex justify-between items-start">
                       <div>
-                        <div className="flex items-center gap-1.5 mt-1">
+                        <div className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
                           <span
-                            className="text-[11px] font-mono text-blue-900 font-semibold"
+                            className="text-[11px] font-mono text-slate-700 font-semibold"
                             id="hudCoords"
                           >
                             {probeState.lat.toFixed(5)}° N, {probeState.lng.toFixed(5)}° E
                           </span>
-                          <span
-                            className={`text-[9px] uppercase tracking-wider font-bold ml-auto ${
-                              probeState.isUserClick ? 'text-blue-700' : 'text-slate-500'
-                            }`}
-                            id="hudProbeStatus"
-                          >
-                            {probeState.isUserClick ? 'NODE RELOCATED' : 'PROBE DOCKED'}
-                          </span>
                         </div>
+                        <span
+                          className={`inline-block mt-1 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${probeState.isUserClick ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'
+                            }`}
+                          id="hudProbeStatus"
+                        >
+                          {probeState.isUserClick ? 'NODE RELOCATED' : 'PROBE DOCKED'}
+                        </span>
                       </div>
+
                       <div className="text-right">
-                        <span className={`text-2xl font-black ${riskClass}`} id="hudScore">
+                        <div className={`text-2xl sm:text-3xl font-black font-['Outfit'] tracking-tight leading-none ${riskClass}`} id="hudScore">
                           {probeState.score}
                           <span className="text-xs text-slate-400 font-normal">/100</span>
-                        </span>
-                        <span className={`block text-[10px] font-bold ${riskClass}`} id="hudRiskLabel">
+                        </div>
+                        <span className={`block text-[10.5px] font-extrabold uppercase tracking-wider ${riskClass} mt-0.5`} id="hudRiskLabel">
                           {riskLabel}
                         </span>
                       </div>
                     </div>
 
-                  {/* Live Dynamic Spatial Telemetry Grid */}
-                  <div className="grid grid-cols-3 gap-2 my-2 py-2 border-y border-slate-200 text-left">
-                    <div>
-                      <span className="text-[10px] text-slate-500 block">Gradient</span>
-                      <strong className="text-xs text-slate-900" id="hudGradient">
-                        {probeState.gradient > 0 ? `+${probeState.gradient}` : probeState.gradient}%{' '}
-                        {probeState.gradient < 0 ? 'Sink' : 'Slope'}
-                      </strong>
+                    {/* Live Dynamic Spatial Telemetry Grid */}
+                    <div className="grid grid-cols-3 gap-2 py-2 border-y border-slate-200/90 text-left">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block font-mono uppercase">Gradient</span>
+                        <strong className="text-xs text-slate-900" id="hudGradient">
+                          {probeState.gradient > 0 ? `+${probeState.gradient}` : probeState.gradient}%{' '}
+                          {probeState.gradient < 0 ? 'Sink' : 'Slope'}
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block font-mono uppercase">Elevation</span>
+                        <strong className="text-xs text-slate-900" id="hudElevation">
+                          {probeState.elevation}m MSL
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 block font-mono uppercase">Drain Status</span>
+                        <strong className={`text-xs font-bold ${area.drainClass || riskClass}`} id="hudDrain">
+                          {area.drain}
+                        </strong>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-[10px] text-slate-500 block">Elevation</span>
-                      <strong className="text-xs text-slate-900" id="hudElevation">
-                        {probeState.elevation}m MSL
-                      </strong>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-500 block">Drain Status</span>
-                      <strong className={`text-xs font-bold ${area.drainClass}`} id="hudDrain">
-                        {area.drain}
-                      </strong>
-                    </div>
-                  </div>
 
-                  {/* Dynamic Vector Flow Indicator Note */}
-                  <div className="hud-flow-notice">
-                    <span className="text-blue-700 font-bold">&rarr;</span>
-                    <span className="text-xs text-slate-700" id="hudFlowText">
-                      {probeState.isUserClick
-                        ? `Dynamic probe node placed at ${probeState.lat.toFixed(4)}°N. Local sheetflow vector traces ${probeState.distToSink}m runoff directly toward localized catchment sink.`
-                        : area.flowText}
-                    </span>
+                    {/* Dynamic Vector Flow Notice */}
+                    <div className="hud-flow-notice !mt-0 !py-1.5 !px-2.5 bg-slate-50/90 border border-slate-200/60 rounded-lg">
+                      <span className={`font-bold text-xs ${probeState.score > 70 ? 'text-rose-700' : 'text-blue-700'}`}>
+                        {probeState.score > 70 ? '⚠️' : '→'}
+                      </span>
+                      <span className="text-xs text-slate-700 leading-snug" id="hudFlowText">
+                        {probeState.isUserClick
+                          ? `Dynamic probe node placed at ${probeState.lat.toFixed(4)}°N, ${probeState.lng.toFixed(4)}°E. Local sheetflow vector traces ${probeState.distToSink}m runoff directly toward localized catchment sink.`
+                          : area.flowText}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
               {/* Clean, Centralized Telemetry Bar Under Map */}
               <div className="map-central-telemetry">
@@ -582,47 +591,6 @@ export function BuildingsSection() {
               </div>
             </div>
 
-            {/* Premium Below-Map Insight: Building Risk Matrix */}
-            <div className="below-map-insight">
-              <div className="insight-header">
-                <span className="insight-icon">📊</span>
-                <div>
-                  <span className="meta-tag text-indigo-700">BUILDING EXPOSURE SYNTHESIS</span>
-                  <h4 className="insight-title">Macro-Catchment Exposure Distribution — Amritsar Hotspots</h4>
-                </div>
-              </div>
-              <div className="insight-grid">
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-rose-700">3,214</span>
-                  <span className="insight-stat-label">High-Exposure Footprints</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-rose-500" style={{ width: '26%' }}></div>
-                  </div>
-                </div>
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-amber-700">5,842</span>
-                  <span className="insight-stat-label">Moderate-Exposure Footprints</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-amber-500" style={{ width: '47%' }}></div>
-                  </div>
-                </div>
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-emerald-700">3,424</span>
-                  <span className="insight-stat-label">Low-Exposure Footprints</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-emerald-500" style={{ width: '27%' }}></div>
-                  </div>
-                </div>
-              </div>
-              <div className="insight-footnote">
-                <span className="text-slate-500">Data Pipeline:</span>
-                <span className="text-blue-700 font-semibold">Copernicus DEM 30m</span>
-                <span className="insight-dot">&bull;</span>
-                <span className="text-emerald-700 font-semibold">Google Open Buildings V3</span>
-                <span className="insight-dot">&bull;</span>
-                <span className="text-indigo-700 font-semibold">ERA5 Reanalysis</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

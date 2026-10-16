@@ -65,7 +65,7 @@ export const TRIP_EXAMPLES: Record<string, TripExample> = {
       score: 88,
       label: 'High Inundation Risk',
       flowNote:
-        'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with severe/impassable water accumulation reported.',
+        'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with ~60cm storm inundation recorded.',
       coords: [
         [31.634, 74.8655],
         [31.6285, 74.861],
@@ -190,7 +190,7 @@ export function RoadMapCanvas({
 
   const initialCenter = useRef(activeTrip.originCoords)
 
-  // Initialize Map
+  // Initialize Map with Google Maps Roadmap & Satellite
   useEffect(() => {
     if (!containerRef.current) return
     const container = containerRef.current as HTMLDivElement & { _leaflet_id?: number | null }
@@ -210,12 +210,27 @@ export function RoadMapCanvas({
       preferCanvas: true,
     })
 
-    // OpenStreetMap clean standard tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
-    }).addTo(map)
+    const googleRoadmap = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      subdomains: ['0', '1', '2', '3'],
+      maxZoom: 20,
+      attribution: '&copy; Google Maps',
+    })
+
+    const googleSatellite = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      subdomains: ['0', '1', '2', '3'],
+      maxZoom: 20,
+      attribution: '&copy; Google Maps',
+    })
+
+    googleRoadmap.addTo(map)
+
+    L.control
+      .layers(
+        { 'Google Roadmap': googleRoadmap, 'Google Satellite': googleSatellite },
+        undefined,
+        { position: 'topright' }
+      )
+      .addTo(map)
 
     L.control.zoom({ position: 'topright' }).addTo(map)
     mapRef.current = map
@@ -227,19 +242,19 @@ export function RoadMapCanvas({
     }
   }, [])
 
-  // Sync Trip markers and polylines when activeTrip changes
+  // Sync Trip markers and polylines when activeTrip or activeRoute changes
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    // Clean up existing markers & lines
+    // Clean up existing layers
     if (originMarkerRef.current) map.removeLayer(originMarkerRef.current)
     if (destMarkerRef.current) map.removeLayer(destMarkerRef.current)
     if (hazardMarkerRef.current) map.removeLayer(hazardMarkerRef.current)
     if (polylineARef.current) map.removeLayer(polylineARef.current)
     if (polylineBRef.current) map.removeLayer(polylineBRef.current)
 
-    // 1. Sleek Origin Pin (Google Maps green theme)
+    // 1. Sleek Origin Pin (Google Maps pin theme)
     originMarkerRef.current = L.marker(activeTrip.originCoords, {
       icon: L.divIcon({
         className: 'custom-gmaps-pin',
@@ -283,39 +298,68 @@ export function RoadMapCanvas({
       .bindPopup(`<b>Destination:</b> ${activeTrip.destName}`)
       .addTo(map)
 
-    // Hazard Chokepoint Pin
+    // 3. Sump Marker matching BuildingMapCanvas
     hazardMarkerRef.current = L.marker(activeTrip.hazardPoint, {
       icon: L.divIcon({
-        className: 'custom-hazard-pin',
-        html: `<div class="route-hazard-badge">⚠️</div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        className: 'custom-leaflet-sink',
+        html: `
+          <div class="sink-marker-wrapper">
+            <div class="sink-floating-tag" style="background:#881337;border:1px solid rgba(255,255,255,0.4);">CRITICAL SUMP</div>
+            <div class="sink-core-badge" style="background:#e11d48;box-shadow:0 0 12px rgba(225,29,72,0.6);">⚠️</div>
+          </div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
       }),
     })
-      .bindPopup(`<b>CRITICAL CHOKEPOINT:</b> ${activeTrip.hazardName}<br/><span style="font-size:10px;color:#64748b;">${activeTrip.hazardDesc}</span>`)
+      .bindPopup(
+        `<div style="font-family:sans-serif;font-size:12px;line-height:1.4;">
+          <b style="color:#be123c;">⚠️ CRITICAL CHOKEPOINT:</b><br/>${activeTrip.hazardName}
+          <div style="font-size:10.5px;color:#64748b;margin-top:4px;">${activeTrip.hazardDesc}</div>
+        </div>`
+      )
       .addTo(map)
 
-    // Polylines A (Safe) & B (Hazardous)
+    // 4. Polylines A (Safe) & B (Hazardous)
     const isSafe = activeRoute === 'safe'
-    polylineARef.current = L.polyline(activeTrip.routeA.coords, {
-      color: isSafe ? '#059669' : '#cbd5e1',
-      weight: isSafe ? 6 : 3,
+
+    const polyA = L.polyline(activeTrip.routeA.coords, {
+      color: isSafe ? '#059669' : '#94a3b8',
+      weight: isSafe ? 7 : 4,
       opacity: isSafe ? 1 : 0.45,
+      dashArray: isSafe ? '8, 6' : undefined,
       className: isSafe ? 'runoff-polyline-anim cursor-pointer' : 'cursor-pointer',
     })
-      .on('click', () => onSelectRouteRef.current?.('safe'))
+      .bindTooltip(
+        `<b>${activeTrip.routeA.name}</b><br/><span style="color:#059669;font-weight:bold;">${activeTrip.routeA.score}% Flood Exposure</span> (${activeTrip.routeA.distance})`,
+        { sticky: true }
+      )
       .addTo(map)
 
-    polylineBRef.current = L.polyline(activeTrip.routeB.coords, {
-      color: !isSafe ? '#be123c' : '#cbd5e1',
-      weight: !isSafe ? 6 : 3,
+    polyA.on('click', () => {
+      onSelectRouteRef.current?.('safe')
+    })
+    polylineARef.current = polyA
+
+    const polyB = L.polyline(activeTrip.routeB.coords, {
+      color: !isSafe ? '#e11d48' : '#94a3b8',
+      weight: !isSafe ? 7 : 4,
       opacity: !isSafe ? 1 : 0.45,
+      dashArray: !isSafe ? '8, 6' : undefined,
       className: !isSafe ? 'runoff-polyline-anim cursor-pointer' : 'cursor-pointer',
     })
-      .on('click', () => onSelectRouteRef.current?.('hazardous'))
+      .bindTooltip(
+        `<b>${activeTrip.routeB.name}</b><br/><span style="color:#e11d48;font-weight:bold;">${activeTrip.routeB.score}% Flood Risk</span> (${activeTrip.routeB.distance})`,
+        { sticky: true }
+      )
       .addTo(map)
 
-    const targetPoly = isSafe ? polylineARef.current : polylineBRef.current
+    polyB.on('click', () => {
+      onSelectRouteRef.current?.('hazardous')
+    })
+    polylineBRef.current = polyB
+
+    const targetPoly = isSafe ? polyA : polyB
     if (targetPoly) {
       map.flyToBounds(targetPoly.getBounds(), { padding: [50, 50], duration: 0.6 })
     }
@@ -327,17 +371,17 @@ export function RoadMapCanvas({
     const map = mapRef.current
     if (!map) return
 
-    map.flyTo(activeTrip.hazardPoint, 14, { duration: 0.5 })
+    map.flyTo(activeTrip.hazardPoint, 15, { duration: 0.5 })
     setTimeout(() => {
       if (hazardMarkerRef.current) hazardMarkerRef.current.openPopup()
-    }, 400)
+    }, 450)
   }, [focusHazardTrigger, activeTrip])
 
   return (
     <div
       ref={containerRef}
       id="roadRealMap"
-      className="real-map-canvas w-full h-[520px] rounded-2xl overflow-hidden"
+      className="real-map-canvas w-full h-[520px] rounded-2xl overflow-hidden shadow-inner"
     />
   )
 }

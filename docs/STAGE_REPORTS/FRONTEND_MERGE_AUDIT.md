@@ -627,3 +627,58 @@ The entire application runs out-of-the-box (`npm install && npm run dev` at `htt
 - **Regressions**: **0**.
 - **Submission Readiness**: **APPROVED**. The codebase is robust, fully documented, verified against 802 automated tests, builds cleanly in production, and provides an impressive, stable demo journey for hackathon judges.
 
+---
+
+## 11. Stage P6 Complete Source Frontend Migration Outcome
+
+**Execution Date**: October 16, 2026  
+**Status**: 100% Migrated & Verified (802/802 Vitest Tests Passing, 0 TypeScript Errors, Production Build Clean across 35 Routes)
+
+### 11.1 Migration Scope & Achievements
+
+Stage P6 completed the full, non-destructive migration of the source repository (`vansharora1813-ui/NEXSTROME/tree/main/NEXSTORM`) frontend experience into the authoritative target repository (`sakshamgupta005/NEXSTORM`). Rather than a partial styling update, the application now delivers the complete source frontend presentation while retaining 100% of the target's scientific, backend, data, and safety capabilities.
+
+| Surface / Component | Source Reference Feature | Target Integration & Preservation State |
+| :--- | :--- | :--- |
+| **Shell & Layout** | Centered floating pill navbar, `AuthModal` login popup, responsive header | Fully migrated. `FrontendNavbar.tsx` features centered pill navigation, live pipeline status chip, tab switcher, and `AuthModal` trigger. Root layout clean and free of intrusive header-offsetting banners. |
+| **Landing & Overview** | Full-bleed hero with water-wave visual (`hero-water-wave.png`), radar ping, `PillarSpotlightCard` grid, `SystemTimelineSection` | Fully migrated in `OverviewSection.tsx`. Preserved precipitation stress hyetograph slider and dynamic hydrologic simulation. |
+| **Buildings Dossier** | Google Roadmap & Satellite Hybrid tiles, landmark photo preview, Google Maps Place Search deep link | Migrated in `BuildingMapCanvas.tsx` and `BuildingsSection.tsx`. Fully preserved all 8 `AMRITSAR_AREAS`, draggable Google Maps pin probe, live runoff calculations, and target's AI vision/multimodal risk fusion engine. |
+| **Roads & Transit Hubs** | Origin/destination hub selectors (`AMRITSAR_HUBS`), direction swap (`⇅`), preset corridor routes, Google Hybrid tiles | Migrated in `RoadMapCanvas.tsx` and `RoadsSection.tsx`. Completely preserved target's live `/api/roads/route-compare` integration, deterministic sump chokepoints (+20 pt penalty on underpass), and live path risk fusion. |
+| **About Us Page** | Source vision card, top-level mission banner, 6-stage architecture pipeline | Fully unified in `AboutSection.tsx`. Combines source's visual card with target's comprehensive 9-section scientific reference, mathematical formula cards ($S$, $\text{RTI}$, $R_{\text{final}}$), 2D matrix with color-coded risk badges, and 4-member team profile grid. |
+| **Auth System** | Source `AuthModal` component with tabs for Login / Sign Up | Migrated `AuthModal.tsx`. Integrated into navbar modal popup and embedded non-modal view on `/login` and `/signup` routes. |
+| **Supporting Libraries** | Source utility suites, compliance, localization, forms, templates | Transferred `src/components/compliance/`, `src/components/forms/`, `src/components/i18n/`, `src/components/templates/`, `src/lib/a11y/`, `src/lib/forms/`, and `src/lib/i18n/`. |
+| **Design Tokens & CSS** | Modern tokens, smooth scrolling, animations (`radarSweep`, `pinDrop`, `animate-hero-*`), `#f5f5f7` background | Unified `src/styles/reference.css` and `src/app/globals.css`. Retained `.formula-card`, `.toc-pill`, and responsive query rules. |
+
+---
+
+### 11.2 Protected Target Capabilities Confirmed Preserved
+
+1. **AI Vision & Image-Risk Fusion**:
+   - `src/lib/images/` and all image fusion hooks completely intact.
+   - Passing `tests/unit/images/p30-ai-vision.test.ts` (10/10) and `p31-risk-fusion.test.ts` (9/9).
+2. **Deterministic Road Risk Engine**:
+   - Live `/api/roads/route-compare` caller and API endpoints intact.
+   - Sump chokepoint heuristics and dynamic route-risk calculations functioning with graceful local fallback.
+3. **250m Macro Explorer & Data Integrity**:
+   - Preserved calm, spacious layout in `/city/[cityId]`.
+   - Data Integrity & Scientific Grounding Bar preserved with ECMWF/ERA5 weather feeds and model scoping.
+4. **Jalandhar Exploratory Isolation**:
+   - `evidence_insufficient` gate, topography rasters, quality reports, and alert suppression rules fully intact.
+5. **GNDU 50m Micro-Catchment Campaign**:
+   - Preserved `/campaign/gndu` route with 699 campus cells verified against `campus_susceptibility.geojson`.
+6. **Alert Subsystem & Operator Safeguards**:
+   - Passing `tests/unit/p20-alert-subsystem.test.ts` (22/22) with preflight safeguards and kill switches.
+
+---
+
+### 11.3 Verification Results
+
+- **TypeScript Compilation**: `npm run typecheck` (`tsc --noEmit`) completed with **0 errors**.
+- **Unit & Component Tests**:
+  - `tests/components/`: **18 passed / 18 passed (120/120 tests)**
+  - `tests/unit/images/`: **4 passed / 4 passed (46/46 tests)**
+  - `tests/unit/p20-alert-subsystem.test.ts`: **1 passed / 1 passed (22/22 tests)**
+  - Total test suite (`npm test`): **87 passed / 87 total (802/802 tests, 100% passing)**.
+- **Production Build**: `npm run build` compiled all **35 static and dynamic routes** cleanly in **3.4s**.
+- **Visual Verification**: Browser subagent verified Home, Pillars, Timeline, AuthModal, Buildings HUD, Roads hub selector, and About Us sections. Session recorded to artifact `p6_visual_verification_1792142695843.webp`.
+

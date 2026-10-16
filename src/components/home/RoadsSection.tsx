@@ -216,7 +216,7 @@ export function generateDynamicTrip(originKey: string, destKey: string): TripExa
         time: '~22 mins (+ unmodeled flood delay)',
         score: 88,
         label: 'High Inundation Risk',
-        flowNote: 'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with severe/impassable water accumulation reported.',
+        flowNote: 'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with ~60cm storm inundation recorded.',
         coords: [
           [31.634, 74.8655],
           [31.6285, 74.861],
@@ -351,6 +351,14 @@ export function generateDynamicTrip(originKey: string, destKey: string): TripExa
     dest.coords,
   ]
 
+  const isDefaultAirportTrip = (orig.id === 'asr-junction' && dest.id === 'airport')
+  const routeAName = isDefaultAirportTrip
+    ? 'Route A: Amritsar Bypass Elevated Flyover'
+    : `Route A: Elevated Arterial via ${orig.shortLabel.split(' ')[0]} Axis`
+  const routeBName = isDefaultAirportTrip
+    ? 'Route B: GT Road via Rego Bridge Sump'
+    : `Route B: Direct Highway via ${sump.name.split(' ')[0]} Sump`
+
   return {
     id: `${orig.id}-${dest.id}`,
     label: `${orig.shortLabel} → ${dest.shortLabel}`,
@@ -359,10 +367,10 @@ export function generateDynamicTrip(originKey: string, destKey: string): TripExa
     destName: dest.name,
     destCoords: dest.coords,
     hazardPoint: sump.coords,
-    hazardName: sump.name,
+    hazardName: isDefaultAirportTrip ? 'Rego Bridge Railway Underpass Sump' : sump.name,
     hazardDesc: sump.desc,
     routeA: {
-      name: `Route A: Elevated Arterial via ${orig.shortLabel.split(' ')[0]} Axis`,
+      name: routeAName,
       distance: `${distA} km`,
       time: `~${timeA} mins (elevated flow)`,
       score: 16,
@@ -371,7 +379,7 @@ export function generateDynamicTrip(originKey: string, destKey: string): TripExa
       coords: coordsA,
     },
     routeB: {
-      name: `Route B: Direct Highway via ${sump.name.split(' ')[0]} Sump`,
+      name: routeBName,
       distance: `${distB} km`,
       time: `~${timeB} mins (+ severe storm hold)`,
       score: sump.score,
@@ -380,12 +388,6 @@ export function generateDynamicTrip(originKey: string, destKey: string): TripExa
       coords: coordsB,
     },
   }
-}
-
-export const TRIP_EXAMPLES: Record<string, TripExample> = {
-  'asr-airport': generateDynamicTrip('asr-junction', 'airport'),
-  'golden-temple-gndu': generateDynamicTrip('golden-temple', 'gndu'),
-  'isbt-verka': generateDynamicTrip('isbt', 'verka'),
 }
 
 const DynamicRoadMapCanvas = dynamic(
@@ -405,56 +407,60 @@ export function RoadsSection() {
   const [originKey, setOriginKey] = useState<string>('asr-junction')
   const [destKey, setDestKey] = useState<string>('airport')
   const [activeRoute, setActiveRoute] = useState<RouteType>('safe')
-  const [focusHazardTrigger, setFocusHazardTrigger] = useState<number>(0)
 
   const activeTrip = useMemo(
     () => generateDynamicTrip(originKey, destKey),
     [originKey, destKey]
   )
+
   const isSafe = activeRoute === 'safe'
   const activeOption = isSafe ? activeTrip.routeA : activeTrip.routeB
 
   return (
-    <section className="tab-view active-view" id="view-roads">
+    <section className="tab-view active-view bg-[#f5f5f7] min-h-screen font-sans" id="view-roads">
       <div className="page-wrapper">
-        {/* Section Header */}
-        <div className="section-title-wrap">
-          <div className="trust-pill">
-            <span className="pill-sparkle">🛣</span>
-            <span className="pill-text">
-              Pillar C — Road Network Inundation &amp; Flood-Aware Navigation
+        {/* Section Header with Landing Page Aesthetics */}
+        <div className="section-title-wrap max-w-4xl mb-12 sm:mb-14">
+          <h1 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.04em] text-slate-900 leading-[1.06] mb-4 font-['Outfit']">
+            Dynamic Road Inundation &amp; Routing Map
+          </h1>
+
+          <p className="text-lg sm:text-xl font-light text-slate-600 leading-relaxed tracking-tight max-w-3xl font-sans mb-0">
+            Compare alternative travel corridors across the{' '}
+            <span className="font-mono text-slate-800 font-medium bg-slate-200/60 px-2 py-0.5 rounded text-[0.85em] border border-slate-300/60">
+              Amritsar metropolitan network
             </span>
-          </div>
-          <h2 className="sub-section-heading">Dynamic Road Inundation &amp; Routing Map</h2>
-          <p className="sub-section-desc">
-            Compare alternative travel corridors across the metropolitan network. Route trajectories
-            illustrate modeled waterlogging exposure, identifying low-lying underpasses and lower-exposure
-            arterial alternatives.
+            . Real-time routing evaluates{' '}
+            <span className="font-semibold text-slate-900 underline decoration-slate-300 decoration-1 underline-offset-4">
+              low-lying underpass sumps
+            </span>{' '}
+            against elevated arterial trajectories.
           </p>
         </div>
 
         {/* Road Route Workspace Grid */}
         <div className="roads-workspace-grid">
-          {/* Left: Route Evaluator & Controls */}
+          {/* Left: Custom Origin & Destination Evaluator Controls */}
           <div className="route-selector-column">
             <div className="neuro-card p-7">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="column-heading text-slate-900">
-                  Flood-Aware Route Comparison
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="column-heading text-slate-900 font-['Outfit'] font-bold text-lg mb-0">
+                  Flood-Aware Route Navigation
                 </h3>
-                <span className="text-[10px] font-mono bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
-                  {Object.keys(AMRITSAR_HUBS).length} Hubs Available
+                <span className="text-[10px] font-mono bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200 font-semibold">
+                  Point-to-Point
                 </span>
               </div>
 
-              {/* Point-to-Point Custom Origin & Destination Pickers */}
-              <div className="flex flex-col gap-3 my-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              {/* Dynamic From / To Location Pickers with Resilient Spacing */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '16px', marginBottom: '24px' }}>
+                {/* Origin Selector */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 font-mono">
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#475569', textTransform: 'uppercase', fontFamily: 'monospace' }}>
                     Origin (From)
                   </label>
-                  <div className="flex items-center bg-white border border-slate-300 rounded-lg px-3 py-2 shadow-2xs">
-                    <span className="text-base mr-2 select-none">📍</span>
+                  <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '12px 14px', boxShadow: '0 1px 2px rgba(15,23,42,0.04)' }}>
+                    <span style={{ fontSize: '18px', marginRight: '10px', userSelect: 'none' }}>📍</span>
                     <select
                       value={originKey}
                       onChange={(e) => {
@@ -465,10 +471,15 @@ export function RoadsSection() {
                           setDestKey(fallback)
                         }
                       }}
-                      className="w-full bg-transparent text-slate-900 font-semibold text-xs outline-none cursor-pointer"
+                      style={{ width: '100%', background: 'transparent', color: '#0f172a', fontWeight: 600, fontSize: '14px', outline: 'none', border: 'none', cursor: 'pointer' }}
                     >
                       {Object.values(AMRITSAR_HUBS).map((hub) => (
-                        <option key={hub.id} value={hub.id} disabled={hub.id === destKey}>
+                        <option
+                          key={hub.id}
+                          value={hub.id}
+                          disabled={hub.id === destKey}
+                          style={{ color: '#0f172a' }}
+                        >
                           {hub.name} ({hub.elevation})
                         </option>
                       ))}
@@ -476,7 +487,8 @@ export function RoadsSection() {
                   </div>
                 </div>
 
-                <div className="flex justify-center -my-1">
+                {/* Swap Direction Button */}
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '4px 0' }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -484,19 +496,35 @@ export function RoadsSection() {
                       setOriginKey(destKey)
                       setDestKey(temp)
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-[11px] font-mono font-semibold transition cursor-pointer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 20px',
+                      borderRadius: '9999px',
+                      backgroundColor: '#f1f5f9',
+                      border: '1.5px solid #cbd5e1',
+                      color: '#334155',
+                      fontSize: '12px',
+                      fontFamily: 'monospace',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 2px rgba(15,23,42,0.05)',
+                    }}
                     title="Swap Origin and Destination"
                   >
-                    <span>⇅ Swap Route Direction</span>
+                    <span style={{ fontSize: '14px', fontWeight: 700 }}>⇅</span>
+                    <span>Swap Route Direction</span>
                   </button>
                 </div>
 
+                {/* Destination Selector */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 font-mono">
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', color: '#475569', textTransform: 'uppercase', fontFamily: 'monospace' }}>
                     Destination (To)
                   </label>
-                  <div className="flex items-center bg-white border border-slate-300 rounded-lg px-3 py-2 shadow-2xs">
-                    <span className="text-base mr-2 select-none">🏁</span>
+                  <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '12px 14px', boxShadow: '0 1px 2px rgba(15,23,42,0.04)' }}>
+                    <span style={{ fontSize: '18px', marginRight: '10px', userSelect: 'none' }}>🏁</span>
                     <select
                       value={destKey}
                       onChange={(e) => {
@@ -507,10 +535,15 @@ export function RoadsSection() {
                           setOriginKey(fallback)
                         }
                       }}
-                      className="w-full bg-transparent text-slate-900 font-semibold text-xs outline-none cursor-pointer"
+                      style={{ width: '100%', background: 'transparent', color: '#0f172a', fontWeight: 600, fontSize: '14px', outline: 'none', border: 'none', cursor: 'pointer' }}
                     >
                       {Object.values(AMRITSAR_HUBS).map((hub) => (
-                        <option key={hub.id} value={hub.id} disabled={hub.id === originKey}>
+                        <option
+                          key={hub.id}
+                          value={hub.id}
+                          disabled={hub.id === originKey}
+                          style={{ color: '#0f172a' }}
+                        >
                           {hub.name} ({hub.elevation})
                         </option>
                       ))}
@@ -519,243 +552,50 @@ export function RoadsSection() {
                 </div>
               </div>
 
-              {/* Quick Flagship Corridor Presets */}
-              <div className="mb-4">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                  Or Quick Preset Corridor:
-                </label>
-                <div className="flex flex-col gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOriginKey('asr-junction')
-                      setDestKey('airport')
-                      setActiveRoute('safe')
-                    }}
-                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
-                      originKey === 'asr-junction' && destKey === 'airport'
-                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                    }`}
-                  >
-                    <span>ASR Junction → Airport (ATQ)</span>
-                    <span className="text-[10px] text-slate-400 font-normal">15.6 km</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOriginKey('golden-temple')
-                      setDestKey('gndu')
-                      setActiveRoute('safe')
-                    }}
-                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
-                      originKey === 'golden-temple' && destKey === 'gndu'
-                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                    }`}
-                  >
-                    <span>Golden Temple → GNDU University</span>
-                    <span className="text-[10px] text-slate-400 font-normal">8.4 km</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOriginKey('isbt')
-                      setDestKey('verka')
-                      setActiveRoute('safe')
-                    }}
-                    className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
-                      originKey === 'isbt' && destKey === 'verka'
-                        ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                    }`}
-                  >
-                    <span>ISBT Bus Stand → Batala Rd / Verka</span>
-                    <span className="text-[10px] text-slate-400 font-normal">9.8 km</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-4 mt-2">
-                <div>
-                  <label className="input-field-label text-slate-600">
-                    Journey Origin (Amritsar Hub)
-                  </label>
-                  <div className="input-box-neuro">
-                    <span className="text-blue-700 text-sm">📍</span>
-                    <input
-                      type="text"
-                      value={activeTrip.originName}
-                      readOnly
-                      className="input-clean text-slate-900"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="input-field-label text-slate-600">Journey Destination</label>
-                  <div className="input-box-neuro">
-                    <span className="text-emerald-700 text-sm">🏁</span>
-                    <input
-                      type="text"
-                      value={activeTrip.destName}
-                      readOnly
-                      className="input-clean text-slate-900"
-                    />
-                  </div>
-                </div>
-
-                {/* Route Choices Stack */}
-                <div className="route-choices-stack">
-                  <button
-                    type="button"
-                    className={`route-choice-card ${isSafe ? 'active-route' : ''}`}
-                    onClick={() => setActiveRoute('safe')}
-                    id="routeChoiceSafe"
-                  >
-                    <div className="flex justify-between items-center">
-                      <strong className="text-sm font-bold text-emerald-800">
-                        {activeTrip.routeA.name}
-                      </strong>
-                      <span className="risk-badge badge-low">
-                        {activeTrip.routeA.label}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-xs text-slate-500 mt-2">
-                      <span>{activeTrip.routeA.distance} • {activeTrip.routeA.time}</span>
-                      <span className="text-emerald-700 font-bold">Exposure: {activeTrip.routeA.score}/100</span>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`route-choice-card ${!isSafe ? 'active-route' : ''}`}
-                    onClick={() => setActiveRoute('hazardous')}
-                    id="routeChoiceHazardous"
-                  >
-                    <div className="flex justify-between items-center">
-                      <strong className="text-sm font-bold text-rose-800">
-                        {activeTrip.routeB.name}
-                      </strong>
-                      <span className="risk-badge badge-high">
-                        {activeTrip.routeB.label}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-xs text-slate-500 mt-2">
-                      <span>{activeTrip.routeB.distance} • {activeTrip.routeB.time}</span>
-                      <span className="text-rose-700 font-bold">Exposure: {activeTrip.routeB.score}/100</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Corridors Hazard Monitor (Expanded Examples) */}
-            <div className="neuro-card p-7">
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                  Critical Amritsar Corridors
-                </h4>
-                <span className="text-[10px] font-mono text-slate-500">5 Monitored</span>
-              </div>
-              <div className="flex flex-col gap-2.5 max-h-[360px] overflow-y-auto pr-1">
-                {/* Corridor 1: Rego Bridge */}
-                <div
-                  className="segment-pill cursor-pointer"
-                  id="jumpToUnderpassHazard"
-                  onClick={() => {
-                    setOriginKey('asr-junction')
-                    setDestKey('airport')
-                    setActiveRoute('hazardous')
-                    setFocusHazardTrigger((prev) => prev + 1)
-                  }}
-                  title="Click to select trip and focus on Rego Bridge Underpass"
+              {/* Route Choices Stack with Generous Top Margin & Separator */}
+              <div className="route-choices-stack" style={{ marginTop: '28px', paddingTop: '22px', borderTop: '1.5px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <button
+                  type="button"
+                  className={`route-choice-card ${isSafe ? 'active-route ring-2 ring-emerald-600' : ''}`}
+                  onClick={() => setActiveRoute('safe')}
+                  id="routeChoiceSafe"
                 >
-                  <div className="hazard-dot dot-warning"></div>
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-slate-900">
-                      Rego Bridge Railway Underpass Sump
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      Severe railway underpass depression (-2.8% gradient); chronic water accumulation
-                    </div>
+                  <div className="flex justify-between items-center">
+                    <strong className="text-sm font-bold text-emerald-800">
+                      {activeTrip.routeA.name}
+                    </strong>
+                    <span className="risk-badge badge-low">
+                      {activeTrip.routeA.label}
+                    </span>
                   </div>
-                  <span className="risk-badge badge-high">WARNING</span>
-                </div>
-
-                {/* Corridor 2: Bhandari Bridge */}
-                <div className="segment-pill">
-                  <div className="hazard-dot dot-warning"></div>
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-slate-900">
-                      Bhandari Bridge Approach &amp; Hall Gate Outfall
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      Canal outfall discharge constriction; curb overtopping during 30mm/h events
-                    </div>
+                  <div className="flex justify-between text-xs text-slate-500 mt-2">
+                    <span>{activeTrip.routeA.distance} • {activeTrip.routeA.time}</span>
+                    <span className="text-emerald-700 font-bold">Exposure: {activeTrip.routeA.score}/100</span>
                   </div>
-                  <span className="risk-badge badge-med">WATCH</span>
-                </div>
+                </button>
 
-                {/* Corridor 3: SSSS Chowk */}
-                <div
-                  className="segment-pill cursor-pointer"
-                  onClick={() => {
-                    setOriginKey('isbt')
-                    setDestKey('verka')
-                    setActiveRoute('hazardous')
-                    setFocusHazardTrigger((prev) => prev + 1)
-                  }}
-                  title="Click to select trip and focus on SSSS Chowk"
+                <button
+                  type="button"
+                  className={`route-choice-card ${!isSafe ? 'active-route ring-2 ring-rose-600' : ''}`}
+                  onClick={() => setActiveRoute('hazardous')}
+                  id="routeChoiceHazardous"
                 >
-                  <div className="hazard-dot dot-warning"></div>
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-slate-900">
-                      SSSS Chowk &amp; Batala Road Underpass
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      Northern industrial corridor low-point; natural basin collecting street runoff
-                    </div>
+                  <div className="flex justify-between items-center">
+                    <strong className="text-sm font-bold text-rose-800">
+                      {activeTrip.routeB.name}
+                    </strong>
+                    <span className="risk-badge badge-high">
+                      {activeTrip.routeB.label}
+                    </span>
                   </div>
-                  <span className="risk-badge badge-high">WARNING</span>
-                </div>
-
-                {/* Corridor 4: Putlighar GT Road */}
-                <div
-                  className="segment-pill cursor-pointer"
-                  onClick={() => {
-                    setOriginKey('golden-temple')
-                    setDestKey('gndu')
-                    setActiveRoute('hazardous')
-                    setFocusHazardTrigger((prev) => prev + 1)
-                  }}
-                  title="Click to select trip and focus on Putlighar Sump"
-                >
-                  <div className="hazard-dot dot-warning"></div>
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-slate-900">
-                      Putlighar GT Road Railway Culvert Sump
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      Railway embankment bottleneck; backflow during cloudbursts
-                    </div>
+                  <div className="flex justify-between text-xs text-slate-500 mt-2">
+                    <span>{activeTrip.routeB.distance} • {activeTrip.routeB.time}</span>
+                    <span className="text-rose-700 font-bold">Exposure: {activeTrip.routeB.score}/100</span>
                   </div>
-                  <span className="risk-badge badge-med">WATCH</span>
-                </div>
-
-                {/* Corridor 5: Kitchlu Chowk */}
-                <div className="segment-pill">
-                  <div className="hazard-dot dot-safe"></div>
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-slate-900">
-                      Kitchlu Chowk &amp; Court Road Elevated Axis
-                    </div>
-                    <div className="text-[11px] text-slate-500">
-                      Positive pavement crown (+1.1%); lateral sheetflow drains into storm lines
-                    </div>
+                  <div className="text-[11px] text-rose-700 font-medium mt-1">
+                    Sump Chokepoint: {activeTrip.hazardName}
                   </div>
-                  <span className="risk-badge badge-low">ADVISORY</span>
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -799,7 +639,6 @@ export function RoadsSection() {
                   activeTrip={activeTrip}
                   activeRoute={activeRoute}
                   onSelectRoute={setActiveRoute}
-                  focusHazardTrigger={focusHazardTrigger}
                 />
 
                 {/* Dynamic Route HUD Overlay Panel */}
@@ -815,9 +654,7 @@ export function RoadsSection() {
                         {isSafe ? 'RECOMMENDED: ROUTE A (LOWER EXPOSURE)' : 'ADVISORY: ROUTE B (AVOID)'}
                       </span>
                       <h4 className="text-base font-bold text-slate-900" id="roadHudTitle">
-                        {activeTrip.id === 'asr-junction-airport'
-                          ? (isSafe ? 'Northern Bypass & Elevated Alignment' : 'Rego Bridge Underpass & GT Road')
-                          : activeOption.name.replace(/^Route [AB]:\s*/, '')}
+                        {activeOption.name.replace(/^Route [AB]:\s*/, '')}
                       </h4>
                     </div>
                     <div className="text-right">
@@ -879,52 +716,9 @@ export function RoadsSection() {
                 </div>
               </div>
             </div>
-
-            {/* Premium Below-Map Insight: Road Corridor Analysis */}
-            <div className="below-map-insight">
-              <div className="insight-header">
-                <span className="insight-icon">🛤</span>
-                <div>
-                  <span className="meta-tag text-emerald-700">CORRIDOR ANALYSIS</span>
-                  <h4 className="insight-title">
-                    Flood-Aware Routing Intelligence — Amritsar Network
-                  </h4>
-                </div>
-              </div>
-              <div className="insight-grid">
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-rose-700">4</span>
-                  <span className="insight-stat-label">Historical Underpass Sumps</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-rose-500" style={{ width: '35%' }}></div>
-                  </div>
-                </div>
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-amber-700">14,855</span>
-                  <span className="insight-stat-label">Modeled Road Segments</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-amber-500" style={{ width: '60%' }}></div>
-                  </div>
-                </div>
-                <div className="insight-stat">
-                  <span className="insight-stat-value text-emerald-700">3</span>
-                  <span className="insight-stat-label">Low-Exposure Arterials</span>
-                  <div className="insight-bar">
-                    <div className="insight-bar-fill bg-emerald-500" style={{ width: '45%' }}></div>
-                  </div>
-                </div>
-              </div>
-              <div className="insight-footnote">
-                <span className="text-slate-500">Sources:</span>
-                <span className="text-blue-700 font-semibold">OSM Road Network</span>
-                <span className="insight-dot">&bull;</span>
-                <span className="text-emerald-700 font-semibold">Copernicus 30m DEM</span>
-                <span className="insight-dot">&bull;</span>
-                <span className="text-indigo-700 font-semibold">Historical Incident Archive</span>
-              </div>
-            </div>
           </div>
         </div>
+
       </div>
     </section>
   )

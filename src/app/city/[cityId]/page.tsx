@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FrontendNavbar } from '@/components/home/FrontendNavbar'
+import { DisclaimerBanner } from '@/components/layout/DisclaimerBanner'
 import { HealthDiagnosticsModal } from '@/components/home/HealthDiagnosticsModal'
 import { Badge } from '@/components/ui/badge'
 import { ModeSwitch, ConsoleMode } from '@/components/modes/ModeSwitch'
@@ -325,77 +326,119 @@ export default function CityDashboardPage() {
   )
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f8fb] text-[#090e17] font-sans light-premium">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f7] text-[#090e17] font-sans light-premium">
       {/* High-Precision Unified Header Navigation */}
       <FrontendNavbar
-        activeTab="console"
         onOpenStatusModal={() => setIsHealthModalOpen(true)}
         onOpenReportModal={() => setIsReportModalOpen(true)}
       />
 
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-8 space-y-8 sm:space-y-10">
-        {/* Breadcrumb Return Navigation & Prototype Meta Bar */}
+      {/* Official Research Prototype Disclaimer Banner */}
+      <DisclaimerBanner />
+
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col gap-8">
+        {/* Breadcrumb Return Navigation & Context Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-700"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200/80 shadow-2xs hover:text-blue-700 hover:border-blue-300 transition-all w-fit"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Platform Overview</span>
           </Link>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-[11px] font-semibold text-slate-600">
-              Amritsar 250m Macro-Catchment Model
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Amritsar Urban Core (250m Catchment)</span>
             </span>
-            <span className="text-slate-300">|</span>
             <Badge
               data-testid="demo-data-badge"
-              className="bg-amber-600 text-white font-extrabold text-[10px] tracking-wider uppercase px-2 py-0.5"
+              className="bg-slate-900 text-white font-bold text-[10px] tracking-wider uppercase px-2.5 py-1 rounded-md"
             >
               DEMO DATA
             </Badge>
-            <Badge variant="outline" className="text-[10px] font-semibold border-amber-300 text-amber-800 bg-amber-100/60">
+            <Badge variant="outline" className="text-[10px] font-semibold border-amber-300 text-amber-800 bg-amber-50">
               PROVISIONAL THRESHOLDS
             </Badge>
           </div>
         </div>
 
         {/* Unified Console Header & High-Visibility Control Command Center */}
-        <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm p-6 sm:p-7 space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-slate-100">
-            <div className="space-y-1.5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200">
-                <span className="w-2 h-2 rounded-full bg-blue-600" />
-                <span>Dual-Resolution Flood Risk Twin &bull; {viewScope === 'city' ? '250m Macro City Catchment' : '50m Micro Campus Catchment'}</span>
+        <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm p-6 sm:p-8 flex flex-col gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 pb-6 border-b border-slate-100">
+            <div className="flex-1 space-y-2.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-blue-700 bg-blue-50/80 border border-blue-200/70">
+                <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+                <span className="uppercase tracking-wider text-[11px]">Dual-Resolution Hydrological Digital Twin</span>
+                <span className="text-slate-300">&bull;</span>
+                <span className="font-medium text-slate-600">{viewScope === 'city' ? '250m Macro Catchment' : '50m Micro Campus Grid'}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-display">
                 {cityId.charAt(0).toUpperCase() + cityId.slice(1)} Flood Risk Explorer
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
-                Catchment-scale hydrometeorological simulation and waterlogging vulnerability across {cityId === 'amritsar' ? "Amritsar's" : `${cityId}'s`} urban grid cells.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans max-w-2xl">
+                Catchment-scale hydrometeorological simulation and waterlogging vulnerability across {cityId === 'amritsar' ? "Amritsar's" : `${cityId}'s`} urban cells with sub-catchment topographic run-off modeling.
               </p>
 
               {/* Data Integrity & Scientific Grounding Bar */}
-              <div className="flex flex-wrap items-center gap-2 pt-2 text-[11px]">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium bg-slate-100 text-slate-700 border border-slate-200/90">
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium bg-slate-50 text-slate-700 border border-slate-200/80">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                  <span>Model: <strong>Relative Susceptibility (0–100)</strong> (Runoff propensity, not flood depth)</span>
+                  <span>Model: <strong>Relative Susceptibility (0–100)</strong> (Runoff propensity)</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium bg-slate-100 text-slate-700 border border-slate-200/90">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium bg-slate-50 text-slate-700 border border-slate-200/80">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                  <span>Weather Feed: <strong>{mode === 'scenario' ? 'Synthetic Scenario Hyetograph' : mode === 'replay' ? 'ERA5-Land Reanalysis (Historical)' : 'ECMWF/GFS Deterministic Forecast (Live)'}</strong></span>
+                  <span>Weather Feed: <strong>{mode === 'scenario' ? 'Synthetic Scenario Hyetograph' : mode === 'replay' ? 'ERA5-Land Reanalysis (Historical)' : 'ECMWF/GFS Forecast (Live)'}</strong></span>
                 </span>
                 {cityId === 'jalandhar' ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                    <span>Evidence Status: <strong>Exploratory / Uncalibrated</strong> (Alerts Suppressed)</span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold bg-amber-50 text-amber-800 border border-amber-200/80">
+                    <span>Status: <strong>Exploratory / Uncalibrated</strong></span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    <span>Evidence Status: <strong>Evaluation Ready</strong> (15 Monsoon Storm Backtests)</span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                    <span>Evidence: <strong>Evaluation Ready</strong> (15 Monsoon Backtests)</span>
                   </span>
                 )}
+              </div>
+            </div>
+
+            {/* Executive Catchment Status Card */}
+            <div className="lg:w-80 w-full rounded-xl bg-slate-50/80 border border-slate-200/80 p-4 shrink-0 flex flex-col justify-between gap-3 shadow-2xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
+                  Catchment Telemetry
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  Active Model
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-medium">Catchment Scope</span>
+                  <span className="font-bold text-slate-800 font-mono">
+                    {viewScope === 'city' ? '250m Macro' : '50m Micro'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-medium">High Exposure</span>
+                  <span className="font-bold text-rose-600 font-mono">
+                    {highPct}% ({highCellsCount})
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-medium">Peak Rain Rate</span>
+                  <span className="font-bold text-blue-600 font-mono">
+                    {mode === 'scenario' ? scenarioParams.peakMm1h : riskData?.rainfallSummary?.max1h ?? 0} mm/h
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-medium">Corridors Tracked</span>
+                  <span className="font-bold text-slate-800 font-mono">
+                    7 Routes
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -411,32 +454,34 @@ export default function CityDashboardPage() {
               <div
                 role="group"
                 aria-label="Geographic Scope"
-                className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-1.5 rounded-xl bg-slate-100 border border-slate-200"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 p-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 shadow-2xs"
               >
                 <button
                   type="button"
                   onClick={() => handleScopeChange('city')}
-                  className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-bold cursor-pointer ${
+                  className={`flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     viewScope === 'city'
-                      ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-700/20'
-                      : 'bg-transparent text-slate-700 hover:text-slate-900 hover:bg-white/80'
+                      ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                      : 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`}
                 >
-                  <Building className="w-4 h-4 shrink-0" />
-                  <span>Amritsar City (250m)</span>
+                  <Building className={`w-3.5 h-3.5 shrink-0 ${viewScope === 'city' ? 'text-blue-600' : 'text-slate-400'}`} />
+                  <span className="tracking-tight whitespace-nowrap">Amritsar (250m)</span>
+                  {viewScope === 'city' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleScopeChange('campus')}
-                  className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-bold cursor-pointer ${
+                  className={`flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     viewScope === 'campus'
-                      ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-700/20'
-                      : 'bg-transparent text-slate-700 hover:text-slate-900 hover:bg-white/80'
+                      ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                      : 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`}
                 >
-                  <GraduationCap className="w-4 h-4 shrink-0" />
-                  <span>GNDU Campus (50m)</span>
+                  <GraduationCap className={`w-3.5 h-3.5 shrink-0 ${viewScope === 'campus' ? 'text-blue-600' : 'text-slate-400'}`} />
+                  <span className="tracking-tight whitespace-nowrap">GNDU Campus (50m)</span>
+                  {viewScope === 'campus' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
                 </button>
               </div>
             </div>
@@ -453,65 +498,76 @@ export default function CityDashboardPage() {
         </div>
 
         {/* 4 Executive Metric Callouts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <CloudRain className="w-3.5 h-3.5 text-blue-600" />
-              <span>Peak Rainfall</span>
-            </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Peak Rainfall</span>
+              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+                <CloudRain className="w-4 h-4" />
+              </div>
+            </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">
+              <span className="text-3xl font-extrabold text-slate-900 font-display">
                 {mode === 'scenario' ? scenarioParams.peakMm1h : riskData?.rainfallSummary?.max1h ?? 0}
               </span>
-              <span className="text-xs font-semibold text-slate-500">mm/h</span>
+              <span className="text-xs font-semibold text-slate-500 font-mono">mm/h</span>
             </div>
             <p className="text-xs text-slate-500 leading-snug">
-              {mode === 'scenario' ? 'Simulated storm peak' : 'Observed/forecast peak'}
+              {mode === 'scenario' ? 'Simulated 1h storm peak rate' : 'Observed/forecast peak rate'}
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
-              <span>High Waterlogging Risk</span>
-            </span>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">High Risk Exposure</span>
+              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+            </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-rose-600 font-mono">
+              <span className="text-3xl font-extrabold text-rose-600 font-display">
                 {highPct}%
               </span>
-              <span className="text-xs font-semibold text-slate-500">of cells</span>
+              <span className="text-xs font-semibold text-slate-500 font-mono">of cells</span>
+            </div>
+            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-rose-500 h-full rounded-full" style={{ width: `${Math.min(highPct, 100)}%` }} />
             </div>
             <p className="text-xs text-slate-500 leading-snug">
               {highCellsCount.toLocaleString()} cells in critical depression
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-blue-600" />
-              <span>Catchment Grid</span>
-            </span>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Catchment Grid</span>
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center">
+                <Activity className="w-4 h-4" />
+              </div>
+            </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono">
+              <span className="text-3xl font-extrabold text-slate-900 font-display">
                 {totalCellsCount.toLocaleString()}
               </span>
-              <span className="text-xs font-semibold text-slate-500">cells</span>
+              <span className="text-xs font-semibold text-slate-500 font-mono">cells</span>
             </div>
             <p className="text-xs text-slate-500 leading-snug">
-              {viewScope === 'city' ? '250m macro catchment' : '50m campus micro grid'}
+              {viewScope === 'city' ? '250m macro catchment grid' : '50m campus micro grid'}
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Car className="w-3.5 h-3.5 text-slate-600" />
-              <span>Road Corridors</span>
-            </span>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Road Corridors</span>
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center">
+                <Car className="w-4 h-4" />
+              </div>
+            </div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-800 font-mono">
+              <span className="text-3xl font-extrabold text-slate-900 font-display">
                 7 Major
               </span>
-              <span className="text-xs font-semibold text-slate-500">routes</span>
+              <span className="text-xs font-semibold text-slate-500 font-mono">routes</span>
             </div>
             <p className="text-xs text-slate-500 leading-snug">
               GT Road, Airport &amp; Circular links
@@ -530,51 +586,67 @@ export default function CityDashboardPage() {
         )}
 
         {/* Primary Geospatial & Temporal Stage (Full Width) */}
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {/* Map Card */}
-          <div className="relative rounded-2xl border border-slate-200/90 bg-white shadow-sm p-3.5 sm:p-4 overflow-hidden">
-            {geoJsonData && riskData ? (
-              <DynamicRiskMap
-                geoJsonData={geoJsonData}
-                cells={riskData.cells}
-                center={mapCenter}
-                zoom={mapZoom}
-                selectedCellId={selectedCellId}
-                onSelectCell={setSelectedCellId}
-                activeLayer={activeLayer}
-                onLayerChange={setActiveLayer}
-                showHotspots={showHotspots}
-                onToggleHotspots={setShowHotspots}
-                hotspots={hotspots}
-                showObservations={showObservations}
-                onToggleObservations={setShowObservations}
-                observations={observations}
-                showRoads={showRoads}
-                onToggleRoads={setShowRoads}
-                roadsGeoJson={roadsGeoJson}
-                showBuildings={showBuildings}
-                onToggleBuildings={setShowBuildings}
-                buildingsGeoJson={buildingsGeoJson}
-                activeRoute={
-                  activeRoute?.geometry?.coordinates
-                    ? {
-                        coordinates: activeRoute.geometry.coordinates,
-                        name: activeRoute.name,
-                        mode: activeRoute.mode,
-                      }
-                    : null
-                }
-                onClearRoute={() => setActiveRoute(null)}
-              />
-            ) : (
-              <div
-                data-testid="map-loading"
-                className="w-full h-[620px] rounded-xl flex flex-col items-center justify-center bg-slate-100 border border-slate-200 text-slate-500"
-              >
-                <Activity className="w-8 h-8 animate-spin text-blue-500 mb-2" />
-                <span className="text-sm font-medium">Loading {viewScope} geospatial grid cells...</span>
+          <div className="relative rounded-2xl border border-slate-200/90 bg-white shadow-sm overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                  Metropolitan Spatial Risk &amp; Inundation Model
+                </span>
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                  {viewScope === 'city' ? '250m Macro Catchment' : '50m Micro Campus'}
+                </span>
               </div>
-            )}
+              <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono">
+                <span>Center: {viewScope === 'campus' ? '31.6375°N, 74.8250°E' : '31.6340°N, 74.8720°E'}</span>
+              </div>
+            </div>
+            <div className="p-3.5 sm:p-4">
+              {geoJsonData && riskData ? (
+                <DynamicRiskMap
+                  geoJsonData={geoJsonData}
+                  cells={riskData.cells}
+                  center={mapCenter}
+                  zoom={mapZoom}
+                  selectedCellId={selectedCellId}
+                  onSelectCell={setSelectedCellId}
+                  activeLayer={activeLayer}
+                  onLayerChange={setActiveLayer}
+                  showHotspots={showHotspots}
+                  onToggleHotspots={setShowHotspots}
+                  hotspots={hotspots}
+                  showObservations={showObservations}
+                  onToggleObservations={setShowObservations}
+                  observations={observations}
+                  showRoads={showRoads}
+                  onToggleRoads={setShowRoads}
+                  roadsGeoJson={roadsGeoJson}
+                  showBuildings={showBuildings}
+                  onToggleBuildings={setShowBuildings}
+                  buildingsGeoJson={buildingsGeoJson}
+                  activeRoute={
+                    activeRoute?.geometry?.coordinates
+                      ? {
+                          coordinates: activeRoute.geometry.coordinates,
+                          name: activeRoute.name,
+                          mode: activeRoute.mode,
+                        }
+                      : null
+                  }
+                  onClearRoute={() => setActiveRoute(null)}
+                />
+              ) : (
+                <div
+                  data-testid="map-loading"
+                  className="w-full h-[620px] rounded-xl flex flex-col items-center justify-center bg-slate-100 border border-slate-200 text-slate-500"
+                >
+                  <Activity className="w-8 h-8 animate-spin text-blue-500 mb-2" />
+                  <span className="text-sm font-medium">Loading {viewScope} geospatial grid cells...</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Risk / Susceptibility Legend */}
@@ -610,7 +682,7 @@ export default function CityDashboardPage() {
         </div>
 
         {/* Dedicated Operations & Analysis Workspace (Full Width, Pushed Downwards) */}
-        <div className="space-y-6 pt-6">
+        <div className="flex flex-col gap-6 pt-6">
           {/* Workspace Tab Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
             <div>
@@ -624,57 +696,61 @@ export default function CityDashboardPage() {
           </div>
 
           {/* Large Tab Navigation Controls */}
-          <div className="flex flex-wrap items-center gap-3 p-2 rounded-2xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/90 border border-slate-200/80 shadow-2xs">
             <button
               type="button"
               onClick={() => setOperationsTab('storm')}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 operationsTab === 'storm'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
-              <CloudRain className="w-4 h-4" />
-              <span>Storm Simulation</span>
+              <CloudRain className={`w-4 h-4 ${operationsTab === 'storm' ? 'text-blue-600' : 'text-slate-400'}`} />
+              <span className="tracking-tight whitespace-nowrap">Storm Simulation</span>
+              {operationsTab === 'storm' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
             </button>
 
             <button
               type="button"
               onClick={() => setOperationsTab('roads')}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 operationsTab === 'roads'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
-              <Car className="w-4 h-4" />
-              <span>Roads &amp; Travel</span>
+              <Car className={`w-4 h-4 ${operationsTab === 'roads' ? 'text-blue-600' : 'text-slate-400'}`} />
+              <span className="tracking-tight whitespace-nowrap">Roads &amp; Travel</span>
+              {operationsTab === 'roads' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
             </button>
 
             <button
               type="button"
               onClick={() => setOperationsTab('reports')}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 operationsTab === 'reports'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
-              <Users className="w-4 h-4" />
-              <span>Field Reports</span>
+              <Users className={`w-4 h-4 ${operationsTab === 'reports' ? 'text-blue-600' : 'text-slate-400'}`} />
+              <span className="tracking-tight whitespace-nowrap">Field Reports</span>
+              {operationsTab === 'reports' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
             </button>
 
             <button
               type="button"
               onClick={() => setOperationsTab('alerts')}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 operationsTab === 'alerts'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
-              <Info className="w-4 h-4" />
-              <span>Alerts &amp; Science</span>
+              <Info className={`w-4 h-4 ${operationsTab === 'alerts' ? 'text-blue-600' : 'text-slate-400'}`} />
+              <span className="tracking-tight whitespace-nowrap">Alerts &amp; Science</span>
+              {operationsTab === 'alerts' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
             </button>
           </div>
 

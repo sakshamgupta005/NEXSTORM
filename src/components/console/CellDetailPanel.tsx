@@ -63,19 +63,32 @@ export function CellDetailPanel({
 
   if (!cellId) {
     return (
-      <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm">
-        <CardContent className="p-6 text-center space-y-2">
-          <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-500 mx-auto flex items-center justify-center">
-            <Compass className="w-5 h-5" />
+      <div className="rounded-2xl border border-slate-200/90 bg-white shadow-2xs p-5 sm:p-6 transition-all">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 text-left">
+            <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+              <Compass className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                  Spatial Cell Inspector
+                </span>
+                <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                  Awaiting Selection
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
+                Click any 250m city cell or 50m campus sub-cell on the map above to inspect terrain slope, depression volume, runoff propensity, and historical incident proximity.
+              </p>
+            </div>
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-            Cell Inspector
-          </h4>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
-            Click any 250m city cell or 50m campus sub-cell on the map to inspect its topographic factor contributions, risk attribution, and historical incident proximity.
-          </p>
-        </CardContent>
-      </Card>
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50/80 border border-blue-200/60 shrink-0 shadow-2xs">
+            <MapPin className="w-3.5 h-3.5" />
+            <span>Interactive Map Active</span>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -85,33 +98,31 @@ export function CellDetailPanel({
   const riskColor = RISK_COLORS[riskClass]
 
   return (
-    <Card className="border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md">
-      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle className="text-sm font-bold flex items-center gap-1.5 font-mono text-slate-900 dark:text-slate-100">
-              <span className="text-blue-500">#</span>
-              <span>{cellId}</span>
-            </CardTitle>
-            <Badge variant="outline" className="text-[10px] font-mono">
-              {isCampus ? 'GNDU Campus (50m)' : 'Amritsar City (250m)'}
-            </Badge>
-          </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="h-7 w-7 p-0 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-            title="Deselect cell"
-          >
-            <X className="w-4 h-4" />
-          </Button>
+    <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs p-5 sm:p-6 space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="flex items-center gap-2.5">
+          <span className="text-base font-extrabold flex items-center gap-1 font-mono text-slate-900">
+            <span className="text-blue-600">#</span>
+            <span>{cellId}</span>
+          </span>
+          <Badge variant="outline" className="text-[10px] font-mono font-semibold border-slate-200 bg-slate-50 text-slate-700">
+            {isCampus ? 'GNDU Campus (50m)' : 'Amritsar City (250m)'}
+          </Badge>
         </div>
-      </CardHeader>
 
-      <CardContent className="pt-4 space-y-4 text-xs">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="h-8 w-8 p-0 text-slate-400 hover:text-slate-700 rounded-lg"
+          title="Deselect cell"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="space-y-4 text-xs">
         {isLoading && (
           <div className="py-8 text-center text-slate-500 space-y-2">
             <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -330,7 +341,7 @@ export function CellDetailPanel({
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

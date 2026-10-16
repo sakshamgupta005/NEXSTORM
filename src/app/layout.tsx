@@ -12,8 +12,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { DisclaimerBanner } from "@/components/layout/DisclaimerBanner";
-
 export const metadata: Metadata = {
   title: "NEXSTORM — AI Heavy-Rainfall & Urban Waterlogging Early Warning",
   description:
@@ -33,7 +31,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans light-premium">
-        <DisclaimerBanner />
         {children}
       </body>
     </html>

@@ -17,10 +17,6 @@ export function FrontendApp() {
       if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
         return tabParam
       }
-      const hashParam = window.location.hash.replace('#', '') as TabKey
-      if (hashParam && ['overview', 'buildings', 'roads', 'about'].includes(hashParam)) {
-        return hashParam
-      }
     }
     return 'overview'
   })
@@ -35,33 +31,21 @@ export function FrontendApp() {
       if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
         setActiveTab(tabParam)
       } else {
-        const hashParam = window.location.hash.replace('#', '') as TabKey
-        if (hashParam && ['overview', 'buildings', 'roads', 'about'].includes(hashParam)) {
-          setActiveTab(hashParam)
-        } else {
-          setActiveTab('overview')
-        }
+        setActiveTab('overview')
       }
     }
     window.addEventListener('popstate', handlePopState)
-    window.addEventListener('hashchange', handlePopState)
-    return () => {
-      window.removeEventListener('popstate', handlePopState)
-      window.removeEventListener('hashchange', handlePopState)
-    }
+    return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const handleSwitchTab = (tab?: string) => {
-    const validTab: TabKey = tab && ['overview', 'buildings', 'roads', 'about'].includes(tab)
-      ? (tab as TabKey)
-      : 'overview'
-    setActiveTab(validTab)
+  const handleSwitchTab = (tab: TabKey) => {
+    setActiveTab(tab)
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href)
-      if (validTab === 'overview') {
+      if (tab === 'overview') {
         url.searchParams.delete('tab')
       } else {
-        url.searchParams.set('tab', validTab)
+        url.searchParams.set('tab', tab)
       }
       window.history.replaceState({}, '', url.toString())
     }
@@ -69,7 +53,7 @@ export function FrontendApp() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f8fb] text-[#090e17]">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f7] text-[#090e17]">
       {/* Dynamic GNDU Campaign Announcement Banner */}
       {showGnduBanner && (
         <div className="bg-gradient-to-r from-blue-950 via-indigo-900 to-slate-900 text-white px-4 py-2 text-xs font-medium flex items-center justify-between border-b border-blue-800/40 relative z-30">
@@ -81,6 +65,8 @@ export function FrontendApp() {
             </span>
             <a
               href="/campaign/gndu"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-white underline underline-offset-2 hover:text-blue-200 font-bold ml-1 inline-flex items-center gap-0.5"
             >
               Learn More ↗
@@ -111,46 +97,6 @@ export function FrontendApp() {
         {activeTab === 'roads' && <RoadsSection />}
         {activeTab === 'about' && <AboutSection onSwitchTab={handleSwitchTab} />}
       </div>
-
-      {/* Trust & Scientific Disclaimer Footer */}
-      <footer className="w-full border-t border-slate-200/80 bg-white/70 py-6 px-8 text-center text-xs text-slate-500 mt-16">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-left">
-            <span className="font-bold text-slate-800">NEXSTORM</span> &bull; Amritsar Urban
-            Resilience Platform
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Experimental research prototype. Not an official weather forecast or emergency
-              warning. For official alerts see IMD and NDMA SACHET.
-            </p>
-          </div>
-          <div className="flex items-center gap-4 text-xs font-semibold">
-            <button
-              onClick={() => handleSwitchTab('overview')}
-              className="text-slate-600 hover:text-blue-700 transition"
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => handleSwitchTab('buildings')}
-              className="text-slate-600 hover:text-blue-700 transition"
-            >
-              Buildings
-            </button>
-            <button
-              onClick={() => handleSwitchTab('roads')}
-              className="text-slate-600 hover:text-blue-700 transition"
-            >
-              Roads
-            </button>
-            <button
-              onClick={() => handleSwitchTab('about')}
-              className="text-slate-600 hover:text-blue-700 transition"
-            >
-              About
-            </button>
-          </div>
-        </div>
-      </footer>
 
       {/* Live System & Data Pipeline Diagnostics Modal */}
       <HealthDiagnosticsModal

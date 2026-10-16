@@ -4,7 +4,7 @@
 
 :root {
   /* Restrained, Clean Light Canvas */
-  --bg-color: #f6f8fc;
+  --bg-color: #f5f5f7;
   --card-bg: #ffffff;
   --card-bg-subtle: #f8fafc;
   --card-border: #e2e8f0;
@@ -38,6 +38,10 @@
   --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono-tag: 'Space Grotesk', -apple-system, BlinkMacSystemFont, monospace;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -83,6 +87,36 @@ body.light-premium {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes heroEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-1 {
+  animation: heroEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-hero-2 {
+  animation: heroEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+  opacity: 0;
+}
+
+.animate-hero-3 {
+  animation: heroEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+  opacity: 0;
+}
+
+.animate-hero-4 {
+  animation: heroEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.32s forwards;
+  opacity: 0;
+}
+
 @keyframes pulseGlow {
   0% { transform: scale(0.9); opacity: 0.8; }
   50% { transform: scale(1.3); opacity: 0.2; }
@@ -107,6 +141,15 @@ body.light-premium {
 @keyframes hazardRingPing {
   0% { transform: scale(0.7); opacity: 1; }
   100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes radarSweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmerSweep {
@@ -260,6 +303,17 @@ body.light-premium {
   border-color: #bbf7d0;
 }
 
+.btn-live-status:hover {
+  background-color: #dcfce7;
+  border-color: #86efac;
+  color: #065f46;
+}
+
+.btn-live-status:active {
+  background-color: #bbf7d0;
+  border-color: #4ade80;
+}
+
 .pulse-indicator {
   width: 8px;
   height: 8px;
@@ -335,17 +389,13 @@ body.light-premium {
 .hero-image-banner {
   position: relative;
   width: 100%;
-  border-radius: 32px;
-  overflow: hidden;
-  background-color: #0b1220;
-  background-image: linear-gradient(135deg, rgba(8, 14, 26, 0.82) 0%, rgba(11, 18, 34, 0.88) 100%), url('/hero-flood-bg.jpg');
-  background-size: cover;
-  background-position: center 35%;
-  background-repeat: no-repeat;
-  padding: 64px 56px 72px 56px;
-  box-shadow: 0 24px 60px rgba(10, 18, 36, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  margin-bottom: 88px;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 16px 0 48px 0;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin-bottom: 72px;
 }
 
 .hero-image-banner .hero-grid {
@@ -353,29 +403,29 @@ body.light-premium {
 }
 
 .hero-image-banner .hero-heading {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .hero-image-banner .heading-accent {
-  color: #60a5fa;
+  color: #475569 !important;
 }
 
 .hero-image-banner .hero-lead {
-  color: #e2e8f0;
+  color: #475569;
 }
 
 .hero-image-banner .trust-pill {
-  background-color: rgba(15, 23, 42, 0.72);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
 .hero-image-banner .pill-text {
-  color: #f1f5f9;
+  color: #0f172a;
 }
 
 .hero-image-banner .pill-sparkle {
-  color: #60a5fa;
+  color: #2563eb;
 }
 
 .beacon-pulse-dot {
@@ -398,71 +448,67 @@ body.light-premium {
 }
 
 .hero-image-banner .hero-single-pill {
-  background-color: rgba(15, 23, 42, 0.72);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
 .hero-image-banner .pill-primary-tag {
-  color: #34d399;
+  color: #059669;
 }
 
 .hero-image-banner .pill-sub-info {
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .hero-image-banner .btn-secondary-action {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
 }
 
 .hero-image-banner .btn-secondary-action:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
 .hero-image-banner .metric-number {
-  color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 .hero-image-banner .metric-caption {
-  color: #93c5fd !important;
+  color: #2563eb !important;
 }
 
 .hero-image-banner .neuro-card.visualizer-card {
-  background-color: rgba(15, 23, 42, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+  background-color: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
 }
 
 .hero-image-banner .card-subhead,
 .hero-image-banner .hazard-readout {
-  color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 .hero-image-banner .meta-tag {
-  color: #93c5fd !important;
+  color: #2563eb !important;
 }
 
 .hero-image-banner .indicator-title,
 .hero-image-banner .readout-label,
 .hero-image-banner .evidence-bullets-list span:not(.bullet-check) {
-  color: #cbd5e1 !important;
+  color: #64748b !important;
 }
 
 .hero-image-banner .indicator-highlight {
-  color: #60a5fa !important;
+  color: #2563eb !important;
 }
 
 .hero-image-banner .icon-square-box {
-  background-color: rgba(37, 99, 235, 0.2);
-  border: 1px solid rgba(96, 165, 250, 0.3);
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
 }
 
 .hero-grid {
@@ -506,16 +552,16 @@ body.light-premium {
 
 .hero-heading {
   font-family: var(--font-display);
-  font-size: clamp(34px, 4.2vw, 54px);
-  line-height: 1.12;
+  font-size: clamp(42px, 5.5vw, 76px);
+  line-height: 1.05;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.025em;
-  margin-bottom: 20px;
+  letter-spacing: -0.035em;
+  margin-bottom: 24px;
 }
 
 .heading-accent {
-  color: var(--text-heading-blue);
+  color: #475569;
 }
 
 .hero-lead {
@@ -857,8 +903,8 @@ body.light-premium {
    Three Pillars Deep Dive Section
    ========================================================================= */
 .deep-dive-section {
-  padding-top: 48px;
-  border-top: 1px solid rgba(203, 213, 225, 0.6);
+  padding-top: 24px;
+  border-top: none;
 }
 
 .three-pillars-grid {
@@ -872,35 +918,12 @@ body.light-premium {
   flex-direction: column;
   gap: 16px;
   padding: 38px 34px;
-  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
-  border-radius: 20px;
+  background: #ffffff;
+  border-radius: 24px;
   border: 1px solid rgba(226, 232, 240, 0.95);
   box-shadow: var(--card-shadow);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
   position: relative;
   overflow: hidden;
-}
-
-.pillar-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.pillar-card:hover::before {
-  opacity: 1;
-}
-
-.pillar-card:hover {
-  transform: translateY(-4px);
-  border-color: #93c5fd;
-  box-shadow: var(--card-shadow-hover);
 }
 
 .pillar-icon {
@@ -964,6 +987,12 @@ body.light-premium {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.building-selector-list::-webkit-scrollbar {
+  display: none;
 }
 
 .building-item, .route-choice-card {
@@ -1132,6 +1161,76 @@ body.light-premium {
   100% { transform: scale(1.7); opacity: 0; }
 }
 
+@keyframes pinDrop {
+  0% {
+    transform: translateY(-24px) scale(0.7);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(3px) scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.pin-drop-anim {
+  animation: pinDrop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Exact Google Maps Pin */
+.gmaps-pin-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+}
+
+.gmaps-pin-container:active {
+  cursor: grabbing;
+}
+
+.gmaps-pin-svg {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  transition: transform 0.15s ease;
+}
+
+.gmaps-pin-container:hover .gmaps-pin-svg {
+  transform: translateY(-3px) scale(1.08);
+}
+
+.gmaps-pin-label {
+  position: absolute;
+  top: -24px;
+  white-space: nowrap;
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff;
+  font-family: var(--font-mono-tag);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.gmaps-pin-shadow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 5px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 .node-core-badge {
   width: 34px;
   height: 34px;
@@ -1278,19 +1377,15 @@ body.light-premium {
 }
 
 .building-item:hover {
-  transform: translateX(4px);
-  border-color: #93c5fd;
+  border-color: #60a5fa;
   background-color: #f8fafc;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .building-item.active-building {
-  background-color: #eff6ff;
-  border-color: #3b82f6;
-  border-left-width: 4px;
-  border-left-color: #1d4ed8;
-  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.12);
-  transform: translateX(4px);
+  background-color: #ffffff;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3), 0 4px 12px rgba(37, 99, 235, 0.08);
 }
 
 .risk-badge {
@@ -1939,9 +2034,12 @@ body.light-premium {
   }
 
   .hero-image-banner {
-    padding: 32px 20px 40px 20px;
-    border-radius: 20px;
-    margin-bottom: 48px;
+    padding: 16px 0 32px 0;
+    border-radius: 0;
+    margin-bottom: 40px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   
   .hero-heading {
@@ -2009,85 +2107,10 @@ body.light-premium {
   }
 }
 
-/* =========================================================================
-   Google Maps Pin Markers
-   ========================================================================= */
-@keyframes pinDrop {
-  0% {
-    transform: translateY(-24px) scale(0.7);
-    opacity: 0;
-  }
-  65% {
-    transform: translateY(3px) scale(1.08);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-.pin-drop-anim {
-  animation: pinDrop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.gmaps-pin-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: grab;
-  user-select: none;
-}
-
-.gmaps-pin-container:active {
-  cursor: grabbing;
-}
-
-.gmaps-pin-svg {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
-  transition: transform 0.15s ease;
-}
-
-.gmaps-pin-container:hover .gmaps-pin-svg {
-  transform: translateY(-3px) scale(1.08);
-}
-
-.gmaps-pin-label {
-  position: absolute;
-  top: -24px;
-  white-space: nowrap;
-  background: rgba(15, 23, 42, 0.95);
-  color: #ffffff;
-  font-family: var(--font-mono-tag);
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-  pointer-events: none;
-  letter-spacing: 0.5px;
-}
-
-.gmaps-pin-shadow {
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 5px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
 
 /* =========================================================================
-   P3 Polish: Smooth Scrolling, Responsive Hardening & Formula Cards
+   Scientific Methodology & Formula Display
    ========================================================================= */
-html {
-  scroll-behavior: smooth;
-}
-
 .formula-card {
   border-radius: 14px;
   border: 1px solid rgba(148, 163, 184, 0.3);
@@ -2114,27 +2137,4 @@ html {
   border-color: #93c5fd;
   color: #1d4ed8;
   transform: translateY(-1px);
-}
-
-@media (max-width: 480px) {
-  .brand-subtag {
-    display: none;
-  }
-  .brand-text {
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 360px) {
-  .nav-container {
-    padding: 0 10px;
-  }
-  .nav-item {
-    padding: 5px 8px;
-    font-size: 11px;
-  }
-  .btn-live-status {
-    padding: 6px 8px;
-    font-size: 11px;
-  }
 }

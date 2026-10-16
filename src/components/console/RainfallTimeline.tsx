@@ -77,29 +77,27 @@ export function RainfallTimeline({
   }
 
   return (
-    <Card className="neuro-card">
-      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/80">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span>Rainfall Horizon &amp; Risk Scrubber</span>
-            </CardTitle>
-            <Badge variant="secondary" className="font-mono text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-              {timeline.length} Hours Evaluated
-            </Badge>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium text-slate-500">Selected Hour:</span>
-            <Badge className={`font-mono text-[10px] font-bold ${bandBadge.className}`}>
-              t={safeHourIndex} ({bandBadge.label})
-            </Badge>
-          </div>
+    <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs p-5 sm:p-6 space-y-5">
+      <div className="pb-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+            <Clock className="w-4 h-4 text-blue-600" />
+            <span>Rainfall Horizon &amp; Risk Scrubber</span>
+          </span>
+          <span className="font-mono text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-semibold">
+            {timeline.length} Hours Evaluated
+          </span>
         </div>
-      </CardHeader>
 
-      <CardContent className="pt-4 space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-medium text-slate-500">Selected Hour:</span>
+          <Badge className={`font-mono text-[10px] font-bold ${bandBadge.className}`}>
+            t={safeHourIndex} ({bandBadge.label})
+          </Badge>
+        </div>
+      </div>
+
+      <div className="space-y-4">
         {/* Beyond Calibration Warning Banner */}
         {beyondCalibration && (
           <div
@@ -235,7 +233,7 @@ export function RainfallTimeline({
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

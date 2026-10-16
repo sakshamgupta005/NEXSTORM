@@ -34,29 +34,29 @@ export function ProvenanceBadge({ provenance = [], compact = false }: Provenance
       data-testid="provenance-panel"
       className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-4"
     >
-      <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-          <Database className="w-4 h-4 text-purple-600" />
+      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-700">
+          <Database className="w-4 h-4 text-blue-600" />
           <span>Data Provenance & Traceability</span>
         </div>
         {isDemo && (
           <Badge
             data-testid="demo-data-badge"
-            className="bg-purple-600 text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5"
+            className="bg-slate-900 text-white font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-md"
           >
             DEMO DATA
           </Badge>
         )}
       </div>
 
-      <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+      <div className="space-y-3 text-xs text-slate-600">
         {provenance.map((item, idx) => (
-          <div key={idx} className="flex items-start gap-3 border-l-2 border-purple-500/60 pl-3 py-1">
-            <span className="font-mono text-xs text-purple-700 dark:text-purple-300 uppercase shrink-0 font-bold">
+          <div key={idx} className="flex items-start gap-3 border-l-2 border-blue-500/50 pl-3 py-1">
+            <span className="font-mono text-xs text-blue-700 uppercase shrink-0 font-bold">
               [{item.kind}]
             </span>
             <div className="space-y-1 leading-snug">
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{item.source}</span>
+              <span className="font-semibold text-slate-800">{item.source}</span>
               {item.note && (
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                   {item.note.replace(/[a-f0-9]{32,64}/gi, (hash) => `sha256:${hash.slice(0, 8)}…`)}

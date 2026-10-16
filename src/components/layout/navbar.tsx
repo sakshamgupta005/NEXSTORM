@@ -13,19 +13,18 @@ export function Navbar({ user }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="navbar sticky top-0 z-50 bg-[#f6f8fc]/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80">
-      <div className="nav-container">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-8">
         {/* Brand Logo & Name */}
         <Link
           href="/"
-          className="brand-logo"
+          className="flex items-center gap-3 group transition"
           aria-label="NEXSTORM Home"
         >
-          <div className="logo-wrapper">
+          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm shrink-0">
             <svg
-              className="logo-mark"
-              width="36"
-              height="36"
+              width="24"
+              height="24"
               viewBox="0 0 40 40"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -34,82 +33,73 @@ export function Navbar({ user }: NavbarProps) {
               <path
                 d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
                 stroke="#94a3b8"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
               />
               <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
-              <circle cx="20" cy="20" r="2.5" fill="#2563eb" />
+              <circle cx="20" cy="20" r="2.8" fill="#2563eb" />
             </svg>
           </div>
-          <div className="brand-name-group">
-            <span className="brand-text">
-              NEXSTORM<span className="brand-dot">.</span>
+          <div className="flex flex-col">
+            <span className="font-display font-extrabold text-base tracking-tight text-slate-900 dark:text-white leading-none">
+              NEXSTORM<span className="text-blue-600">.</span>
             </span>
-            <span className="brand-subtag">URBAN RESILIENCE PLATFORM</span>
+            <span className="text-[9px] font-bold tracking-widest text-slate-400 uppercase mt-0.5">
+              Urban Resilience Platform
+            </span>
           </div>
         </Link>
 
-        {/* Desktop Navigation Links Pill Group */}
-        <nav aria-label="Platform Navigation" className="hidden lg:block">
-          <ul className="nav-links">
-            <li>
-              <Link
-                href="/"
-                className="nav-item hover:text-blue-700 dark:hover:text-white transition"
-              >
-                3-Pillar Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/city/amritsar"
-                className="nav-item active-nav flex items-center gap-1.5 shadow-sm"
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span>250m Grid Console</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/#buildings"
-                className="nav-item hover:text-blue-700 dark:hover:text-white transition"
-              >
-                Buildings
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/#roads"
-                className="nav-item hover:text-blue-700 dark:hover:text-white transition"
-              >
-                Roads
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/#about"
-                className="nav-item hover:text-blue-700 dark:hover:text-white transition"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dashboard"
-                className="nav-item hover:text-blue-700 dark:hover:text-white transition"
-              >
-                Workspace
-              </Link>
-            </li>
-          </ul>
+        {/* Desktop Navigation Links */}
+        <nav
+          aria-label="Platform Navigation"
+          className="hidden md:flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-300"
+        >
+          <Link
+            href="/"
+            className="px-3 py-1.5 rounded-lg hover:text-blue-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            3-Pillar Home
+          </Link>
+          <Link
+            href="/city/amritsar"
+            className="px-3 py-1.5 rounded-lg text-blue-700 dark:text-blue-400 bg-blue-50/80 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 font-bold transition flex items-center gap-1"
+          >
+            <MapPin className="w-3 h-3 text-blue-600" />
+            <span>250m Grid Console</span>
+          </Link>
+          <Link
+            href="/#buildings"
+            className="px-3 py-1.5 rounded-lg hover:text-blue-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            Buildings
+          </Link>
+          <Link
+            href="/#roads"
+            className="px-3 py-1.5 rounded-lg hover:text-blue-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            Roads
+          </Link>
+          <Link
+            href="/#about"
+            className="px-3 py-1.5 rounded-lg hover:text-blue-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            About
+          </Link>
+          <Link
+            href="/dashboard"
+            className="px-3 py-1.5 rounded-lg hover:text-blue-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            Workspace
+          </Link>
         </nav>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {user ? (
             <Link
               href="/dashboard"
-              className="px-4 py-2 text-xs font-bold rounded-full bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition"
+              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition"
             >
               Dashboard
             </Link>
@@ -117,13 +107,13 @@ export function Navbar({ user }: NavbarProps) {
             <div className="hidden sm:flex items-center gap-2">
               <Link
                 href="/login"
-                className="px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-white transition"
+                className="px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"
               >
                 Sign In
               </Link>
               <Link
                 href="/signup"
-                className="px-4 py-2 text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 rounded-full shadow-xs transition"
+                className="px-3.5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition"
               >
                 Sign Up
               </Link>
@@ -134,7 +124,7 @@ export function Navbar({ user }: NavbarProps) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-200/60 dark:text-slate-300 dark:hover:bg-slate-800 transition"
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

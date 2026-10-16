@@ -39,7 +39,7 @@ export function Legend({ classShare, activeLayer = 'risk' }: LegendProps) {
   return (
     <div
       data-testid="map-legend"
-      className="neuro-card p-4 space-y-3.5"
+      className="rounded-2xl border border-slate-200/90 bg-white shadow-xs p-5 space-y-4"
     >
       <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
