@@ -440,7 +440,7 @@ describe('P30 — AI-Based Image Analysis & Existing Risk Pipeline Integration',
       expect(result.observation).toBeDefined()
       expect(result.observation?.roadWaterCondition).toBe('flowing_surface_water')
       expect(result.observation?.roadPassability).toBe('caution')
-      expect(result.model).toBe('gemini-1.5-flash')
+      expect(result.model).toBe('gemini-3.8-flash')
 
       // Map to risk features
       const riskFeatures = VisualRiskFeatureMapper.mapToRiskFeatures({

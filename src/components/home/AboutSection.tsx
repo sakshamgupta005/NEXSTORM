@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { Sparkles } from 'lucide-react'
 import type { TabKey } from './FrontendNavbar'
 
 interface AboutSectionProps {
@@ -11,206 +10,106 @@ interface AboutSectionProps {
 export function AboutSection({ onSwitchTab }: AboutSectionProps) {
   return (
     <section className="tab-view active-view" id="view-about">
-      <div className="page-wrapper max-w-5xl mx-auto">
-        {/* About Header Card */}
-        <div className="neuro-card p-12 flex flex-col gap-8 text-center">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
-            <Sparkles className="w-8 h-8 text-blue-700" />
-          </div>
+      <div className="max-w-3xl mx-auto px-6 py-16 text-center">
+        {/* Header Badge & Title */}
+        <div className="mb-12">
+          <span className="inline-block text-xs font-semibold tracking-wider text-blue-700 bg-blue-50 border border-blue-200/60 rounded-full px-3.5 py-1 mb-4 uppercase">
+            About NEXSTORM
+          </span>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Scientific Urban Waterlogging Intelligence
+          </h1>
+          <p className="mt-4 text-base md:text-lg text-slate-600 max-w-xl mx-auto font-medium">
+            Deterministic spatial modeling and open meteorological science to protect Indian cities from heavy rainfall hazards.
+          </p>
+        </div>
 
-          <div>
-            <span className="meta-tag text-blue-700">PROJECT NEXSTORM VISION</span>
-            <h2 className="text-3xl font-bold text-slate-900 mt-2">
-              Scientific Urban Waterlogging Intelligence
+        {/* Narrative Flow in Clean, Stylized Centered Paragraphs */}
+        <div className="space-y-10 text-slate-700 text-base md:text-lg leading-relaxed md:leading-8 font-normal">
+          {/* Section 1: The Mission */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase">
+              The Mission
             </h2>
-            <p className="text-sm text-slate-600 max-w-2xl mx-auto mt-3 leading-relaxed">
-              NEXSTORM is founded on the conviction that urban climate resilience requires
-              deterministic, explainable hydrological spatial matching rather than black-box guesses.
-              Developed as an open scientific framework for metropolitan infrastructure, it unites
-              remote sensing, terrain modeling, and community ground-truth into a unified civic
-              safeguard.
+            <p>
+              NEXSTORM was founded to address one of India’s most critical urban vulnerabilities: seasonal waterlogging caused by heavy monsoon downpours, rapid surface concreting, and aging drainage networks. Instead of relying on generalized citywide weather forecasts or opaque black-box estimates, we deliver high-resolution, street-level early warnings built strictly on physics-based hydrological modeling and verified terrain facts.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mt-2">
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
-              <h4 className="text-sm font-bold text-slate-900 mb-2">Metropolitan Scale First</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Dedicated initial focus on high-density urban terrain, historical municipal records,
-                and drainage bottlenecks before regional expansion.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
-              <h4 className="text-sm font-bold text-slate-900 mb-2">Zero Fabricated Data</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Powered strictly by verifiable Copernicus DEM, ESA WorldCover, ERA5 reanalysis, and
-                independently audited community observations.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
-              <h4 className="text-sm font-bold text-slate-900 mb-2">Explainable Reasoning</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Every risk score is transparently traceable back to contributing elevation
-                gradients, rainfall volume, and drainage outfalls.
-              </p>
-            </div>
-          </div>
-        </div>
+          <div className="w-12 h-px bg-slate-200 mx-auto" />
 
-        {/* Dynamic Timeline: How Our System Works */}
-        <div className="system-timeline-section mt-12">
-          <div className="section-title-wrap text-center" style={{ maxWidth: '100%' }}>
-            <span className="meta-tag text-indigo-700">SYSTEM PIPELINE</span>
-            <h2 className="sub-section-heading" style={{ fontSize: '36px' }}>
+          {/* Section 2: How NEXSTORM Works */}
+          <div className="space-y-3">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900">
               How NEXSTORM Works
             </h2>
-            <p className="sub-section-desc" style={{ maxWidth: '680px', margin: '0 auto' }}>
-              From raw satellite data to actionable civic intelligence — a 6-stage deterministic
-              pipeline processing real-world geospatial evidence.
+            <p>
+              Our entire system operates on a transparent, physics-based sequence. Rather than relying on uncalibrated AI guesses, we process real planetary radar, elevation grids, and urban infrastructure geometries into deterministic risk calculations that explain exactly why and where water accumulates.
             </p>
           </div>
 
-          <div className="timeline-track">
-            <div className="timeline-line"></div>
+          <div className="w-12 h-px bg-slate-200 mx-auto" />
 
-            {/* Stage 1 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">01</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-blue-700">DATA INGESTION</span>
-                <h4 className="timeline-title">Satellite &amp; Terrain Data Acquisition</h4>
-                <p className="timeline-desc">
-                  Copernicus 30m Digital Elevation Model tiles are ingested, georeferenced, and
-                  mosaic-stitched for the entire Amritsar metropolitan bounding box. ERA5
-                  precipitation reanalysis streams are synced at 6-hour intervals.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">Copernicus DEM</span>
-                  <span className="tech-badge">ERA5 Reanalysis</span>
-                  <span className="tech-badge">WGS84</span>
-                </div>
-              </div>
-            </div>
+          {/* Section 3: Satellite & Terrain Data Acquisition */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase">
+              Satellite &amp; Terrain Data Acquisition
+            </h2>
+            <p>
+              We ingest and mosaic-stitch Copernicus 30m Digital Elevation Models (DEM) alongside European Space Agency (ESA) WorldCover 10m land-use datasets to establish baseline topography and surface permeability. Meteorological conditions are continuously tracked via ECMWF ERA5 atmospheric reanalysis combined with synchronized high-frequency precipitation forecast feeds.
+            </p>
+          </div>
 
-            {/* Stage 2 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">02</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-indigo-700">TERRAIN ANALYSIS</span>
-                <h4 className="timeline-title">Topographic Depression Detection</h4>
-                <p className="timeline-desc">
-                  Fill-and-spill algorithms identify all closed depressions in the urban terrain
-                  surface where water would naturally pool. Each depression is indexed by depth,
-                  area, and connectivity to the nearest drainage outfall.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">Fill-Spill Algorithm</span>
-                  <span className="tech-badge">Hydrological Sinks</span>
-                  <span className="tech-badge">GeoTIFF</span>
-                </div>
-              </div>
-            </div>
+          <div className="w-12 h-px bg-slate-200 mx-auto" />
 
-            {/* Stage 3 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">03</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-emerald-700">SPATIAL MATCHING</span>
-                <h4 className="timeline-title">Urban Feature Overlay &amp; Intersection</h4>
-                <p className="timeline-desc">
-                  Over 360,000 Google Open Buildings footprints and 14,855 road segments are
-                  spatially intersected with identified terrain depressions and susceptibility grids.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">Google Open Buildings V3</span>
-                  <span className="tech-badge">Spatial Join</span>
-                  <span className="tech-badge">GeoPandas / Shapely</span>
-                </div>
-              </div>
-            </div>
+          {/* Section 4: Topographic Depression Detection */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase">
+              Topographic Depression Detection
+            </h2>
+            <p>
+              Because water flows to the lowest point, we run fill-and-spill hydrological algorithms across the terrain surface to detect all closed topographic depressions. Every natural basin, street dip, and hydrological sink is cataloged by depth, surface area, retention volume, and distance to the nearest municipal drainage outfall.
+            </p>
+          </div>
 
-            {/* Stage 4 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">04</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-amber-700">RISK COMPUTATION</span>
-                <h4 className="timeline-title">Tri-Factor Deterministic Scoring</h4>
-                <p className="timeline-desc">
-                  Each feature is scored across three independent axes: Hazard (precipitation
-                  intensity), Exposure (elevation intersection with sinks), and Vulnerability
-                  (structural characteristics). The composite index is explainable and auditable.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">H×E×V Framework</span>
-                  <span className="tech-badge">Deterministic</span>
-                  <span className="tech-badge">Auditable</span>
-                </div>
-              </div>
-            </div>
+          <div className="w-12 h-px bg-slate-200 mx-auto" />
 
-            {/* Stage 5 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">05</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-rose-700">VALIDATION</span>
-                <h4 className="timeline-title">Ground-Truth Cross-Verification</h4>
-                <p className="timeline-desc">
-                  Computed risk scores are cross-referenced against verified historical
-                  waterlogging incident archives, news reports, and community-submitted observations
-                  to calibrate confidence levels.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">Historical Incidents</span>
-                  <span className="tech-badge">Ground Truth Archive</span>
-                  <span className="tech-badge">Community Reports</span>
-                </div>
-              </div>
-            </div>
+          {/* Section 5: Urban Feature Matching & Tri-Factor Risk Scoring */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase">
+              Urban Feature Matching &amp; Tri-Factor Risk Scoring
+            </h2>
+            <p>
+              Identified depressions are spatially joined with hundreds of thousands of building footprints from Google Open Buildings and road centerlines from OpenStreetMap. Each feature is deterministically scored using the Hazard × Exposure × Vulnerability (H×E×V) framework, comparing surface water accumulation directly against building plinth heights and roadway elevations.
+            </p>
+          </div>
 
-            {/* Stage 6 */}
-            <div className="timeline-node timeline-visible">
-              <div className="timeline-marker">
-                <span className="timeline-step-num">06</span>
-              </div>
-              <div className="timeline-content">
-                <span className="timeline-phase-tag text-blue-700">DELIVERY</span>
-                <h4 className="timeline-title">Real-Time Civic Intelligence Dashboard</h4>
-                <p className="timeline-desc">
-                  Processed risk assessments are rendered on interactive maps with building dossiers,
-                  scenario hyetograph controls, and flood-aware route comparison — enabling informed
-                  civic resilience before and during storm events.
-                </p>
-                <div className="timeline-tech-badges">
-                  <span className="tech-badge">Leaflet.js</span>
-                  <span className="tech-badge">Routing Engine</span>
-                  <span className="tech-badge">Dynamic Dossiers</span>
-                </div>
-              </div>
-            </div>
+          <div className="w-12 h-px bg-slate-200 mx-auto" />
+
+          {/* Section 6: Real-Time Civic Intelligence Dashboard */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase">
+              Real-Time Civic Intelligence Dashboard
+            </h2>
+            <p>
+              All computed intelligence is delivered through interactive maps, localized building dossiers, and flood-aware navigation routes. By cross-calibrating algorithmic predictions with verified municipal incident archives and citizen ground-truth observations, NEXSTORM provides actionable, life-saving clarity for residents and city administrators during severe rainfall events.
+            </p>
           </div>
         </div>
 
-        <div className="pt-8 pb-12 flex justify-center">
+        {/* Centralized Action Button */}
+        <div className="mt-14 pt-8 border-t border-slate-200 flex justify-center">
           <button
             type="button"
-            className="btn-solid-primary"
+            className="btn-solid-primary cursor-pointer text-sm font-semibold py-2.5 px-6 rounded-xl transition-all shadow-sm"
             id="backToOverviewBtn"
             onClick={() => onSwitchTab('overview')}
           >
-            Return to Overview &amp; Model Architecture
+            Return to Overview &amp; Live Map
           </button>
         </div>
       </div>
     </section>
   )
 }
+

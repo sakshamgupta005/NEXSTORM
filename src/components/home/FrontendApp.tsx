@@ -61,7 +61,7 @@ export function FrontendApp() {
             <span className="text-sm select-none">🎓</span>
             <span className="font-semibold text-blue-200">GNDU Campus Campaign 2026:</span>
             <span className="text-slate-300 hidden md:inline">
-              Empowering students with 50m micro-topography flood intelligence across 699 university cells.
+              Help map flood-prone spots across campus by sharing your photos and ground observations.
             </span>
             <a
               href="/campaign/gndu"

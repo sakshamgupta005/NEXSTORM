@@ -326,17 +326,21 @@ export default function CityDashboardPage() {
   )
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f5f7] text-[#090e17] font-sans light-premium">
+    <div className="min-h-screen flex flex-col items-center bg-[#f5f5f7] text-[#090e17] font-sans light-premium w-full">
       {/* High-Precision Unified Header Navigation */}
-      <FrontendNavbar
-        onOpenStatusModal={() => setIsHealthModalOpen(true)}
-        onOpenReportModal={() => setIsReportModalOpen(true)}
-      />
+      <div className="w-full">
+        <FrontendNavbar
+          onOpenStatusModal={() => setIsHealthModalOpen(true)}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      </div>
 
       {/* Official Research Prototype Disclaimer Banner */}
-      <DisclaimerBanner />
+      <div className="w-full">
+        <DisclaimerBanner />
+      </div>
 
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col gap-8">
+      <main className="flex-1 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-9">
         {/* Breadcrumb Return Navigation & Context Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <Link
@@ -681,77 +685,81 @@ export default function CityDashboardPage() {
           </div>
         </div>
 
-        {/* Dedicated Operations & Analysis Workspace (Full Width, Pushed Downwards) */}
-        <div className="flex flex-col gap-6 pt-6">
-          {/* Workspace Tab Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                Operations &amp; Response Workspace
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
-                Detailed catchment hydrology, road passability, citizen telemetry, and civil alert feeds.
-              </p>
+        {/* Dedicated Operations & Analysis Workspace (Full Width, Centered, Spacious) */}
+        <div className="flex flex-col gap-8 pt-8 border-t border-slate-200/80">
+          {/* Workspace Tab Header - Centered & Balanced */}
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200/80">
+              <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+              <span className="uppercase tracking-wider text-[11px]">Command &amp; Response Workspace</span>
             </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-display">
+              Operations &amp; Response Workspace
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Detailed catchment hydrology, road passability, citizen telemetry, and civil alert feeds.
+            </p>
           </div>
 
-          {/* Large Tab Navigation Controls */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/90 border border-slate-200/80 shadow-2xs">
-            <button
-              type="button"
-              onClick={() => setOperationsTab('storm')}
-              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                operationsTab === 'storm'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <CloudRain className={`w-4 h-4 ${operationsTab === 'storm' ? 'text-blue-600' : 'text-slate-400'}`} />
-              <span className="tracking-tight whitespace-nowrap">Storm Simulation</span>
-              {operationsTab === 'storm' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
-            </button>
+          {/* Centralized Tab Navigation Controls */}
+          <div className="flex justify-center w-full">
+            <div className="w-full max-w-3xl flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setOperationsTab('storm')}
+                className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  operationsTab === 'storm'
+                    ? 'bg-blue-50/80 text-blue-900 shadow-2xs border border-blue-200/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <CloudRain className={`w-4 h-4 ${operationsTab === 'storm' ? 'text-blue-600' : 'text-slate-400'}`} />
+                <span className="tracking-tight whitespace-nowrap">Storm Simulation</span>
+                {operationsTab === 'storm' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setOperationsTab('roads')}
-              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                operationsTab === 'roads'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <Car className={`w-4 h-4 ${operationsTab === 'roads' ? 'text-blue-600' : 'text-slate-400'}`} />
-              <span className="tracking-tight whitespace-nowrap">Roads &amp; Travel</span>
-              {operationsTab === 'roads' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
-            </button>
+              <button
+                type="button"
+                onClick={() => setOperationsTab('roads')}
+                className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  operationsTab === 'roads'
+                    ? 'bg-blue-50/80 text-blue-900 shadow-2xs border border-blue-200/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Car className={`w-4 h-4 ${operationsTab === 'roads' ? 'text-blue-600' : 'text-slate-400'}`} />
+                <span className="tracking-tight whitespace-nowrap">Roads &amp; Travel</span>
+                {operationsTab === 'roads' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setOperationsTab('reports')}
-              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                operationsTab === 'reports'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <Users className={`w-4 h-4 ${operationsTab === 'reports' ? 'text-blue-600' : 'text-slate-400'}`} />
-              <span className="tracking-tight whitespace-nowrap">Field Reports</span>
-              {operationsTab === 'reports' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
-            </button>
+              <button
+                type="button"
+                onClick={() => setOperationsTab('reports')}
+                className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  operationsTab === 'reports'
+                    ? 'bg-blue-50/80 text-blue-900 shadow-2xs border border-blue-200/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Users className={`w-4 h-4 ${operationsTab === 'reports' ? 'text-blue-600' : 'text-slate-400'}`} />
+                <span className="tracking-tight whitespace-nowrap">Field Reports</span>
+                {operationsTab === 'reports' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setOperationsTab('alerts')}
-              className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                operationsTab === 'alerts'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <Info className={`w-4 h-4 ${operationsTab === 'alerts' ? 'text-blue-600' : 'text-slate-400'}`} />
-              <span className="tracking-tight whitespace-nowrap">Alerts &amp; Science</span>
-              {operationsTab === 'alerts' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
-            </button>
+              <button
+                type="button"
+                onClick={() => setOperationsTab('alerts')}
+                className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  operationsTab === 'alerts'
+                    ? 'bg-blue-50/80 text-blue-900 shadow-2xs border border-blue-200/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Info className={`w-4 h-4 ${operationsTab === 'alerts' ? 'text-blue-600' : 'text-slate-400'}`} />
+                <span className="tracking-tight whitespace-nowrap">Alerts &amp; Science</span>
+                {operationsTab === 'alerts' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
+              </button>
+            </div>
           </div>
 
           {/* Tab 1: Storm Simulation & Risk Overview in a balanced 2-column grid */}
@@ -862,8 +870,8 @@ export default function CityDashboardPage() {
       </main>
 
       {/* Trust & Scientific Disclaimer Footer */}
-      <footer className="w-full border-t border-slate-200 bg-white/80 py-6 px-8 text-center text-xs text-slate-500 mt-16">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="w-full border-t border-slate-200 bg-white/80 py-8 px-6 text-center text-xs text-slate-500 mt-16">
+        <div className="max-w-[1360px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
             <span className="font-bold text-slate-800">NEXSTORM</span> &bull; Amritsar Urban
             Resilience Platform

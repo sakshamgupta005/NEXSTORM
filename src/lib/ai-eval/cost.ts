@@ -8,6 +8,7 @@ export const KNOWN_MODEL_PRICING: Record<string, { promptPer1k: number; completi
   'claude-3-5-sonnet': { promptPer1k: 0.003, completionPer1k: 0.015 },
   'gemini-1.5-flash': { promptPer1k: 0.000075, completionPer1k: 0.0003 },
   'gemini-1.5-pro': { promptPer1k: 0.00125, completionPer1k: 0.005 },
+  'gemini-3.8-flash': { promptPer1k: 0.000075, completionPer1k: 0.0003 },
 }
 
 export function calculateAiCost(

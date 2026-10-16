@@ -73,7 +73,8 @@ export class VisionProviderAdapter {
    */
   public getActiveProvider(): { provider: string; model: string; isConfigured: boolean } {
     if (isValidEnvValue(process.env.GOOGLE_GENERATIVE_AI_API_KEY)) {
-      return { provider: 'google_gemini', model: 'gemini-1.5-flash', isConfigured: true }
+      const model = process.env.GEMINI_MODEL?.trim() || process.env.GOOGLE_GENERATIVE_AI_MODEL?.trim() || 'gemini-3.8-flash'
+      return { provider: 'google_gemini', model, isConfigured: true }
     }
     if (isValidEnvValue(process.env.OPENAI_API_KEY)) {
       return { provider: 'openai', model: 'gpt-4o-mini', isConfigured: true }
@@ -175,7 +176,8 @@ export class VisionProviderAdapter {
     startTime: number
   ): Promise<VisionProviderResult> {
     const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY!.trim()
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`
+    const model = process.env.GEMINI_MODEL?.trim() || process.env.GOOGLE_GENERATIVE_AI_MODEL?.trim() || 'gemini-3.8-flash'
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${key}`
 
     const promptText = `${VISION_SYSTEM_INSTRUCTION}
 Context metadata:
@@ -231,7 +233,7 @@ Context metadata:
     const data = validation.data
     const observation: StructuredVisualObservation = {
       ...data,
-      modelUsed: 'gemini-1.5-flash',
+      modelUsed: model,
       providerUsed: 'google_gemini',
       segmentationSupported: false,
       extractedAt: new Date().toISOString(),
@@ -241,7 +243,7 @@ Context metadata:
       status: 'ok',
       observation,
       provider: 'google_gemini',
-      model: 'gemini-1.5-flash',
+      model,
       latencyMs,
     }
   }

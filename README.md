@@ -55,13 +55,14 @@ Welcome BuildFest 2.0 Judges! NEXSTORM runs **100% out-of-the-box with zero requ
 
 | Step | Surface / Route | What to Observe & Test | Key Differentiators |
 | :--- | :--- | :--- | :--- |
-| **1** | **Landing & Overview**<br>[http://localhost:3000](http://localhost:3000) | • Notice the hero water-wave banner, GNDU campaign announcement banner, and live radar ping indicator.<br>• Adjust the **Precipitation Stress-Test Slider** ($0–80\text{ mm/h}$) to see live dynamic risk shifting across the 3 intelligence pillars.<br>• Inspect the **Operational Capabilities Timeline** for system provenance. | Deterministic hyetograph simulation with zero backend lag. |
-| **2** | **About Us & Methodology**<br>[http://localhost:3000/?tab=about](http://localhost:3000/?tab=about) | • Use the top pill Table of Contents to navigate all 9 technical sections.<br>• Inspect the **Mathematical Formula Cards** ($S$, $\text{RTI}$, $R_{\text{final}}$) and the **12-cell 2D Susceptibility-Rainfall Matrix** with high-contrast status badges.<br>• Review team contributions and academic citations. | 100% explainable, zero-hallucination physics-grounded methodology. |
-| **3** | **Amritsar 250m Macro Explorer**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | • Notice the **Data Integrity & Scientific Grounding Bar** clarifying relative susceptibility vs. flood depth.<br>• Switch between **Amritsar City (250m)** and **GNDU Campus (50m)** scopes.<br>• Toggle between **Scenario Simulation**, **Live Forecast** (ECMWF/GFS), and **Historical Replay** (Sep 1, 2025 extreme event).<br>• Scrub the **Rainfall Timeline** to inspect temporal cell risk propagation. | Dual-resolution spatial grids (1,998 macro cells + 699 campus cells). |
-| **4** | **Building Risk & Photo Evidence**<br>[http://localhost:3000/?tab=buildings](http://localhost:3000/?tab=buildings) | • Select landmarks (Golden Temple, Khalsa College, GNDU Science Block).<br>• Drag the red Google Maps pin probe to see live distance-to-sink and runoff vector updates.<br>• Inspect the **Dossier HUD** with landmark photography previews and external Google Maps search links.<br>• Note: Buildings inherit catchment exposure ($m^2$); indoor damage is not falsely claimed. | 360,252 Google Open Buildings V3 footprints in UTM Zone 43N. |
-| **5** | **Dynamic Road Corridor Routing**<br>[http://localhost:3000/?tab=roads](http://localhost:3000/?tab=roads) | • Select origin and destination transit hubs (`AMRITSAR_HUBS`: Airport, Junction, Golden Temple, GNDU, ISBT).<br>• Click the **Swap Route Direction (⇅)** button.<br>• Compare **Route A (Safe/Bypass)** vs **Route B (Hazardous/Underpass)** with exposure penalties.<br>• Inspect the automatic $+20$ pt hazard offset on the Rego Bridge underpass sump. | Graph traversal over 14,855 segments, 28,418 nodes, and 37,924 edges. |
-| **6** | **GNDU 50m Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | • Inspect the 699 high-res micro-cell coverage metric verified from `campus_susceptibility.geojson`.<br>• Review student crowd-sourced ground-truth objectives, ridge crest elevation ($233.8\text{m}$), and 42 mapped facilities. | Hyper-local 50m micro-topography modeling for university climate resilience. |
-| **7** | **Jalandhar Exploratory Readiness**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | • Observe the **`evidence_insufficient`** safety status.<br>• Verify that operational alert dispatches are **strictly suppressed (fail-closed)** because Jalandhar lacks indexed building footprints and sub-daily validation records.<br>• Inspect physical Copernicus DEM and 17.3k road network graph. | Ethical AI guardrails: refuses to issue uncalibrated municipal warnings. |
+| **1** | **Landing & Overview**<br>[http://localhost:3000](http://localhost:3000) | • Observe the **Hero Radar Console** with pulsing radar scan ring, active sensor telemetry, and live pipeline status button (`/api/health`).<br>• Adjust the **Precipitation Stress-Test Slider** ($0–80\text{ mm/h}$) to see live dynamic risk shifting across the 3 intelligence pillars in real time.<br>• Inspect the **City Hydro Monitor** with catchment saturation and water elevation telemetry.<br>• Review the **Operational Capabilities Timeline** for system provenance and engineering milestones. | Deterministic hyetograph simulation with zero backend lag. |
+| **2** | **About Us & Methodology**<br>[http://localhost:3000/about](http://localhost:3000/about) or [http://localhost:3000/?tab=about](http://localhost:3000/?tab=about) | • Use the top pill Table of Contents to navigate all 9 technical sections with smooth auto-scroll.<br>• Inspect the **Mathematical Formula Cards** ($S$, $\text{RTI}$, $R_{\text{final}}$) with clear LaTeX explanations.<br>• Review the **12-cell 2D Susceptibility-Rainfall Matrix** with WCAG AA high-contrast status badges.<br>• Review team contributions, architecture specifications, and academic citations. | 100% explainable, zero-hallucination physics-grounded methodology. |
+| **3** | **Amritsar 250m Macro Explorer**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | • Notice the **Data Integrity & Scientific Grounding Bar** clarifying relative susceptibility vs. flood depth.<br>• Switch between **Amritsar City (250m)** and **GNDU Campus (50m)** spatial scopes.<br>• Toggle between **Scenario Simulation**, **Live Forecast** (ECMWF/GFS ensemble), and **Historical Replay** (Sep 1, 2025 extreme downpour event).<br>• Scrub the **Rainfall Timeline** to inspect temporal cell risk propagation.<br>• Inspect the live **NDMA SACHET Official Warning Feed** and cell factor breakdowns. | Dual-resolution spatial grids (1,998 macro cells + 699 campus cells). |
+| **4** | **Building Risk & Photo Evidence**<br>[http://localhost:3000/?tab=buildings](http://localhost:3000/?tab=buildings) | • Select landmarks (Golden Temple, Khalsa College, GNDU Science Block, Hall Gate, Heritage Street, Putlighar Market).<br>• Drag the **red Google Maps pin probe** anywhere on the canvas to see real-time distance-to-sink and runoff vector updates.<br>• Inspect the **Dossier HUD** with landmark photography previews and external Google Maps search links.<br>• Note: Buildings inherit catchment exposure ($m^2$); indoor inundation is not falsely claimed. | 360,252 Google Open Buildings V3 footprints in UTM Zone 43N. |
+| **5** | **Dynamic Road Corridor Routing**<br>[http://localhost:3000/?tab=roads](http://localhost:3000/?tab=roads) | • Select origin and destination transit hubs (`AMRITSAR_HUBS`: Airport, Junction, Golden Temple, GNDU, ISBT).<br>• Click the **Swap Route Direction (⇅)** button to reverse pathfinding.<br>• Compare **Route A (Safe/Bypass)** vs **Route B (Hazardous/Underpass)** with exposure penalties.<br>• Inspect the automatic $+20$ pt hazard offset on the Rego Bridge underpass sump.<br>• Observe active visual flood penalty integration ($+25$ to $+30$ pts) when flood evidence is present. | Graph traversal over 14,855 segments, 28,418 nodes, and 37,924 edges. |
+| **6** | **GNDU 50m Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | • Inspect the 699 high-res micro-cell coverage metric verified from `campus_susceptibility.geojson`.<br>• Review student crowd-sourced ground-truth objectives, ridge crest elevation ($233.8\text{m}$), and 42 mapped university facilities. | Hyper-local 50m micro-topography modeling for university climate resilience. |
+| **7** | **Jalandhar Exploratory Readiness**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | • Observe the **`evidence_insufficient`** safety status.<br>• Verify that operational alert dispatches are **strictly suppressed (fail-closed)** because Jalandhar lacks indexed building footprints and sub-daily validation records.<br>• Inspect physical Copernicus DEM and 17.3k road network graph (30.8k nodes, 93k edges). | Ethical AI guardrails: refuses to issue uncalibrated municipal warnings. |
+
 
 ---
 
@@ -187,77 +188,185 @@ Cities advance through a strict 6-stage gate:
 
 ## 6. How to Run the Project & Launch Everything Perfectly
 
-### Prerequisites
-- **Node.js**: `v20.x` or higher (tested on Node 22 & 24)
-- **npm**: `v10.x` or higher
-- **Git**
-- *(Optional)* **Python**: `3.11+` with virtualenv (only needed if running the offline geospatial data pipeline or tests in `pipeline/`)
+### Prerequisites & System Requirements
+- **Node.js**: `v20.x` or higher (tested and verified on Node 20, 22, and 24; check with `node -v`)
+- **npm**: `v10.x` or higher (check with `npm -v`)
+- **Git**: Installed and available in PATH (check with `git --version`)
+- **Operating System**: Windows 10/11 (PowerShell or Command Prompt), macOS, or Linux
+- **Browser**: Any modern browser (Google Chrome, Microsoft Edge, Brave, Mozilla Firefox, Safari)
+- *(Optional)* **Python**: `3.11+` with virtualenv (only needed if regenerating offline geospatial pipeline artifacts or running Python tests in `pipeline/`)
 
 ---
 
 ### Quick Start (Zero-Config, Runs Completely Out of the Box)
 
-NEXSTORM is engineered to run immediately with **zero required API keys or external services**. Public Open-Meteo weather APIs, pre-packaged geospatial datasets (`public/data/`), and local file-based persistence run automatically.
+NEXSTORM is engineered to run immediately with **zero required API keys or external services**. All pre-packaged geospatial datasets (`public/data/`):
+- 1,998 Amritsar 250m macro cells
+- 699 GNDU Campus 50m micro-mesh cells
+- Copernicus GLO-30 DEM depression sinks & ESA WorldCover rasters
+- 360,252 Google Open Buildings V3 footprints in UTM Zone 43N
+- Dual-city OpenStreetMap road graphs (Amritsar: 14.8k segments, 37.9k edges; Jalandhar: 17.3k segments, 93k edges)
+- Verified historical monsoon replay (`2025-09-01_amritsar.json`)
+
+are pre-computed and included in the repository. Public Open-Meteo weather APIs and local file-based mutex persistence operate automatically without any database setup.
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/sakshamgupta005/NEXSTORM.git
 cd NEXSTORM
 
-# 2. Install dependencies
+# 2. Install all dependencies
 npm install
 
 # 3. Start the local development server (Turbopack)
 npm run dev
 ```
 
-The application will be live at [http://localhost:3000](http://localhost:3000).
+Once the terminal outputs `Ready in ...ms`, open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-### Step-by-Step Execution Guide
+### Detailed Step-by-Step Launch Guide
 
-#### Step 1: Environment Configuration (Optional)
-If you wish to configure optional cloud persistence (Supabase) or alert credentials:
+#### Step 1: Clone and Enter the Project Directory
 ```bash
-cp .env.example .env.local
+git clone https://github.com/sakshamgupta005/NEXSTORM.git
+cd NEXSTORM
 ```
-Key configuration parameters in `.env.local`:
-- `NEXT_PUBLIC_SITE_URL`: Base URL (default: `http://localhost:3000`)
-- `OBSERVATION_SALT`: Stable salt for privacy-preserving reporter hashing (auto-generated ephemeral fallback if unset)
-- `MODERATOR_SECRET`: Bearer token for verifying community waterlogging observations via `/api/observations/[id]/verify`
-- `ALERT_OPERATOR_KEY`: Security token for executing alert dispatches via `/api/alerts/dispatch`
-- `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase authentication & persistent storage (offline file mutex used if unset)
-- `GOOGLE_GENERATIVE_AI_API_KEY`: Google Gemini API key for multimodal image flood condition analysis (`gemini-1.5-flash`)
-- `OPENAI_API_KEY`: OpenAI API key for vision analysis fallback (`gpt-4o-mini`)
-- `VISION_SERVICE_URL`: Optional remote ONNX segmentation microservice endpoint
-- `MAPILLARY_ACCESS_TOKEN`: Mapillary Graph API v4 access token for baseline street-level survey imagery
 
-Verify your configuration safely at any time:
+#### Step 2: Install Dependencies
+Install all required Node.js dependencies:
+```bash
+npm install
+```
+*Note: All peer dependencies and TypeScript types are resolved automatically.*
+
+#### Step 3: Environment Configuration (Completely Optional)
+By default, NEXSTORM does **not** require a `.env.local` file to run. However, if you wish to configure optional AI multimodal vision providers, custom base URLs, or security keys:
+
+```bash
+# On Linux / macOS / Git Bash:
+cp .env.example .env.local
+
+# On Windows PowerShell:
+Copy-Item .env.example .env.local
+```
+
+Key configuration parameters in `.env.local`:
+| Parameter | Default / Fallback | Description |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Canonical application URL |
+| `OBSERVATION_MODERATOR_KEY` | *(None / Dev mode)* | Bearer token required for verifying/rejecting community waterlogging reports via `/api/observations/[id]/verify` |
+| `OBSERVATION_SALT` | *Auto-generated ephemeral salt* | Salt for privacy-preserving citizen reporter IP hashing |
+| `ALERT_OPERATOR_KEY` | *(None / Dev mode)* | Operator bearer token required to execute municipal alert dispatches via `/api/alerts/dispatch` |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | *(None / Uses local heuristics)* | Google Gemini API key for multimodal image flood condition analysis (`gemini-1.5-flash`) |
+| `OPENAI_API_KEY` | *(None / Uses local heuristics)* | OpenAI API key for vision fallback (`gpt-4o-mini`) |
+| `MAPILLARY_ACCESS_TOKEN` | *(None / Uses archived surveys)* | Mapillary Graph API v4 access token for baseline street-level survey imagery |
+| `NEXT_PUBLIC_SUPABASE_URL` | *(None / Uses local JSON mutex)* | Supabase PostgreSQL database URL (optional cloud persistence) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | *(None / Uses local JSON mutex)* | Supabase anonymous public key |
+
+Audit your environment configuration safely (with masked secrets):
 ```bash
 npm run env:check
 ```
 
-#### Step 2: Install Node Dependencies
-```bash
-npm install
-```
-
-#### Step 3: Run the Development Server
+#### Step 4: Launch the Local Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+The server will boot with Next.js 16 and Turbopack at:
+👉 **[http://localhost:3000](http://localhost:3000)**
 
-#### Step 4: Run in Production Mode
-To test production compilation, bundle size, and server-side rendering:
+##### Running on a Custom Port:
+If port 3000 is already in use on your machine, pass the `-p` flag:
 ```bash
-# Compile optimized production bundle
+npm run dev -- -p 3001
+```
+Or set the `PORT` environment variable:
+```bash
+# Windows PowerShell:
+$env:PORT="3001"; npm run dev
+
+# Linux / macOS / Git Bash:
+PORT=3001 npm run dev
+```
+
+#### Step 5: Launch in Optimized Production Mode (Recommended for Demos & Evaluations)
+To evaluate the pre-compiled, optimized production bundle with full server-side rendering:
+```bash
+# 1. Compile optimized production build (compiles all 31 routes and verifies SSR contracts)
 npm run build
 
-# Start production server
+# 2. Start the high-performance production server
 npm run start
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+#### Step 6: Verify Live Server Health
+With either the development or production server running, execute the automated smoke test suite:
+```bash
+npm run smoke
+```
+This probes `/api/health`, `/`, response headers, security headers, and 404 isolation.
+
+---
+
+### Troubleshooting & Common Launch Pitfalls
+
+#### 1. Port 3000 is already occupied (`Error: listen EADDRINUSE: address already in use :::3000`)
+- **Option A (Quickest)**: Launch on an alternate port:
+  ```bash
+  npm run dev -- -p 3001
+  ```
+- **Option B (Free port 3000 on Windows PowerShell)**:
+  ```powershell
+  Stop-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess -Force
+  ```
+- **Option C (Free port 3000 on Windows Command Prompt)**:
+  ```cmd
+  for /f "tokens=5" %a in ('netstat -aon ^| findstr :3000') do taskkill /f /pid %a
+  ```
+- **Option D (Free port 3000 on macOS / Linux)**:
+  ```bash
+  npx kill-port 3000
+  # or:
+  lsof -ti:3000 | xargs kill -9
+  ```
+
+#### 2. Windows PowerShell Script Execution Policy Restriction
+If running `npm run dev` in PowerShell produces:
+`npm : File ... cannot be loaded because running scripts is disabled on this system.`
+- **Fix**: Open PowerShell and run:
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```
+  Then re-run `npm run dev`.
+
+#### 3. Node.js Version Incompatibility
+If you see unexpected module errors during build or runtime:
+- Check your installed Node.js version:
+  ```bash
+  node -v
+  ```
+- Ensure you are using **Node.js v20.x, v22.x, or v24.x**. If you have `nvm` (Node Version Manager) installed:
+  ```bash
+  nvm use 20
+  # or:
+  nvm use 22
+  ```
+
+#### 4. Stale Next.js / Turbopack Cache
+If you encounter unusual compilation errors after pulling git changes:
+- Clean the Next.js build cache and restart:
+  ```bash
+  # Windows PowerShell:
+  Remove-Item -Recurse -Force .next
+  npm run dev
+
+  # Linux / macOS / Git Bash:
+  rm -rf .next
+  npm run dev
+  ```
 
 ---
 
@@ -265,11 +374,14 @@ npm run start
 
 | URL / Screen | Key Features & Interactions |
 |---|---|
-| **Main Platform**<br>[http://localhost:3000](http://localhost:3000) | • **Overview Tab**: System hero, synthetic hyetograph scenario simulator ($0–80\text{ mm/h}$), and 3-pillar architectural cards.<br>• **Buildings Tab**: Interactive Google Open Buildings V3 footprint layer, high-risk hotspot selectors, and building dossiers with elevation & catchment susceptibility.<br>• **Roads Tab**: Dynamic flood-aware routing engine, comparing Route A (Bypass) vs Route B (Rego Underpass chokepoint) with exposure penalty scores.<br>• **About Tab**: 6-stage scientific processing pipeline and technology provenance.<br>• **Navbar Actions**: Click **Live Pipeline Status** for live diagnostic telemetry (`/api/health`) or **Report Waterlogging** to submit a ground-truth observation. |
-| **Amritsar City Console**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | Calibrated reference baseline console: interactive 250m cell inspector, live NDMA SACHET warning feed, rainfall intensity timelines, and cell factor breakdowns. |
-| **GNDU Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | Student-led campus resilience campaign: 50m micro-mesh analysis across 699 cells, 42 campus facilities, and student ground-truth verification workflows. |
-| **Jalandhar Pilot Console**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | Secondary physical terrain pilot: demonstrates the `evidence_insufficient` safety gate, displaying physical Copernicus DEM & ESA WorldCover data while strictly suppressing uncalibrated alerts. |
-| **Authentication (Optional)**<br>[http://localhost:3000/login](http://localhost:3000/login) | Clean sign-in and sign-up flows with Supabase auth or fallback demo preview modes. |
+| **Main Platform (Overview)**<br>[http://localhost:3000](http://localhost:3000) or `/?tab=overview` | • **Hero Radar Console**: Real-time telemetry feed with active radar scan ring, sensor counters, and live pipeline status button (`/api/health`).<br>• **Precipitation Stress-Test Slider**: Scrub between $0$ and $80\text{ mm/h}$ to watch dynamic hyetograph risk recalculate instantly across all 3 pillars.<br>• **City Hydro Monitor**: Real-time saturation metrics, catchment pressure, and terrain elevation gauges.<br>• **Pillar Spotlight Cards**: Interactive drill-down into Area, Building, and Road intelligence layers.<br>• **System Capabilities Timeline**: 32-stage engineering development provenance.<br>• **Report Waterlogging**: Click navbar button to open citizen observation report modal with spatial snapping and boundary validation. |
+| **Building Exposure HUD**<br>[http://localhost:3000/?tab=buildings](http://localhost:3000/?tab=buildings) | • **Google Open Buildings V3**: Visualizes 360,252 building footprints projected in UTM Zone 43N.<br>• **Landmark Hotspots**: Instant focus on Golden Temple, Khalsa College, GNDU Science Block, Hall Gate, Heritage Street, Putlighar Market, Lawrence Road, and Mall Road.<br>• **Interactive Probe Pin**: Drag the red Google Maps pin probe anywhere across the canvas to inspect live distance-to-sink and runoff vector updates.<br>• **Dossier HUD**: View structure area ($m^2$), elevation above sea level, catchment susceptibility score, landmark photography preview, and external Google Maps links. |
+| **Road Corridor Routing**<br>[http://localhost:3000/?tab=roads](http://localhost:3000/?tab=roads) | • **Flood-Aware Pathfinding**: Graph traversal over 14,855 segments, 28,418 nodes, and 37,924 edges.<br>• **Transit Hub Pairings**: Select origin/destination corridors (Airport, Railway Station, Golden Temple, GNDU, ISBT Bus Terminal).<br>• **Swap Route Direction (⇅)**: Reverse origin and destination with one click.<br>• **Route Comparison**: Compare Route A (Safe/Bypass) vs Route B (Hazardous/Underpass) with explicit exposure penalty scores.<br>• **Underpass Chokepoints**: Automatic $+20$ pt baseline penalty on the Rego Bridge underpass sump bowl.<br>• **Active Visual Flood Penalties**: Verified flood imagery applies $+25$ to $+30$ pt impedance penalties, triggering dynamic route avoidance. |
+| **About Us & Methodology**<br>[http://localhost:3000/about](http://localhost:3000/about) or `/?tab=about` | • **Sticky Pill Navigation**: Smooth auto-scroll through all 9 technical sections.<br>• **Mathematical Formula Cards**: Mathematical derivations for Static Susceptibility ($S$), Dynamic RTI, and Vision Fusion ($R_{\text{final}}$).<br>• **12-Cell 2D Matrix**: High-contrast WCAG AA risk classification matrix.<br>• **Research & Citations**: Academic citations (FloodNet, Open Buildings, Copernicus DEM) and research team credentials. |
+| **Amritsar City Console**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | • **Calibrated Reference Baseline**: 1,998 250m cells with comprehensive geospatial risk evaluation.<br>• **Dual Spatial Scopes**: Toggle between Amritsar City (250m macro) and GNDU Campus (50m micro-mesh).<br>• **3 Operational Modes**: Switch between Live Forecast (ECMWF/GFS ensemble), Scenario Simulation, and Historical Replay (Sep 1, 2025 extreme downpour).<br>• **Rainfall Timeline**: Interactive scrubber to trace cell-by-cell temporal risk propagation.<br>• **Official Alerts**: Live NDMA SACHET CAP feeds and localized cell factor breakdown drawers. |
+| **GNDU Campus Campaign**<br>[http://localhost:3000/campaign/gndu](http://localhost:3000/campaign/gndu) | • **Campus Flood Resilience Hub**: 699 high-res micro-cells from `campus_susceptibility.geojson`.<br>• **42 Campus Facilities**: Academic blocks, hostels, sports complexes, and university administrative buildings.<br>• **Ridge Crest Analysis**: High-elevation ridge ($233.8\text{m}$) vs southern lowlands.<br>• **Student Action Portal**: Objectives and ground-truth photo evidence submission workflow. |
+| **Jalandhar Pilot Console**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | • **Ethical AI Safety Gate**: Demonstrates the `evidence_insufficient` fail-closed safety gate.<br>• **Physical Terrain & Roads**: Copernicus DEM topography and 17,358 road segments (30.8k nodes, 93k edges).<br>• **Suppression Proof**: Live alerts are strictly suppressed to prevent uncalibrated municipal panic. |
+| **Authentication (Optional)**<br>[http://localhost:3000/login](http://localhost:3000/login) | Clean sign-in and sign-up forms with Supabase auth or demo preview modes. |
 
 ---
 
@@ -277,22 +389,24 @@ npm run start
 
 | Command | Purpose | When to Run |
 |---|---|---|
-| `npm run dev` | Boots local Next.js 16 development server with Turbopack | Local development |
-| `npm run build` | Compiles optimized production bundle and checks SSR/route contracts | Before deployment |
-| `npm run start` | Boots the compiled production server | Production testing |
-| `npm test` | Runs Vitest unit and component test suites (87 files, 802 tests) | Code changes / pre-commit |
-| `npm run typecheck` | Strict TypeScript compilation check (`tsc --noEmit`) | Type safety verification |
-| `npm run lint` | Runs ESLint static analysis | Style and lint verification |
-| `npm run verify` | Runs all master quality gates (env check, lint, typecheck, tests, build) | CI/CD and pre-submission |
-| `npm run smoke` | Probes `/api/health`, `/`, headers, and 404 isolation against a running server | Post-deployment smoke check |
-| `npm run preflight:alerts` | Runs alert subsystem readiness & safety checks across all cities | Before alert rollout |
-| `npm run env:check` | Diagnostics report for environment variables (masked secrets) | Configuration audit |
+| `npm run dev` | Boots local Next.js 16 development server with Turbopack | Local development (`http://localhost:3000`) |
+| `npm run build` | Compiles optimized production bundle and verifies SSR/route contracts | Before deployment or release |
+| `npm run start` | Boots the compiled production server | Production testing / demo presentations |
+| `npm test` | Runs Vitest unit and component test suites (87 files, 802 passing tests) | Pre-commit / verification |
+| `npm run typecheck` | Strict TypeScript compilation check with `tsc --noEmit` (zero errors) | Code changes / type safety |
+| `npm run lint` | Runs ESLint static analysis across the codebase | Style & quality audits |
+| `npm run verify` | Master quality verification pipeline (env check, lint, typecheck, tests, build) | CI/CD and pre-submission |
+| `npm run smoke` | Probes `/api/health`, `/`, headers, security policies, and 404 isolation | Post-launch smoke check |
+| `npm run preflight:alerts` | Runs alert subsystem readiness & safety checks across all cities | Before enabling alert dispatches |
+| `npm run env:check` | Diagnostics report for environment variables (safely masks secrets) | Configuration audit |
 
 *(Optional)* Run Python geospatial pipeline tests (requires Python 3.11+ virtual environment):
 ```bash
+# Windows PowerShell:
 .venv\Scripts\python.exe -m pytest pipeline/tests/ -v
-# or on Linux/macOS:
-# pytest pipeline/tests/ -v
+
+# Linux / macOS:
+pytest pipeline/tests/ -v
 ```
 
 ---

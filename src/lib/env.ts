@@ -62,7 +62,7 @@ export const ENV_REGISTRY: Record<string, EnvVariableMeta> = {
     key: 'GOOGLE_GENERATIVE_AI_API_KEY',
     provider: 'Google Gemini',
     scope: 'server',
-    description: 'Google AI Studio multimodal models (Gemini 2.5 / 1.5 Pro/Flash)',
+    description: 'Google AI Studio multimodal models (Gemini 3.8 / 2.5 / 1.5 Pro/Flash)',
     dashboardUrl: 'https://aistudio.google.com/',
     isOptional: true,
   },

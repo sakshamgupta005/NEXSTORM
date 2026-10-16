@@ -2,9 +2,9 @@ import React from 'react'
 import { GnduCampaignView } from './GnduCampaignView'
 
 export const metadata = {
-  title: 'GNDU Campus Flood Resilience Campaign 2026 — NEXSTORM',
+  title: 'GNDU Campus Waterlogging Photo Campaign — NEXSTORM',
   description:
-    'Guru Nanak Dev University (GNDU) hyper-local 50m micro-grid flood intelligence campaign across 699 cells and student crowd-sourced observations.',
+    'Contribute to Guru Nanak Dev University (GNDU) flood resilience by uploading photos of campus areas prone to waterlogging.',
 }
 
 export default function GnduCampaignPage() {
