@@ -88,8 +88,6 @@ describe('P32 — Independent Audit of Integrated Image Risk Feature', () => {
 
   describe('Audit Item 2: Distant or Irrelevant Imagery Has Zero Influence', () => {
     it('does not alter building exposure when photo is 200m away in the same 250m cell', () => {
-      const buildingCentroid = { lat: 31.6380, lng: 74.8250 }
-
       const before = buildingExposureService.evaluateFootprintExposure({
         buildingId: 'AUDIT-BLD-01',
         coordinates: [

@@ -20,7 +20,6 @@ import { visionProviderAdapter } from '@/lib/images/vision-provider'
 import { VisualRiskFeatureMapper } from '@/lib/images/risk-mapper'
 import { imageEvidenceService } from '@/lib/images/service'
 import { roadRiskService } from '@/lib/roads/service'
-import { buildingExposureService } from '@/lib/buildings/service'
 import type { StructuredVisualObservation } from '@/lib/images/types'
 import type { RoadSegmentRecord } from '@/lib/roads/types'
 

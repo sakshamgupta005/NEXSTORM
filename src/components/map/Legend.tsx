@@ -53,11 +53,11 @@ export function Legend({ classShare, activeLayer = 'risk' }: LegendProps) {
       </div>
 
       {activeLayer === 'susceptibility' ? (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/60">
+            <div className="flex items-center gap-2">
               <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
+                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
                 style={{ backgroundColor: RISK_COLORS.high.fill, borderColor: RISK_COLORS.high.stroke }}
                 aria-hidden="true"
               >
@@ -67,29 +67,29 @@ export function Legend({ classShare, activeLayer = 'risk' }: LegendProps) {
                 High Susceptibility (s &gt; 0.66)
               </span>
             </div>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Depression / Flat</span>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Depression</span>
           </div>
 
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60">
+            <div className="flex items-center gap-2">
               <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
+                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
                 style={{ backgroundColor: RISK_COLORS.moderate.fill, borderColor: RISK_COLORS.moderate.stroke }}
                 aria-hidden="true"
               >
                 M
               </span>
               <span className="font-semibold text-amber-700 dark:text-amber-400">
-                Moderate Susceptibility (0.33–0.66)
+                Moderate (0.33–0.66)
               </span>
             </div>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Intermediate</span>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Intermediate</span>
           </div>
 
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200/60">
+            <div className="flex items-center gap-2">
               <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
+                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
                 style={{ backgroundColor: RISK_COLORS.low.fill, borderColor: RISK_COLORS.low.stroke }}
                 aria-hidden="true"
               >
@@ -99,69 +99,77 @@ export function Legend({ classShare, activeLayer = 'risk' }: LegendProps) {
                 Low Susceptibility (s &lt; 0.33)
               </span>
             </div>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Elevated / Sloped</span>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Sloped</span>
           </div>
         </div>
       ) : (
-        <div className="space-y-2">
-          {/* High Risk */}
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
-                style={{ backgroundColor: RISK_COLORS.high.fill, borderColor: RISK_COLORS.high.stroke }}
-                aria-hidden="true"
-              >
-                H
-              </span>
-              <span className="font-semibold text-rose-700 dark:text-rose-400">
-                High Risk [HIGH]
+        <div className="space-y-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {/* High Risk */}
+            <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40">
+              <div className="flex items-center gap-2">
+                <span
+                  className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
+                  style={{ backgroundColor: RISK_COLORS.high.fill, borderColor: RISK_COLORS.high.stroke }}
+                  aria-hidden="true"
+                >
+                  H
+                </span>
+                <span className="font-semibold text-rose-700 dark:text-rose-400">
+                  High Risk [HIGH]
+                </span>
+              </div>
+              <span className="font-mono text-xs font-bold text-rose-900 dark:text-rose-200 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-900">
+                {highPct}%
               </span>
             </div>
-            <span className="font-mono text-xs font-bold text-slate-900 dark:text-slate-100 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-900">{highPct}%</span>
-          </div>
 
-          {/* Moderate Risk */}
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
-                style={{ backgroundColor: RISK_COLORS.moderate.fill, borderColor: RISK_COLORS.moderate.stroke }}
-                aria-hidden="true"
-              >
-                M
-              </span>
-              <span className="font-semibold text-amber-700 dark:text-amber-400">
-                Moderate Risk [MOD]
+            {/* Moderate Risk */}
+            <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40">
+              <div className="flex items-center gap-2">
+                <span
+                  className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
+                  style={{ backgroundColor: RISK_COLORS.moderate.fill, borderColor: RISK_COLORS.moderate.stroke }}
+                  aria-hidden="true"
+                >
+                  M
+                </span>
+                <span className="font-semibold text-amber-700 dark:text-amber-400">
+                  Moderate Risk [MOD]
+                </span>
+              </div>
+              <span className="font-mono text-xs font-bold text-amber-900 dark:text-amber-200 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-900">
+                {modPct}%
               </span>
             </div>
-            <span className="font-mono text-xs font-bold text-slate-900 dark:text-slate-100 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-900">{modPct}%</span>
-          </div>
 
-          {/* Low Risk */}
-          <div className="flex items-center justify-between text-xs p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs"
-                style={{ backgroundColor: RISK_COLORS.low.fill, borderColor: RISK_COLORS.low.stroke }}
-                aria-hidden="true"
-              >
-                L
-              </span>
-              <span className="font-semibold text-sky-700 dark:text-sky-400">
-                Low Risk [LOW]
+            {/* Low Risk */}
+            <div className="flex items-center justify-between text-xs p-2 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-900/40">
+              <div className="flex items-center gap-2">
+                <span
+                  className="w-5 h-5 rounded-md border flex items-center justify-center font-bold text-[10px] text-white shadow-xs shrink-0"
+                  style={{ backgroundColor: RISK_COLORS.low.fill, borderColor: RISK_COLORS.low.stroke }}
+                  aria-hidden="true"
+                >
+                  L
+                </span>
+                <span className="font-semibold text-sky-700 dark:text-sky-400">
+                  Low Risk [LOW]
+                </span>
+              </div>
+              <span className="font-mono text-xs font-bold text-sky-900 dark:text-sky-200 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-sky-200 dark:border-sky-900">
+                {lowPct}%
               </span>
             </div>
-            <span className="font-mono text-xs font-bold text-slate-900 dark:text-slate-100 bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded border border-sky-200 dark:border-sky-900">{lowPct}%</span>
           </div>
 
           {/* Progress bar visualizer */}
-          <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="space-y-1 pt-1">
             <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               <span>Grid Area Coverage</span>
               <span className="font-mono font-semibold">Total: 100%</span>
             </div>
-            <div className="w-full h-2.5 rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800 shadow-inner">
+            <div className="w-full h-2 rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800 shadow-inner">
               <div style={{ width: `${highPct}%`, backgroundColor: RISK_COLORS.high.fill }} title={`High: ${highPct}%`} />
               <div style={{ width: `${modPct}%`, backgroundColor: RISK_COLORS.moderate.fill }} title={`Moderate: ${modPct}%`} />
               <div style={{ width: `${lowPct}%`, backgroundColor: RISK_COLORS.low.fill }} title={`Low: ${lowPct}%`} />

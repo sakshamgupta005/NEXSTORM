@@ -8,7 +8,6 @@ import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { buildingExposureService } from '@/lib/buildings/service'
 import { buildingQuerySchema } from '@/lib/validations/buildings'
 import { ValueMetaPresets } from '@/lib/metadata'
-import { isCitySupported } from '@/lib/city/registry'
 
 export async function GET(req: NextRequest) {
   try {

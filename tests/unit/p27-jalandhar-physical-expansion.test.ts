@@ -60,8 +60,6 @@ describe('NEXSTORM P27 — Jalandhar Physical Data Expansion Quality Gates', () 
 
         const startLng = seg.startCoord.lng
         const startLat = seg.startCoord.lat
-        const endLng = seg.endCoord.lng
-        const endLat = seg.endCoord.lat
 
         if (startLng < minLng) minLng = startLng
         if (startLng > maxLng) maxLng = startLng

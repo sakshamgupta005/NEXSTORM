@@ -14,10 +14,9 @@
 
 import { describe, it, expect } from 'vitest'
 import { sBand, riskClass } from '@/lib/risk/matrix'
-import { computeRti, computeRtiSeries, rollingSum, rollingSumWithAntecedent, rtiBand } from '@/lib/risk/rti'
-import { computeClassShareForBand, computeTimeline } from '@/lib/risk/engine'
+import { computeRti, rollingSum, rollingSumWithAntecedent, rtiBand } from '@/lib/risk/rti'
 import { roadRiskService } from '@/lib/roads/service'
-import { getCityConfig, computeCanonicalConfigHash, verifyConfigIntegrity } from '@/lib/city/registry'
+import { getCityConfig, verifyConfigIntegrity } from '@/lib/city/registry'
 import type { RoadSegmentRecord } from '@/lib/roads/types'
 
 describe('NEXSTORM P28 — Independent Risk Validation & Scientific Integrity', () => {
@@ -291,7 +290,7 @@ describe('NEXSTORM P28 — Independent Risk Validation & Scientific Integrity', 
 
   describe('5. Historical Backtesting Statistical Rigor', () => {
     // Wilson score interval implementation test
-    function wilsonInterval(k: number, n: number, confidence = 0.95): [number, number] {
+    function wilsonInterval(k: number, n: number): [number, number] {
       if (n === 0) return [0.0, 1.0]
       const z = 1.95996
       const p = k / n

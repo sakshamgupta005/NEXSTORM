@@ -17,6 +17,10 @@ export function FrontendApp() {
       if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
         return tabParam
       }
+      const hashParam = window.location.hash.replace('#', '') as TabKey
+      if (hashParam && ['overview', 'buildings', 'roads', 'about'].includes(hashParam)) {
+        return hashParam
+      }
     }
     return 'overview'
   })
@@ -30,21 +34,33 @@ export function FrontendApp() {
       if (tabParam && ['overview', 'buildings', 'roads', 'about'].includes(tabParam)) {
         setActiveTab(tabParam)
       } else {
-        setActiveTab('overview')
+        const hashParam = window.location.hash.replace('#', '') as TabKey
+        if (hashParam && ['overview', 'buildings', 'roads', 'about'].includes(hashParam)) {
+          setActiveTab(hashParam)
+        } else {
+          setActiveTab('overview')
+        }
       }
     }
     window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
+    window.addEventListener('hashchange', handlePopState)
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener('hashchange', handlePopState)
+    }
   }, [])
 
-  const handleSwitchTab = (tab: TabKey) => {
-    setActiveTab(tab)
+  const handleSwitchTab = (tab?: string) => {
+    const validTab: TabKey = tab && ['overview', 'buildings', 'roads', 'about'].includes(tab)
+      ? (tab as TabKey)
+      : 'overview'
+    setActiveTab(validTab)
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href)
-      if (tab === 'overview') {
+      if (validTab === 'overview') {
         url.searchParams.delete('tab')
       } else {
-        url.searchParams.set('tab', tab)
+        url.searchParams.set('tab', validTab)
       }
       window.history.replaceState({}, '', url.toString())
     }

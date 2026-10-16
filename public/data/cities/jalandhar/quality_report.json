@@ -20,88 +20,32 @@
     "SECONDARY_JOURNALISTIC_SOURCES_ONLY: Incident inventory is derived from newspaper reports (source_reported) without independent sub-daily rain gauge telemetry or official municipal complaint registers. In strict adherence to the governing directive, Jalandhar remains evidence_insufficient until official municipal logs are integrated."
   ],
   "passedChecks": [
-    "CANONICAL_CONFIG_HASH_VERIFIED",
-    "FEATURE_WEIGHTS_NORMALIZED",
-    "BOUNDING_BOX_VALID",
-    "POLYGON_GEOMETRIES_VALID",
-    "CELL_IDS_UNIQUE_AND_STABLE",
-    "METRIC_CELL_AREA_CONSISTENT",
-    "UTM_ZONE_43N_CRS_CARTOGRAPHICALLY_VALID",
-    "EDGE_CELL_HANDLING_AUDITED",
-    "GRID_FEATURE_COUNT_1_TO_1_ALIGNED",
-    "SUSCEPTIBILITY_BOUNDS_VALID_0_TO_1",
-    "ALL_REQUIRED_FEATURE_LAYERS_PRESENT",
-    "PHYSICAL_DATASET_PROVENANCE_VERIFIED",
-    "COORDINATE_PROXIES_SUCCESSFULLY_REPLACED",
-    "PRELIMINARY_ARCHIVAL_EVIDENCE_INVENTORY_PRESENT"
+    "CANONICAL_CONFIG_HASH_VERIFIED", "FEATURE_WEIGHTS_NORMALIZED", "BOUNDING_BOX_VALID",
+    "POLYGON_GEOMETRIES_VALID", "CELL_IDS_UNIQUE_AND_STABLE", "METRIC_CELL_AREA_CONSISTENT",
+    "UTM_ZONE_43N_CRS_CARTOGRAPHICALLY_VALID", "EDGE_CELL_HANDLING_AUDITED",
+    "GRID_FEATURE_COUNT_1_TO_1_ALIGNED", "SUSCEPTIBILITY_BOUNDS_VALID_0_TO_1",
+    "ALL_REQUIRED_FEATURE_LAYERS_PRESENT", "PHYSICAL_DATASET_PROVENANCE_VERIFIED",
+    "COORDINATE_PROXIES_SUCCESSFULLY_REPLACED", "PRELIMINARY_ARCHIVAL_EVIDENCE_INVENTORY_PRESENT"
   ],
   "gridAudit": {
     "cellCount": 2354,
     "crs": "EPSG:4326",
-    "metricCellArea": {
-      "expectedAreaM2": 62500,
-      "minAreaM2": 62500.0,
-      "maxAreaM2": 62500.0,
-      "meanAreaM2": 62500.0,
-      "areaStdM2": 0.0
-    },
-    "spatialBoundsWgs84": [
-      75.52,
-      31.2794,
-      75.6599,
-      31.3811
-    ],
-    "crsEvaluation": "EPSG:32643 is appropriate for study area (75.52\u00b0E to 75.66\u00b0E, central meridian 75.0\u00b0E, scale distortion < 0.05%).",
+    "metricCellArea": { "expectedAreaM2": 62500, "minAreaM2": 62500.0, "maxAreaM2": 62500.0, "meanAreaM2": 62500.0, "areaStdM2": 0.0 },
+    "spatialBoundsWgs84": [75.52, 31.2794, 75.6599, 31.3811],
+    "crsEvaluation": "EPSG:32643 is appropriate for study area (75.52°E to 75.66°E, central meridian 75.0°E, scale distortion < 0.05%).",
     "boundaryType": "rectangular_aoi_box",
     "edgeCellHandling": "full_cell_centroid_inclusion_with_edge_overhang"
   },
   "featureAudit": {
     "featureCount": 2354,
-    "susceptibilityStats": {
-      "min": 0.0782,
-      "max": 0.9187,
-      "mean": 0.4437,
-      "std": 0.1505,
-      "p25": 0.3317,
-      "p50": 0.4284,
-      "p75": 0.5373
-    },
-    "bandDistributionPercent": {
-      "low": 24.47,
-      "mid": 66.48,
-      "high": 9.05
-    },
+    "susceptibilityStats": { "min": 0.0782, "max": 0.9187, "mean": 0.4437, "std": 0.1505, "p25": 0.3317, "p50": 0.4284, "p75": 0.5373 },
+    "bandDistributionPercent": { "low": 24.47, "mid": 66.48, "high": 9.05 },
     "componentFeatures": {
-      "f_depression": {
-        "min": 0.0,
-        "max": 1.0,
-        "mean": 0.5,
-        "std": 0.2889
-      },
-      "f_flatness": {
-        "min": 0.0055,
-        "max": 1.0,
-        "mean": 0.5,
-        "std": 0.2884
-      },
-      "f_builtUp": {
-        "min": 0.0419,
-        "max": 0.9841,
-        "mean": 0.5,
-        "std": 0.2888
-      },
-      "f_lowPoint": {
-        "min": 0.0,
-        "max": 1.0,
-        "mean": 0.1245,
-        "std": 0.3302
-      },
-      "f_density": {
-        "min": 0.0132,
-        "max": 1.0,
-        "mean": 0.5,
-        "std": 0.2889
-      }
+      "f_depression": { "min": 0.0, "max": 1.0, "mean": 0.5, "std": 0.2889 },
+      "f_flatness": { "min": 0.0055, "max": 1.0, "mean": 0.5, "std": 0.2884 },
+      "f_builtUp": { "min": 0.0419, "max": 0.9841, "mean": 0.5, "std": 0.2888 },
+      "f_lowPoint": { "min": 0.0, "max": 1.0, "mean": 0.1245, "std": 0.3302 },
+      "f_density": { "min": 0.0132, "max": 1.0, "mean": 0.5, "std": 0.2889 }
     },
     "dataOrigin": {
       "sourceType": "physical_raster_and_vector",
@@ -111,10 +55,7 @@
     "beforeAndAfterP24VsP25": {
       "p24ProxyFeatures": {
         "sourceType": "analytic_coordinate_proxy",
-        "susceptibilityRange": [
-          0.2346,
-          0.7508
-        ],
+        "susceptibilityRange": [0.2346, 0.7508],
         "susceptibilityStd": 0.0828,
         "midBandCompressionPct": 93.16,
         "meanFLowPoint": 0.6471,
@@ -122,10 +63,7 @@
       },
       "p25PhysicalFeatures": {
         "sourceType": "physical_raster_and_vector",
-        "susceptibilityRange": [
-          0.0782,
-          0.9187
-        ],
+        "susceptibilityRange": [0.0782, 0.9187],
         "susceptibilityStd": 0.15047253166873453,
         "midBandCompressionPct": 66.48,
         "meanFLowPoint": 0.1245,
@@ -134,12 +72,7 @@
       "auditVerdict": "P25 successfully eliminated the 93.2% mid-band compression and restored natural spatial contrast (std improved from 0.0828 to 0.1505). Low-point representation dropped from 64.7% to 12.4%, matching physical hydrological reality."
     }
   },
-  "evidenceAudit": {
-    "incidentCount": 10,
-    "validRainfallIncidents": 9,
-    "distinctStormEvents": 5,
-    "hasHistoricalEvidence": true
-  },
+  "evidenceAudit": { "incidentCount": 10, "validRainfallIncidents": 9, "distinctStormEvents": 5, "hasHistoricalEvidence": true },
   "crossCityComparability": {
     "role": "secondary_exploratory_pilot",
     "crossCityScoreEquivalence": "NON-EQUIVALENT: Susceptibility score S=0.50 in jalandhar DOES NOT equal S=0.50 in Amritsar. Feature weights (depression=0.3, builtUp=0.3) and cutoffs (0.33, 0.66) were transferred from Amritsar without localized empirical calibration. Scores are ordinal within jalandhar only.",

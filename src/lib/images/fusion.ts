@@ -157,14 +157,12 @@ export class RiskFusionEngine {
 
     // 4. Quality & Uncertainty from risk features
     let qQuality = 0.8
-    let qUncertainty = 0.8
     let modelConf = evidence.confidence ?? 0.8
 
     if (evidence.riskFeatures) {
       const rf = evidence.riskFeatures
       if (!rf.isActionable) return 0.0
       qQuality = rf.evidenceQuality === 'high' ? 1.0 : rf.evidenceQuality === 'moderate' ? 0.8 : 0.4
-      qUncertainty = rf.calibratedWeight
       modelConf = rf.calibratedWeight
     }
 

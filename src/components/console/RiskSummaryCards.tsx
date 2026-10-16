@@ -36,146 +36,142 @@ export function RiskSummaryCards({
   provenance = [],
   mode = 'scenario',
 }: RiskSummaryCardsProps) {
-  const highCount = classDistribution?.high ?? 0
-  const modCount = classDistribution?.moderate ?? 0
-  const lowCount = classDistribution?.low ?? 0
+  // Normalizes whether counts are passed as absolute integers or normalized fractions (<= 1.0)
+  const resolveCount = (val: number, total: number) =>
+    val <= 1 && total > 1 ? Math.round(val * total) : Math.round(val)
+
+  const highCount = resolveCount(classDistribution?.high ?? 0, totalCells)
+  const modCount = resolveCount(classDistribution?.moderate ?? 0, totalCells)
+  const lowCount = resolveCount(classDistribution?.low ?? 0, totalCells)
 
   const highPct = Math.round((classShare?.high ?? 0) * 100)
   const modPct = Math.round((classShare?.moderate ?? 0) * 100)
   const lowPct = Math.round((classShare?.low ?? 0) * 100)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-7">
       {/* 4 Primary Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
         {/* Card 1: Evaluated Grid & High Risk */}
-        <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-xs">
-          <CardContent className="p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-              <span className="text-[10px] font-bold uppercase tracking-wider">High Risk Cells</span>
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">
-                {highCount}
-              </span>
-              <span className="text-xs text-slate-500 font-medium">({highPct}%)</span>
-            </div>
-            <div className="text-[10px] text-slate-400 truncate">
-              Out of {totalCells.toLocaleString()} evaluated cells
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-3">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider">High Risk Cells</span>
+            <AlertTriangle className="w-4 h-4 text-rose-500" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">
+              {highCount}
+            </span>
+            <span className="text-xs text-slate-500 font-semibold">({highPct}%)</span>
+          </div>
+          <div className="text-xs text-slate-500 leading-relaxed">
+            Out of {totalCells.toLocaleString()} evaluated cells
+          </div>
+        </div>
 
         {/* Card 2: Peak Rainfall */}
-        <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-xs">
-          <CardContent className="p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-              <span className="text-[10px] font-bold uppercase tracking-wider">Rainfall Peak</span>
-              <CloudRain className="w-3.5 h-3.5 text-blue-500" />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
-                {rainfallSummary?.max1h ?? 0}
-              </span>
-              <span className="text-xs text-slate-500 font-medium">mm/h</span>
-            </div>
-            <div className="text-[10px] text-slate-400">
-              24h Total: <span className="font-mono">{rainfallSummary?.max24h ?? 0} mm</span>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-3">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider">Rainfall Peak</span>
+            <CloudRain className="w-4 h-4 text-blue-500" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
+              {rainfallSummary?.max1h ?? 0}
+            </span>
+            <span className="text-xs text-slate-500 font-semibold">mm/h</span>
+          </div>
+          <div className="text-xs text-slate-500 leading-relaxed">
+            24h Total: <span className="font-mono font-semibold">{rainfallSummary?.max24h ?? 0} mm</span>
+          </div>
+        </div>
 
         {/* Card 3: Peak RTI & Band */}
-        <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-xs">
-          <CardContent className="p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-              <span className="text-[10px] font-bold uppercase tracking-wider">Peak RTI</span>
-              <Zap className="w-3.5 h-3.5 text-purple-500" />
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">
-                {rainfallSummary?.maxRti ?? 0}
-              </span>
-              <Badge
-                variant={
-                  rtiBand === 'extreme' || rtiBand === 'severe'
-                    ? 'danger'
-                    : rtiBand === 'elevated'
-                    ? 'warning'
-                    : 'outline'
-                }
-                className="text-[9px] uppercase px-1.5 py-0"
-              >
-                {rtiBand}
-              </Badge>
-            </div>
-            <div className="text-[10px] text-slate-400">
-              Provisional threshold basis
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-3">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider">Peak RTI</span>
+            <Zap className="w-4 h-4 text-purple-500" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">
+              {rainfallSummary?.maxRti ?? 0}
+            </span>
+            <Badge
+              variant={
+                rtiBand === 'extreme' || rtiBand === 'severe'
+                  ? 'danger'
+                  : rtiBand === 'elevated'
+                  ? 'warning'
+                  : 'outline'
+              }
+              className="text-[10px] uppercase px-2 py-0.5"
+            >
+              {rtiBand}
+            </Badge>
+          </div>
+          <div className="text-xs text-slate-500 leading-relaxed">
+            Provisional threshold basis
+          </div>
+        </div>
 
         {/* Card 4: Confidence Status */}
-        <Card className="border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-xs">
-          <CardContent className="p-3.5 space-y-1">
-            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-              <span className="text-[10px] font-bold uppercase tracking-wider">Forecast Confidence</span>
-              <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
-            </div>
-            <div className="pt-1">
-              <ConfidenceBadge confidence={confidence} memberCount={memberCount} />
-            </div>
-            <div className="text-[10px] text-slate-400 truncate">
-              {mode === 'replay'
-                ? 'Historical deterministic reanalysis'
-                : mode === 'scenario'
-                ? 'Simulated hyetograph stress-test'
-                : 'Ensemble agreement spread'}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-6 sm:p-7 space-y-3">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider">Forecast Confidence</span>
+            <ShieldCheck className="w-4 h-4 text-slate-400" />
+          </div>
+          <div className="pt-0.5">
+            <ConfidenceBadge confidence={confidence} memberCount={memberCount} />
+          </div>
+          <div className="text-xs text-slate-500 leading-relaxed">
+            {mode === 'replay'
+              ? 'Historical deterministic reanalysis'
+              : mode === 'scenario'
+              ? 'Simulated hyetograph stress-test'
+              : 'Ensemble agreement spread'}
+          </div>
+        </div>
       </div>
 
       {/* Class Distribution Breakdown Bar */}
-      <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 text-xs space-y-2">
-        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-          <span className="flex items-center gap-1.5">
-            <Grid className="w-3.5 h-3.5 text-slate-400" />
+      <div className="p-6 sm:p-7 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs text-xs space-y-4">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300 pb-2 border-b border-slate-100 dark:border-slate-800">
+          <span className="flex items-center gap-2">
+            <Grid className="w-4 h-4 text-slate-400" />
             <span>Risk Class Breakdown (Current Scrubber Hour)</span>
           </span>
-          <span className="text-[10px] text-slate-400 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             {totalCells.toLocaleString()} Cells Mapped
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          <div className="p-1.5 rounded bg-rose-50 dark:bg-rose-950/30 border border-rose-200/50 dark:border-rose-900/40 flex items-center justify-between">
-            <span className="text-[11px] font-medium text-rose-700 dark:text-rose-300 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: RISK_COLORS.high.fill }} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-between">
+            <span className="text-xs font-semibold text-rose-700 dark:text-rose-300 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: RISK_COLORS.high.fill }} />
               High
             </span>
-            <span className="font-mono font-bold text-rose-800 dark:text-rose-200 text-xs">
+            <span className="font-mono font-bold text-rose-800 dark:text-rose-200 text-xs sm:text-sm">
               {highCount} ({highPct}%)
             </span>
           </div>
 
-          <div className="p-1.5 rounded bg-amber-50 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-900/40 flex items-center justify-between">
-            <span className="text-[11px] font-medium text-amber-700 dark:text-amber-300 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: RISK_COLORS.moderate.fill }} />
+          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-between">
+            <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: RISK_COLORS.moderate.fill }} />
               Moderate
             </span>
-            <span className="font-mono font-bold text-amber-800 dark:text-amber-200 text-xs">
+            <span className="font-mono font-bold text-amber-800 dark:text-amber-200 text-xs sm:text-sm">
               {modCount} ({modPct}%)
             </span>
           </div>
 
-          <div className="p-1.5 rounded bg-sky-50 dark:bg-sky-950/30 border border-sky-200/50 dark:border-sky-900/40 flex items-center justify-between">
-            <span className="text-[11px] font-medium text-sky-700 dark:text-sky-300 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: RISK_COLORS.low.fill }} />
+          <div className="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-900/40 flex items-center justify-between">
+            <span className="text-xs font-semibold text-sky-700 dark:text-sky-300 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: RISK_COLORS.low.fill }} />
               Low
             </span>
-            <span className="font-mono font-bold text-sky-800 dark:text-sky-200 text-xs">
+            <span className="font-mono font-bold text-sky-800 dark:text-sky-200 text-xs sm:text-sm">
               {lowCount} ({lowPct}%)
             </span>
           </div>

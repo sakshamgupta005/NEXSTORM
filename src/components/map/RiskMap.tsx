@@ -99,6 +99,7 @@ export function RiskMap({
       center: [centerLat, centerLng],
       zoom,
       zoomControl: true,
+      scrollWheelZoom: false,
       preferCanvas: false, // SVG paths for testing and crisp rendering
     })
 
@@ -729,14 +730,14 @@ export function RiskMap({
       )}
 
       {/* Layer Controls Bar overlay on top right of map */}
-      <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-2 max-w-[270px]">
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-200/90 dark:border-slate-800 p-2 shadow-lg space-y-2 text-xs">
+      <div className="absolute top-2.5 right-2.5 z-[1000] flex flex-col gap-1.5 max-w-[240px] sm:max-w-[270px]">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-200/90 dark:border-slate-800 p-2 shadow-md space-y-1.5 text-xs">
           {/* Layer Mode Switch */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg">
             <button
               type="button"
               onClick={() => onLayerChange?.('risk')}
-              className={`flex-1 py-1 px-2 rounded-md text-[11px] font-semibold transition-all ${
+              className={`flex-1 py-1 px-1.5 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
                 activeLayer === 'risk'
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -747,7 +748,7 @@ export function RiskMap({
             <button
               type="button"
               onClick={() => onLayerChange?.('susceptibility')}
-              className={`flex-1 py-1 px-2 rounded-md text-[11px] font-semibold transition-all ${
+              className={`flex-1 py-1 px-1.5 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
                 activeLayer === 'susceptibility'
                   ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -758,14 +759,14 @@ export function RiskMap({
           </div>
 
           {/* Feature Overlays Toggles */}
-          <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/70 dark:border-slate-800">
+          <div className="grid grid-cols-2 gap-1 pt-1 border-t border-slate-200/70 dark:border-slate-800">
             {hotspots.length > 0 && (
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[11px] p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <label className="flex items-center gap-1 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[10px] sm:text-[11px] p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <input
                   type="checkbox"
                   checked={showHotspots}
                   onChange={(e) => onToggleHotspots?.(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded text-purple-600 accent-purple-600"
+                  className="w-3 h-3 rounded text-purple-600 accent-purple-600"
                 />
                 <span className="flex items-center gap-1 truncate">
                   <MapPin className="w-3 h-3 text-purple-500 shrink-0" />
@@ -775,12 +776,12 @@ export function RiskMap({
             )}
 
             {observations.length > 0 && (
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[11px] p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <label className="flex items-center gap-1 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[10px] sm:text-[11px] p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <input
                   type="checkbox"
                   checked={showObservations}
                   onChange={(e) => onToggleObservations?.(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded text-emerald-600 accent-emerald-600"
+                  className="w-3 h-3 rounded text-emerald-600 accent-emerald-600"
                 />
                 <span className="flex items-center gap-1 truncate">
                   <Droplets className="w-3 h-3 text-emerald-500 shrink-0" />
@@ -790,12 +791,12 @@ export function RiskMap({
             )}
 
             {onToggleRoads && (
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[11px] p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <label className="flex items-center gap-1 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[10px] sm:text-[11px] p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <input
                   type="checkbox"
                   checked={showRoads}
                   onChange={(e) => onToggleRoads(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded text-orange-600 accent-orange-600"
+                  className="w-3 h-3 rounded text-orange-600 accent-orange-600"
                 />
                 <span className="flex items-center gap-1 truncate">
                   <Route className="w-3 h-3 text-orange-500 shrink-0" />
@@ -805,12 +806,12 @@ export function RiskMap({
             )}
 
             {onToggleBuildings && (
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[11px] p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <label className="flex items-center gap-1 cursor-pointer text-slate-700 dark:text-slate-300 font-medium select-none text-[10px] sm:text-[11px] p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                 <input
                   type="checkbox"
                   checked={showBuildings}
                   onChange={(e) => onToggleBuildings(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded text-indigo-600 accent-indigo-600"
+                  className="w-3 h-3 rounded text-indigo-600 accent-indigo-600"
                 />
                 <span className="flex items-center gap-1 truncate">
                   <Building className="w-3 h-3 text-indigo-500 shrink-0" />

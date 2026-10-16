@@ -14,10 +14,9 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { RiskFusionEngine, DEFAULT_FUSION_CONFIG } from '@/lib/images/fusion'
+import { RiskFusionEngine } from '@/lib/images/fusion'
 import { imageEvidenceService } from '@/lib/images/service'
 import { roadRiskService } from '@/lib/roads/service'
-import { buildingExposureService } from '@/lib/buildings/service'
 import type { RoadSegmentRecord } from '@/lib/roads/types'
 
 describe('P31 — Risk Fusion Engine & Existing Systems Integration', () => {

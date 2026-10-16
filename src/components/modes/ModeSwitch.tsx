@@ -51,7 +51,7 @@ export function ModeSwitch({
       data-testid="mode-switch"
       role="radiogroup"
       aria-label="Operational Mode Selection"
-      className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700 shadow-inner"
+      className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-slate-100 border border-slate-200 shadow-inner"
     >
       {modes.map((m) => {
         const Icon = m.icon
@@ -66,20 +66,20 @@ export function ModeSwitch({
             disabled={disabled}
             onClick={() => onChange?.(m.id)}
             title={m.description}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold ${
               isActive
-                ? 'bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 shadow-xs border border-slate-200 dark:border-slate-700'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800'
-            } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-98'}`}
+                ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-700/20'
+                : 'bg-transparent text-slate-700 hover:text-slate-900 hover:bg-white/80'
+            } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
           >
-            <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
-            <span>{m.label}</span>
+            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+            <span className="tracking-tight">{m.label}</span>
             {isActive ? (
-              <Badge className="ml-1 text-[9px] px-1.5 py-0 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              <Badge className="ml-1 text-[10px] font-bold px-1.5 py-0.5 bg-white/20 text-white border-white/30 uppercase tracking-wider">
                 Active
               </Badge>
             ) : m.badge ? (
-              <span className="text-[10px] text-slate-400 font-mono font-normal">
+              <span className="text-[10px] text-slate-500 font-mono font-medium bg-slate-200/80 px-1.5 py-0.5 rounded">
                 {m.badge}
               </span>
             ) : null}

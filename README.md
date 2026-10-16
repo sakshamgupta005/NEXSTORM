@@ -24,23 +24,27 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
    Macro Susceptibility            Structure Footprints             Corridor Inundation
    & Rainfall Risk                 & Catchment Exposure             & Flood-Aware Routing
    ────────────────────            ────────────────────             ─────────────────────
-   • 1,998 Amritsar 250m cells     • 360,252 Google Open            • 14,855 road segments
-   • 699 GNDU subgrid cells          Buildings V3 footprints        • 28,418 graph nodes
-   • Copernicus 30m DEM sinks      • Metric areas in UTM 43N        • 37,924 routing edges
-   • Dynamic RTI Rainfall Trigger  • Area-weighted multi-cell       • Underpass sink identification
-   • Live ECMWF/GFS ensemble         catchment exposure               (e.g., Rego Bridge sump)
-   • Historical monsoon replay     • Centroid & bounds queries      • A* flood-aware pathfinding
-   • Scenario hyetograph test      • Interactive structure dossier  • Exposure penalty comparison
+   • 1,998 Amritsar 250m cells     • 360,252 Google Open            • Dual-City Road Networks:
+   • 699 GNDU subgrid cells          Buildings V3 footprints          - Amritsar: 14,855 segments,
+   • Copernicus 30m DEM sinks      • Metric areas in UTM 43N            28,418 nodes, 37,924 edges
+   • Dynamic RTI Rainfall Trigger  • Area-weighted multi-cell         - Jalandhar: 17,358 segments,
+   • Live ECMWF/GFS ensemble         catchment exposure                 30,876 nodes, 93,031 edges
+   • Historical monsoon replay     • Centroid & bounds queries      • Topographic underpass sinks
+   • Scenario hyetograph test      • Interactive structure dossier    (e.g., Rego Bridge sump)
+                                   • Centroid proximity matching    • A* flood-aware pathfinding
+                                     (≤35m) for photo evidence      • Active visual flood penalty
         │                                │                                │
         └────────────────────────────────┴────────────────────────────────┘
                                          │
                                          ▼
                      GROUND-TRUTH & COMMUNITY EVIDENCE LAYER
                      ───────────────────────────────────────
-                     • Citizen waterlogging reports with boundary enforcement
-                     • Privacy-preserving reporter IP/session salt-hashing
-                     • Temporal decay & spatial corroboration clustering
-                     • Administrative audit & verification workflow
+                     • Multimodal AI vision analysis (Gemini 1.5 Flash, GPT-4o-mini, Local rules)
+                     • Mathematical risk fusion engine (R_final = (1-wq)R_base + (wq)R_visual)
+                     • Strict spatial snapping (≤25m roads, ≤35m buildings) & dry dampening floor
+                     • Mapillary Graph API v4 street survey baseline vs active storm photo (<24h)
+                     • Citizen waterlogging reports with privacy-preserving salt-hashing
+                     • Administrative moderation & corroboration clustering workflow
 ```
 
 ---
@@ -63,9 +67,27 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 - **Interactive Dossiers**: Provides building-level catchment susceptibility ($s \in [0, 1]$), elevation above sea level, and localized topographic depression warnings without making false indoor inundation claims.
 
 ### Pillar C: Road-Segment Risk & Flood-Aware Routing
-- **14,855 Road Segments & 28,418 Graph Nodes**: Ingested from OpenStreetMap highway networks, topologically noded with 37,924 routing edges.
-- **Underpass Chokepoints**: Identifies known historical topographic sump traps (e.g., Rego Bridge railway underpass bowl) where surface runoff converges.
+- **Dual-City Road Networks**:
+  - **Amritsar Baseline**: 14,855 road segments, 28,418 graph nodes, and 37,924 routing edges ingested from OpenStreetMap.
+  - **Jalandhar Expansion**: 17,358 road segments, 30,876 graph nodes, and 93,031 routing edges topologically noded for graph traversal.
+- **Topographic Underpass Chokepoints**: Identifies known historical sump traps (e.g., Rego Bridge railway underpass bowl in Amritsar) where surface runoff converges, applying an automatic $+20$ point baseline hazard offset.
 - **A* Flood-Aware Routing Engine**: Compares alternative origin-to-destination corridors between key transit hubs (e.g., Amritsar Railway Station to Sri Guru Ram Dass Jee International Airport), evaluating distance, baseline travel time, and modeled exposure penalty scores.
+- **Active Visual Impedance Penalty**: Traversed segments with active verified flood imagery incur a $+25$ to $+30$ point route impedance penalty, transitioning routing advice to `'avoid'` and explaining the specific flooded segments.
+
+### Image Evidence & Multimodal AI Vision Fusion (P29–P32)
+- **Multimodal AI Vision Ingestion**: Ingests ground-level smartphone photos, municipal records, and street surveys. Evaluates imagery using Google Gemini 1.5 Flash, OpenAI GPT-4o-mini, remote ONNX segmentation, or deterministic local rule-based heuristics with zero API dependencies.
+- **Structured Visual Observations (`visualObservationZodSchema`)**: Extracts qualitative physical proxies without hallucinating millimeter water depths:
+  - `roadWaterCondition`: `none`, `curb_ponding`, `flowing_surface_water`, `deep_standing_water`, `submerged`.
+  - `roadPassability`: `passable`, `caution`, `impassable`.
+  - `buildingWaterImpact`: `none`, `water_at_perimeter`, `entrance_doorstep_inundation`, `ground_floor_flooded`.
+  - `imageQuality` & `uncertaintyLevel`: Bounded quality factors and confidence metrics.
+- **Mathematical Risk Fusion Engine**: Integrates visual evidence directly into existing road and building scoring functions to compute a unified $R_{\text{final}}$ score:
+  $$R_{\text{final}} = \text{clamp}\big((1 - w \cdot q) \cdot R_{\text{base}} + (w \cdot q) \cdot R_{\text{visual}},\, 0,\, 100\big)$$
+  where reliability $q = q_{\text{dist}} \times q_{\text{time}} \times q_{\text{qual}} \times \text{conf}$.
+- **Strict Spatial Association**: Enforces Haversine metric proximity thresholds ($\le 25\text{ m}$ for road corridor segments, $\le 35\text{ m}$ around building centroids). Distant photos inside the same 250m cell never bleed across unrelated structures.
+- **Temporal Stratification**: Historical baseline street surveys (e.g., Mapillary Graph API v4 passes) enforce $q = 0.0$ (`historical_vulnerability_only`), ensuring baseline photos never trigger active storm alerts. Active storm evidence is restricted to $< 24\text{ h}$.
+- **Asymmetric Dry Override & Safety Floor**: When a photo shows dry pavement in an area under severe rainfall ($R_{\text{visual}} < R_{\text{base}}$), visual weight is dampened to $w_{\text{eff}} = 0.25 \cdot w$ and clamped to a safety floor ($R_{\text{final}} \ge 0.85 \cdot R_{\text{base}}$). A localized dry spot can never erase upstream catchment deluge risk.
+- **Deduplication Integrity**: All ingested photos are indexed and deduplicated via cryptographic SHA-256 hashes.
 
 ### Ground-Truth Observations & Community Evidence
 - **Citizen Reporting Dialog**: Allows submitting real-world observations (`street_flooding`, `underpass_submersion`, `drain_overflow`, `ponding`, `receding_water`) with depth severity ratings.
@@ -82,7 +104,8 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 - **Hydrological Engine**: TypeScript in-memory risk matrix engine ($<40\text{ ms}$ for 51 members $\times$ 2,500 cells $\times$ 48 hours).
 - **Data Pipeline**: Python 3.11 (`pipeline/`) using GeoPandas, Shapely, Rasterio, SciPy.
 - **Validation, Provenance & Integrity**: Zod schemas on all API boundaries; canonical SHA-256 frozen configuration verification (`74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49`); value-level data provenance metadata (`Observed`, `Estimated`, `Fallback`) attached to all telemetry fields.
-- **Testing**: Vitest (80 test files, 721 passing unit & component tests), Playwright (E2E browser smoke tests), and Pytest (57 geospatial pipeline tests).
+- **Multimodal Vision & Image Ingestion**: Pluggable AI vision adapters for Google Gemini 1.5 Flash (`@google/genai`), OpenAI GPT-4o-mini, remote ONNX segmentation service, and zero-dependency local rule heuristics; Mapillary Graph API v4 street survey adapter.
+- **Testing**: Vitest (87 test files, 802 passing unit & component tests), Playwright (E2E browser smoke tests), and Pytest (57 geospatial pipeline tests).
 
 ---
 
@@ -116,6 +139,13 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 | `p23-multi-city` | **Done** | Dynamic multi-city registry, Jalandhar exploratory bootstrap, isolated city alert repos |
 | `p24-geovalidation` | **Done** | Independent geospatial audit, machine-readable `quality_report.json`, cross-city non-equivalence proof |
 | `p25-terrain-evidence` | **Done** | Ingested physical Copernicus DEM & ESA WorldCover for Jalandhar, reconstructed 10-record incident inventory, defensible evaluation workflow, `evidence_insufficient` gate enforcement |
+| `p26-data-credibility` | **Done** | Data credibility & risk engine audit, coordinate truth across cities, zero-node network honesty, non-synthetic fallbacks |
+| `p27-jalandhar-expansion` | **Done** | Ingested Jalandhar road network (17,358 segments, 30,876 nodes, 93,031 edges), Dijkstra pathfinding, building exposure blocker audit |
+| `p28-independent-risk` | **Done** | Independent risk formula validation, monotonicity proofs, Wilson confidence intervals, canonical config hash verification |
+| `p29-image-evidence` | **Done** | Geolocated image evidence architecture, FloodNet taxonomy adaptation, Mapillary Graph API v4 adapter, temporal stratification (<24h active vs historical) |
+| `p30-ai-vision` | **Done** | Multimodal AI vision analysis (Gemini 1.5 Flash, GPT-4o-mini, ONNX, Local rules), strict Zod schema validation (`VisualRiskFeaturesV1`), confidence calibration |
+| `p31-risk-fusion` | **Done** | Mathematical risk fusion engine ($R_{\text{final}}$), road dynamic risk escalation, route visual impedance penalties (+25 to +30 pts), building exposure elevation, 85% safety floor |
+| `p32-end-to-end-audit` | **Done** | 10-point independent audit suite (`tests/unit/images/p32-end-to-end-audit.test.ts`), end-to-end verification across APIs and UI components (87 test files, 802 tests passed) |
 
 ---
 
@@ -125,8 +155,8 @@ NEXSTORM supports dynamic multi-city discovery via `src/lib/city/registry.ts`, w
 
 | City ID | Name & Bounds | Primary Role | Readiness State | Alert Permissions |
 | :--- | :--- | :--- | :--- | :--- |
-| **`amritsar`** | $31.50^\circ–31.75^\circ\text{ N}, 74.75^\circ–75.05^\circ\text{ E}$ | Reference Baseline (Calibrated) | `pilot_eligible` | Opt-in canary evaluation only |
-| **`jalandhar`** | $31.28^\circ–31.38^\circ\text{ N}, 75.52^\circ–75.66^\circ\text{ E}$ | Secondary Pilot (Physical Terrain) | `evidence_insufficient` | **Strictly Suppressed (Fail-Closed)** |
+| **`amritsar`** | $31.50^\circ–31.75^\circ\text{ N}, 74.75^\circ–75.05^\circ\text{ E}$ | Reference Baseline (Calibrated, 360k Buildings, 14.8k Roads) | `pilot_eligible` | Opt-in canary evaluation only |
+| **`jalandhar`** | $31.28^\circ–31.38^\circ\text{ N}, 75.52^\circ–75.66^\circ\text{ E}$ | Secondary Pilot (Physical Terrain & 17.3k Road Network; Building S2-391 Archive Blocker) | `evidence_insufficient` | **Strictly Suppressed (Fail-Closed)** |
 
 ### Readiness State Machine
 Cities advance through a strict 6-stage gate:
@@ -182,6 +212,10 @@ Key configuration parameters in `.env.local`:
 - `MODERATOR_SECRET`: Bearer token for verifying community waterlogging observations via `/api/observations/[id]/verify`
 - `ALERT_OPERATOR_KEY`: Security token for executing alert dispatches via `/api/alerts/dispatch`
 - `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase authentication & persistent storage (offline file mutex used if unset)
+- `GOOGLE_GENERATIVE_AI_API_KEY`: Google Gemini API key for multimodal image flood condition analysis (`gemini-1.5-flash`)
+- `OPENAI_API_KEY`: OpenAI API key for vision analysis fallback (`gpt-4o-mini`)
+- `VISION_SERVICE_URL`: Optional remote ONNX segmentation microservice endpoint
+- `MAPILLARY_ACCESS_TOKEN`: Mapillary Graph API v4 access token for baseline street-level survey imagery
 
 Verify your configuration safely at any time:
 ```bash
@@ -229,7 +263,7 @@ npm run start
 | `npm run dev` | Boots local Next.js 16 development server with Turbopack | Local development |
 | `npm run build` | Compiles optimized production bundle and checks SSR/route contracts | Before deployment |
 | `npm run start` | Boots the compiled production server | Production testing |
-| `npm test` | Runs Vitest unit and component test suites (80 files, 721 tests) | Code changes / pre-commit |
+| `npm test` | Runs Vitest unit and component test suites (87 files, 802 tests) | Code changes / pre-commit |
 | `npm run typecheck` | Strict TypeScript compilation check (`tsc --noEmit`) | Type safety verification |
 | `npm run lint` | Runs ESLint static analysis | Style and lint verification |
 | `npm run verify` | Runs all master quality gates (env check, lint, typecheck, tests, build) | CI/CD and pre-submission |
@@ -257,10 +291,10 @@ npm run typecheck
 # 2. ESLint Code Quality (zero errors, zero warnings)
 npm run lint
 
-# 3. Vitest Unit, Component, and Integration Tests (80 test files, 721 tests)
+# 3. Vitest Unit, Component, and Integration Tests (87 test files, 802 tests)
 npm test
 
-# 4. Next.js Production Build Verification (compiles 33 routes)
+# 4. Next.js Production Build Verification (compiles 31 routes)
 npm run build
 
 # 5. Playwright E2E Browser Smoke Tests
@@ -282,10 +316,10 @@ npm run test:e2e
 | `/api/risk?cityId=amritsar&mode=scenario&peakMm1h=40&durationH=4` | `GET` | Evaluates synthetic triangular hyetograph scenario over verified susceptibility grid. |
 | `/api/scenario` | `POST` | Computes hyetograph scenarios with custom peak rainfall and storm duration parameters. |
 | `/api/cell/[cellId]?cityId=amritsar` | `GET` | Returns cell factor contributions, terrain override note, nearest historical hotspot ($\le 500\text{ m}$), and scientific limitations. |
-| `/api/buildings?cityId=amritsar` | `GET` | Viewport-bounded building footprint query with metric areas and multi-cell susceptibility. |
-| `/api/roads/risk?cityId=amritsar` | `GET` | Road segment risk query with bounding box, highway classification, and underpass filters. |
-| `/api/roads/route-compare` | `POST` | Multi-candidate route flood exposure evaluation and safety ranking. |
-| `/api/roads/plan` | `GET`, `POST` | Origin-to-destination flood-aware route planning with A* pathfinding and candidate comparison. |
+| `/api/buildings?cityId=amritsar` | `GET` | Viewport-bounded building footprint query with metric areas and multi-cell susceptibility. (Jalandhar returns honest `CITY_NOT_PREPARED` with documented Google Open Buildings S2-391 7.18 GB unindexed archive blocker). |
+| `/api/roads/risk?cityId=amritsar` | `GET` | Road segment risk query for Amritsar (14.8k roads) or Jalandhar (17.3k roads) with bounding box, underpass filters, and fused $R_{\text{final}}$ risk scores (`riskScore`, `baseRiskScore`, `visualRiskScore`, `visualReliability`, `fusionReason`). |
+| `/api/roads/route-compare` | `POST` | Multi-candidate route flood exposure evaluation, safety ranking, and active visual flood penalties (+25 to +30 pts) for Amritsar and Jalandhar corridors. |
+| `/api/roads/plan` | `GET`, `POST` | Origin-to-destination flood-aware route planning with A* pathfinding on topologically noded graphs (Amritsar: 37,924 edges; Jalandhar: 93,031 edges). |
 | `/api/observations?cityId=amritsar` | `GET`, `POST` | Query filtered observations or submit a community report with rate-limiting and spatial snapping. |
 | `/api/observations/[id]/verify` | `PATCH` | Verify or reject a community observation (requires `MODERATOR_SECRET` bearer token). |
 | `/api/alerts/subscribe` | `POST` | Register a new alert subscriber (SMS, email, webhook) with city boundary validation. |
@@ -317,10 +351,17 @@ npm run test:e2e
 3. **Routing Velocities**: Candidate route travel times are estimated using a fixed 30 km/h baseline velocity without dynamic real-time traffic congestion feeds.
 4. **Building Plinth Heights**: Footprint exposure measures terrain macro-catchment intersection ($m^2$); it does not assess plinth elevations above street grade or indoor submergence.
 5. **Observation Storage**: Features dual-mode persistence (`src/lib/observations/repository.ts`): high-concurrency Supabase PostgreSQL/PostGIS in production with RLS; serialized queue-based mutex file storage for local offline development. Database migration provided in `supabase/migrations/20261015_create_observations.sql`.
+6. **Perspective Shift (UAV Drone vs Smartphone Ground Cameras)**: Benchmark computer vision datasets (FloodNet) train predominantly on UAV aerial nadir imagery. Street-level citizen smartphone photos exhibit horizontal perspective, occlusion, and lighting variance; NEXSTORM uses multimodal LLM extraction and deterministic rule mapping with calibrated quality factors rather than uncalibrated aerial segmentation models.
+7. **Satellite Revisit & Cloud Limitations**: Optical satellites (Sentinel-2) are 100% cloud-blind during active monsoon downpours. Synthetic Aperture Radar (Sentinel-1 C-SAR) penetrates cloud cover but operates on a 12-day orbit revisit interval, making it unsuitable for 1-hour real-time operational warning.
 
 ---
 
 ## 11. License & Attributions
 
 Research and hackathon prototype developed for BuildFest 2.0 (Problem Statement PS-18).  
-Data sources: Open-Meteo (CC BY 4.0), OpenStreetMap (ODbL), Copernicus DEM GLO-30 (European Space Agency), Google Open Buildings V3, ESA WorldCover 2021.
+Data sources & libraries:
+- **Weather Telemetry**: Open-Meteo (CC BY 4.0), ECMWF, GFS.
+- **Geospatial & Networks**: OpenStreetMap (ODbL 1.0), Copernicus DEM GLO-30 (European Space Agency), ESA WorldCover 2021.
+- **Building Footprints**: Google Open Buildings V3 (CC BY-4.0).
+- **Street Surveys**: Mapillary Graph API v4 (CC-BY-SA 4.0).
+- **Scientific References**: FloodNet (`sahilkhose/FloodNet`, `BinaLab/FloodNet-Supervised_v1.0`), FloodRescue-AI (`aayusPrasad/FloodRescue-AI`).
