@@ -40,7 +40,7 @@ export const TRIP_EXAMPLES: Record<string, TripExample> = {
       score: 88,
       label: 'High Inundation Risk',
       flowNote:
-        'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with ~60cm storm inundation recorded.',
+        'Submerged underpass basin (-2.8% gradient); chronic monsoon waterlogging with severe/impassable water accumulation reported.',
       coords: [
         [31.634, 74.8655],
         [31.6285, 74.861],

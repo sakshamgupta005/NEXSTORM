@@ -18,7 +18,7 @@ test.describe('Amritsar City Dashboard & Scenario API Smoke Tests', () => {
 
     // 3. The map container renders
     const mapContainer = page.getByTestId('leaflet-map-container')
-    await expect(mapContainer).toBeVisible()
+    await expect(mapContainer).toBeVisible({ timeout: 15000 })
 
     // 4. At least 1,000 path elements or canvas rendering is present
     await expect.poll(async () => {

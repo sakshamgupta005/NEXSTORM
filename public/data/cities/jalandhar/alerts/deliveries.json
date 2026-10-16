@@ -1,10 +1,10 @@
 [
   {
-    "deliveryId": "DEL-1792103042635-b7763f67",
-    "decisionId": "DEC-JALANDHAR-1792103042601-b5d759",
+    "deliveryId": "DEL-1792110280456-63e58acc",
+    "decisionId": "DEC-JALANDHAR-1792110280400-cd94b2",
     "subscriberId": "sub-jal-test",
     "destination": "test_jal@example.com",
-    "idempotencyKey": "b398c840471e2937d6d69bd54b6c6581f7a182b8254a97bb4aa2e17dd1ec10c7",
+    "idempotencyKey": "5aeb62980a999b44e5b4c4389c813ee823133e069a802be42f072b6e9d43950a",
     "channel": "email",
     "status": "suppressed",
     "attemptCount": 0,
@@ -12,27 +12,27 @@
     "failureReason": "Suppressed: City 'jalandhar' readiness state is 'evidence_insufficient'; operational alerts disabled.",
     "payload": {
       "alertType": "modeled_risk_alert",
-      "alertId": "DEC-JALANDHAR-1792103042601-b5d759",
+      "alertId": "DEC-JALANDHAR-1792110280400-cd94b2",
       "cityId": "jalandhar",
       "severity": "severe",
       "maxRti": 6.428571428571429,
       "thresholdApplied": 0.75,
       "affectedAreaDescription": "JALANDHAR Core",
       "affectedCellsCount": 2354,
-      "evaluatedAt": "2026-10-15T22:24:02.601Z",
+      "evaluatedAt": "2026-10-16T00:24:40.400Z",
       "weatherFreshnessNote": "Weather input: Deterministic Scenario Generator (age: 0s, degraded: false)",
       "safetyGuidance": "Severe modeled rainfall hazard: Avoid travel through railway underpasses, low-lying arterial corridors, and waterlogged intersections in JALANDHAR. Do not enter standing water.",
       "disclaimer": "NEXSTORM Modeled Risk Alert: Elevated waterlogging hazard modeled based on rainfall and terrain susceptibility. This is NOT a confirmed observation of flooding or flood depth, and does NOT replace official PSDMA / IMD emergency advisories."
     },
-    "createdAt": "2026-10-15T22:24:02.635Z",
-    "updatedAt": "2026-10-15T22:24:02.635Z"
+    "createdAt": "2026-10-16T00:24:40.456Z",
+    "updatedAt": "2026-10-16T00:24:40.456Z"
   },
   {
-    "deliveryId": "DEL-1792103074836-995c4f15",
-    "decisionId": "DEC-JALANDHAR-1792103074748-4e9dd4",
+    "deliveryId": "DEL-1792110325230-cb4c2184",
+    "decisionId": "DEC-JALANDHAR-1792110325185-bb91ca",
     "subscriberId": "sub-jal-test",
     "destination": "test_jal@example.com",
-    "idempotencyKey": "c31235f6ff8cb479cd8dc59483f666586e508b4a62b6f4a99b7938767dc6cb3e",
+    "idempotencyKey": "de43628cabe25bc6c981876f4d6cb836f877e870365e9e42ccebf9baec3bf5a9",
     "channel": "email",
     "status": "suppressed",
     "attemptCount": 0,
@@ -40,27 +40,27 @@
     "failureReason": "Suppressed: City 'jalandhar' readiness state is 'evidence_insufficient'; operational alerts disabled.",
     "payload": {
       "alertType": "modeled_risk_alert",
-      "alertId": "DEC-JALANDHAR-1792103074748-4e9dd4",
+      "alertId": "DEC-JALANDHAR-1792110325185-bb91ca",
       "cityId": "jalandhar",
       "severity": "severe",
-      "maxRti": 12.857142857142858,
+      "maxRti": 11.428571428571429,
       "thresholdApplied": 0.75,
       "affectedAreaDescription": "JALANDHAR Core",
       "affectedCellsCount": 2354,
-      "evaluatedAt": "2026-10-15T22:24:34.748Z",
+      "evaluatedAt": "2026-10-16T00:25:25.185Z",
       "weatherFreshnessNote": "Weather input: Deterministic Scenario Generator (age: 0s, degraded: false)",
       "safetyGuidance": "Severe modeled rainfall hazard: Avoid travel through railway underpasses, low-lying arterial corridors, and waterlogged intersections in JALANDHAR. Do not enter standing water.",
       "disclaimer": "NEXSTORM Modeled Risk Alert: Elevated waterlogging hazard modeled based on rainfall and terrain susceptibility. This is NOT a confirmed observation of flooding or flood depth, and does NOT replace official PSDMA / IMD emergency advisories."
     },
-    "createdAt": "2026-10-15T22:24:34.837Z",
-    "updatedAt": "2026-10-15T22:24:34.837Z"
+    "createdAt": "2026-10-16T00:25:25.230Z",
+    "updatedAt": "2026-10-16T00:25:25.230Z"
   },
   {
-    "deliveryId": "DEL-1792103074846-35590b74",
-    "decisionId": "DEC-JALANDHAR-1792103074748-4e9dd4",
-    "subscriberId": "sub_p25_jal_test",
-    "destination": "+919999988888",
-    "idempotencyKey": "f3f817a9a4618fd5d65d76bb092dd24ab1df496efca52698fb6b5d55a76d0f60",
+    "deliveryId": "DEL-1792110325235-003f9222",
+    "decisionId": "DEC-JALANDHAR-1792110325185-bb91ca",
+    "subscriberId": "sub_jal_test_01",
+    "destination": "+919876543210",
+    "idempotencyKey": "8aa021b44a9f9ad6604d0f30999b9b2ab4d51385c498f31bd6bea53a90521223",
     "channel": "sms",
     "status": "suppressed",
     "attemptCount": 0,
@@ -68,19 +68,19 @@
     "failureReason": "Suppressed: City 'jalandhar' readiness state is 'evidence_insufficient'; operational alerts disabled.",
     "payload": {
       "alertType": "modeled_risk_alert",
-      "alertId": "DEC-JALANDHAR-1792103074748-4e9dd4",
+      "alertId": "DEC-JALANDHAR-1792110325185-bb91ca",
       "cityId": "jalandhar",
       "severity": "severe",
-      "maxRti": 12.857142857142858,
+      "maxRti": 11.428571428571429,
       "thresholdApplied": 0.75,
       "affectedAreaDescription": "JALANDHAR Core",
       "affectedCellsCount": 2354,
-      "evaluatedAt": "2026-10-15T22:24:34.748Z",
+      "evaluatedAt": "2026-10-16T00:25:25.185Z",
       "weatherFreshnessNote": "Weather input: Deterministic Scenario Generator (age: 0s, degraded: false)",
       "safetyGuidance": "Severe modeled rainfall hazard: Avoid travel through railway underpasses, low-lying arterial corridors, and waterlogged intersections in JALANDHAR. Do not enter standing water.",
       "disclaimer": "NEXSTORM Modeled Risk Alert: Elevated waterlogging hazard modeled based on rainfall and terrain susceptibility. This is NOT a confirmed observation of flooding or flood depth, and does NOT replace official PSDMA / IMD emergency advisories."
     },
-    "createdAt": "2026-10-15T22:24:34.846Z",
-    "updatedAt": "2026-10-15T22:24:34.846Z"
+    "createdAt": "2026-10-16T00:25:25.235Z",
+    "updatedAt": "2026-10-16T00:25:25.235Z"
   }
 ]

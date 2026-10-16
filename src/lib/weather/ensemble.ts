@@ -17,6 +17,8 @@ import {
 } from './types';
 import type { Provenance } from '../risk/types';
 
+import { getCityConfig } from '../city/registry';
+
 export type EnsembleFetchOptions = WeatherFetchOptions;
 
 const DEFAULT_LAT = DEFAULT_WEATHER_COORDS.lat;
@@ -81,10 +83,41 @@ export async function fetchEnsembleForecast(
   options: EnsembleFetchOptions = {}
 ): Promise<WeatherAdapterResult<RainfallSeries>> {
   const cityId = options.cityId || 'amritsar';
-  const lat = options.lat ?? DEFAULT_LAT;
-  const lon = options.lon ?? DEFAULT_LON;
+  let lat = options.lat;
+  let lon = options.lon;
+  let timezone = options.timezone;
+
+  if (lat === undefined || lon === undefined || timezone === undefined) {
+    try {
+      const cfg = getCityConfig(cityId);
+      if (lat === undefined || lon === undefined) {
+        if (cfg.center) {
+          lat = lat ?? cfg.center[0];
+          lon = lon ?? cfg.center[1];
+        } else if (cfg.bbox) {
+          lat = lat ?? (cfg.bbox[1] + cfg.bbox[3]) / 2;
+          lon = lon ?? (cfg.bbox[0] + cfg.bbox[2]) / 2;
+        }
+      }
+      timezone = timezone ?? cfg.timezone ?? DEFAULT_TIMEZONE;
+    } catch {
+      // Fallback if city config is not available
+    }
+  }
+
+  lat = lat ?? DEFAULT_LAT;
+  lon = lon ?? DEFAULT_LON;
+  timezone = timezone ?? DEFAULT_TIMEZONE;
   const horizonDays = Math.min(16, Math.max(1, Math.ceil((options.horizonH || 48) / 24)));
   const ttl = getForecastTtl();
+
+  const resolvedOptions: EnsembleFetchOptions = {
+    ...options,
+    cityId,
+    lat,
+    lon,
+    timezone,
+  };
 
   const cacheKey = `openmeteo:ensemble:${cityId}:${lat}:${lon}:${horizonDays}`;
 
@@ -107,7 +140,7 @@ export async function fetchEnsembleForecast(
 
   // 2. Try ECMWF IFS first
   try {
-    const ecmwfSeries = await fetchEnsembleModel('ecmwf_ifs025', options);
+    const ecmwfSeries = await fetchEnsembleModel('ecmwf_ifs025', resolvedOptions);
     recordSourceSuccess('Open-Meteo Ensemble (ECMWF)');
     await sharedCache.set(cacheKey, ecmwfSeries, ttl);
     return {
@@ -123,7 +156,7 @@ export async function fetchEnsembleForecast(
 
   // 3. Fallback to GFS
   try {
-    const gfsSeries = await fetchEnsembleModel('gfs025', options);
+    const gfsSeries = await fetchEnsembleModel('gfs025', resolvedOptions);
     recordSourceSuccess('Open-Meteo Ensemble (GFS)');
     gfsSeries.provenance.note = `${gfsSeries.provenance.note}; Fallback from ECMWF: ${fallbackNotes.join(', ')}`;
     await sharedCache.set(cacheKey, gfsSeries, ttl);
@@ -139,7 +172,7 @@ export async function fetchEnsembleForecast(
   }
 
   // 4. Fallback to Deterministic forecast
-  const detResult = await fetchDeterministicForecast(options);
+  const detResult = await fetchDeterministicForecast(resolvedOptions);
   if (detResult.status === 'ok' && detResult.data) {
     const fallbackSeries: RainfallSeries = {
       ...detResult.data,

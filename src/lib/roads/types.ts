@@ -6,6 +6,7 @@
 
 import type { RiskClass } from '../risk/types'
 import type { RouteSegmentExposure, Wgs84Coordinates } from '../spatial/types'
+import type { VisualRiskFeaturesV1 } from '../images/types'
 
 export interface CellIntersection {
   cellId: string
@@ -48,6 +49,8 @@ export interface RoadObservationEvidence {
   verificationMethod: string | null
   corroborationCount: number
   distanceMeters: number | null
+  hasPhoto?: boolean
+  photoUrl?: string
 }
 
 export interface EvaluatedRoadSegmentRisk {
@@ -69,6 +72,19 @@ export interface EvaluatedRoadSegmentRisk {
   activeObservationsCount: number
   hasVerifiedIncident: boolean
   observations: RoadObservationEvidence[]
+  hasActiveImageEvidence?: boolean
+  hasVerifiedFloodedImage?: boolean
+  imageEvidence?: Array<{
+    imageId: string
+    source: string
+    capturedAt: string
+    isHistorical: boolean
+    floodedRoad: boolean
+    passability: string
+    confidence: number
+    thumbnailUrl?: string
+    riskFeatures?: VisualRiskFeaturesV1
+  }>
   startCoord: Wgs84Coordinates
   endCoord: Wgs84Coordinates
   geometry: {
@@ -77,6 +93,12 @@ export interface EvaluatedRoadSegmentRisk {
   }
   intersectingCells: CellIntersection[]
   scientificCaveat: string
+  riskScore?: number
+  baseRiskScore?: number
+  visualRiskScore?: number
+  visualReliability?: number
+  visualWeight?: number
+  fusionReason?: string
 }
 
 export interface RoadRiskQueryFilters {
@@ -151,6 +173,7 @@ export interface CandidateRouteEvaluation {
   }
   underpassCrossings: number
   activeObservationCount: number
+  visuallyConfirmedFloodedSegmentsCount?: number
   compositePenaltyScore: number
   recommendation: 'recommended' | 'caution' | 'avoid'
   explanation?: string

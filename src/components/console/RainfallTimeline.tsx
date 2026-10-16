@@ -206,7 +206,7 @@ export function RainfallTimeline({
               <span className="text-slate-400 font-medium">Click bar to jump to hour</span>
             </div>
 
-            <div className="flex items-end gap-0.5 h-16 w-full pt-2 px-1 bg-slate-50/50 dark:bg-slate-850/50 rounded-xl border border-slate-200/40 dark:border-slate-800/40">
+            <div className="flex items-end gap-0.5 h-16 w-full pt-2 px-1 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-200/40 dark:border-slate-800/40">
               {timeline.slice(0, 48).map((hour, idx) => {
                 const val = rainfallValues[idx] ?? 0
                 const maxP = Math.max(...rainfallValues.slice(0, 48), 1)

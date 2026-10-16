@@ -5,6 +5,7 @@ import { normalizeOpenMeteoResponse, toIstTimestamp } from './normalize';
 import { recordSourceSuccess, recordSourceFailure } from './source-tracker';
 import type { RainfallSeries, WeatherAdapterResult } from './types';
 import type { Provenance } from '../risk/types';
+import { getCityConfig } from '../city/registry';
 
 export interface HistoricalQueryOptions {
   cityId?: string;
@@ -21,6 +22,36 @@ const DEFAULT_TIMEZONE = 'Asia/Kolkata';
 
 export function getOpenMeteoArchiveUrl(): string {
   return process.env.OPENMETEO_ARCHIVE_URL || 'https://archive-api.open-meteo.com/v1/archive';
+}
+
+function resolveCityCoords(cityId: string, options: { lat?: number; lon?: number; timezone?: string }) {
+  let lat = options.lat;
+  let lon = options.lon;
+  let timezone = options.timezone;
+
+  if (lat === undefined || lon === undefined || timezone === undefined) {
+    try {
+      const cfg = getCityConfig(cityId);
+      if (lat === undefined || lon === undefined) {
+        if (cfg.center) {
+          lat = lat ?? cfg.center[0];
+          lon = lon ?? cfg.center[1];
+        } else if (cfg.bbox) {
+          lat = lat ?? (cfg.bbox[1] + cfg.bbox[3]) / 2;
+          lon = lon ?? (cfg.bbox[0] + cfg.bbox[2]) / 2;
+        }
+      }
+      timezone = timezone ?? cfg.timezone ?? DEFAULT_TIMEZONE;
+    } catch {
+      // Fallback if city config is not available
+    }
+  }
+
+  return {
+    lat: lat ?? DEFAULT_LAT,
+    lon: lon ?? DEFAULT_LON,
+    timezone: timezone ?? DEFAULT_TIMEZONE,
+  };
 }
 
 function validateDateRange(startDate: string, endDate: string): string | null {
@@ -53,9 +84,7 @@ export async function fetchHistoricalArchive(
   }
 
   const cityId = options.cityId || 'amritsar';
-  const lat = options.lat ?? DEFAULT_LAT;
-  const lon = options.lon ?? DEFAULT_LON;
-  const timezone = options.timezone || DEFAULT_TIMEZONE;
+  const { lat, lon, timezone } = resolveCityCoords(cityId, options);
   const baseUrl = getOpenMeteoArchiveUrl();
 
   const client = createApiClient({
@@ -151,9 +180,7 @@ export async function fetchHistoricalForecast(
   }
 
   const cityId = options.cityId || 'amritsar';
-  const lat = options.lat ?? DEFAULT_LAT;
-  const lon = options.lon ?? DEFAULT_LON;
-  const timezone = options.timezone || DEFAULT_TIMEZONE;
+  const { lat, lon, timezone } = resolveCityCoords(cityId, options);
   const baseUrl = 'https://historical-forecast-api.open-meteo.com/v1/forecast';
 
   const client = createApiClient({

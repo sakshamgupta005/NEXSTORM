@@ -5,7 +5,7 @@
  * over geospatial susceptibility grids for ensemble and deterministic forecasts.
  */
 
-import type { CityConfig, SusceptibilityGeoJson } from '../city/registry'
+import { getCitySusceptibility, type CityConfig, type SusceptibilityGeoJson } from '../city/registry'
 import type { RainfallSeries } from '../weather/types'
 import { classDistribution, confidenceOf, displayedClass, type RiskDistribution } from './distribution'
 import { riskClass, sBand } from './matrix'
@@ -111,7 +111,20 @@ export function computeTimeline(
 ): TimelineHour[] {
   const cellCounts = susceptibility
     ? getCellCountsBySBand(susceptibility)
-    : { low: 644, mid: 1198, high: 156, total: 1998 } // Default Amritsar distribution if not provided
+    : (() => {
+        try {
+          const loaded = getCitySusceptibility(config.id)
+          return getCellCountsBySBand(loaded)
+        } catch {
+          const total = config.cellCount || 1
+          return {
+            low: Math.round(total / 3),
+            mid: Math.round(total / 3),
+            high: total - 2 * Math.round(total / 3),
+            total,
+          }
+        }
+      })()
 
   const hasEnsemble = Boolean(series.members && series.members.length >= 2)
   const hoursCount = series.hours?.length ||

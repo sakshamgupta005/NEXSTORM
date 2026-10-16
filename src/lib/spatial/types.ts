@@ -121,6 +121,7 @@ export interface RouteSegmentExposure {
   susceptibility: number
   hasActiveReport: boolean
   underpassAlert: boolean
+  hasActiveImageEvidence?: boolean
 }
 
 export interface RouteRiskEvaluation {

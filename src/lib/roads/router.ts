@@ -101,8 +101,8 @@ class MinHeap {
 
 export class RoadRoutingEngine {
   private static instance: RoadRoutingEngine
-  private graph: RawRoutingGraph | null = null
-  private adjacency: Map<number, AdjacencyEdge[]> | null = null
+  private graphs = new Map<string, RawRoutingGraph>()
+  private adjacencies = new Map<string, Map<number, AdjacencyEdge[]>>()
 
   private constructor() {}
 
@@ -114,11 +114,13 @@ export class RoadRoutingEngine {
   }
 
   /**
-   * Loads the noded topological routing graph into memory once.
+   * Loads the noded topological routing graph into memory once per city.
    */
   public loadGraph(cityId: string = 'amritsar'): RawRoutingGraph {
-    if (this.graph && this.adjacency) {
-      return this.graph
+    const key = cityId.toLowerCase()
+    const cached = this.graphs.get(key)
+    if (cached) {
+      return cached
     }
 
     const graphPath = path.join(
@@ -126,7 +128,7 @@ export class RoadRoutingEngine {
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      key,
       'roads',
       'routing_graph.json'
     )
@@ -136,18 +138,20 @@ export class RoadRoutingEngine {
     }
 
     const raw = fs.readFileSync(graphPath, 'utf-8')
-    this.graph = JSON.parse(raw) as RawRoutingGraph
+    const parsed = JSON.parse(raw) as RawRoutingGraph
+    this.graphs.set(key, parsed)
 
     // Build bidirected adjacency list
-    this.adjacency = new Map<number, AdjacencyEdge[]>()
-    for (const e of this.graph.edges) {
-      if (!this.adjacency.has(e.from)) this.adjacency.set(e.from, [])
-      if (!this.adjacency.has(e.to)) this.adjacency.set(e.to, [])
-      this.adjacency.get(e.from)!.push({ to: e.to, edge: e })
-      this.adjacency.get(e.to)!.push({ to: e.from, edge: e })
+    const adj = new Map<number, AdjacencyEdge[]>()
+    for (const e of parsed.edges) {
+      if (!adj.has(e.from)) adj.set(e.from, [])
+      if (!adj.has(e.to)) adj.set(e.to, [])
+      adj.get(e.from)!.push({ to: e.to, edge: e })
+      adj.get(e.to)!.push({ to: e.from, edge: e })
     }
+    this.adjacencies.set(key, adj)
 
-    return this.graph
+    return parsed
   }
 
   /**
@@ -155,13 +159,14 @@ export class RoadRoutingEngine {
    */
   public snapToNode(
     coord: [number, number],
-    maxDistanceMeters: number = 3000
+    maxDistanceMeters: number = 3000,
+    cityId: string = 'amritsar'
   ): {
     nodeId: number
     snappedCoord: [number, number]
     distanceMeters: number
   } {
-    const graph = this.loadGraph('amritsar')
+    const graph = this.loadGraph(cityId)
     const [targetLng, targetLat] = coord
 
     let bestNode = -1
@@ -198,14 +203,15 @@ export class RoadRoutingEngine {
   private findPath(
     startNode: number,
     endNode: number,
-    weightFn: (edge: RoutingEdge) => number
+    weightFn: (edge: RoutingEdge) => number,
+    cityId: string = 'amritsar'
   ): {
     realDistanceM: number
     pathEdges: RoutingEdge[]
     pathCoords: [number, number][]
   } | null {
-    const graph = this.loadGraph('amritsar')
-    const adj = this.adjacency!
+    const graph = this.loadGraph(cityId)
+    const adj = this.adjacencies.get(cityId.toLowerCase())!
     const n = graph.nodes.length
 
     if (startNode === endNode) {
@@ -296,12 +302,13 @@ export class RoadRoutingEngine {
    */
   public async planRoutes(request: RoutingPlanRequest): Promise<RoutingPlanResult> {
     const cityId = request.cityId || 'amritsar'
-    if (cityId !== 'amritsar') {
-      throw new Error(`Routing is currently only available for Amritsar (requested '${cityId}')`)
+    const supportedCities = ['amritsar', 'jalandhar']
+    if (!supportedCities.includes(cityId.toLowerCase())) {
+      throw new Error(`Routing is currently only available for ${supportedCities.join(', ')} (requested '${cityId}')`)
     }
 
-    const originSnap = this.snapToNode(request.origin)
-    const destSnap = this.snapToNode(request.destination)
+    const originSnap = this.snapToNode(request.origin, 3000, cityId)
+    const destSnap = this.snapToNode(request.destination, 3000, cityId)
 
     if (originSnap.nodeId === destSnap.nodeId) {
       throw new Error('Origin and destination snap to the same road network node. Please choose points farther apart.')
@@ -311,7 +318,8 @@ export class RoadRoutingEngine {
     const shortestPath = this.findPath(
       originSnap.nodeId,
       destSnap.nodeId,
-      (e) => e.lengthM
+      (e) => e.lengthM,
+      cityId
     )
 
     if (!shortestPath) {
@@ -327,7 +335,8 @@ export class RoadRoutingEngine {
         const underpassPenalty = e.isUnderpass ? 5000 : 0
         const floodMultiplier = e.maxS >= 0.66 ? 4.0 : e.maxS >= 0.33 ? 2.0 : 0.0
         return e.lengthM * (1.0 + floodMultiplier) + underpassPenalty
-      }
+      },
+      cityId
     )
 
     // 3. Balanced Route
@@ -339,7 +348,8 @@ export class RoadRoutingEngine {
         const underpassPenalty = e.isUnderpass ? 1000 : 0
         const floodMultiplier = e.maxS >= 0.66 ? 1.8 : 0.4
         return e.lengthM * (1.0 + floodMultiplier) + underpassPenalty
-      }
+      },
+      cityId
     )
 
     // Helper to extract unique preserved segment IDs in traversal order
@@ -409,7 +419,7 @@ export class RoadRoutingEngine {
       routes: comparison.rankedRoutes,
       comparison,
       scientificCaveat:
-        'Routes are generated over Amritsar topological road segments and evaluated against 250m susceptibility and documented observations. Does NOT guarantee absence of surface water or passable clearance.',
+        'Routes are generated over municipal topological road segments and evaluated against 250m susceptibility and documented observations. Does NOT guarantee absence of surface water or passable clearance.',
       speedAssumptionNotice:
         'Travel times are estimated at a uniform 30 km/h urban baseline without live traffic, signal timing, or turn restriction models.',
     }

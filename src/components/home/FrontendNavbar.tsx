@@ -7,108 +7,133 @@ import { Droplets } from 'lucide-react'
 export type TabKey = 'overview' | 'buildings' | 'roads' | 'about'
 
 interface FrontendNavbarProps {
-  activeTab: TabKey
-  onSelectTab: (tab: TabKey) => void
+  activeTab?: TabKey | 'console'
+  onSelectTab?: (tab: TabKey) => void
   onOpenStatusModal: () => void
   onOpenReportModal?: () => void
 }
 
 export function FrontendNavbar({
-  activeTab,
+  activeTab = 'overview',
   onSelectTab,
   onOpenStatusModal,
   onOpenReportModal,
 }: FrontendNavbarProps) {
+  const renderNavButton = (tab: TabKey, label: string, ariaLabel?: string) => {
+    const isActive = activeTab === tab
+    if (onSelectTab) {
+      return (
+        <button
+          type="button"
+          className={`nav-item ${isActive ? 'active-nav' : ''}`}
+          data-tab={tab}
+          aria-label={ariaLabel}
+          onClick={() => onSelectTab(tab)}
+        >
+          {label}
+        </button>
+      )
+    }
+    return (
+      <Link
+        href={`/?tab=${tab}`}
+        className={`nav-item ${isActive ? 'active-nav' : ''}`}
+        data-tab={tab}
+        aria-label={ariaLabel}
+      >
+        {label}
+      </Link>
+    )
+  }
+
   return (
     <header className="navbar">
       <div className="nav-container">
         {/* Brand Logo with Solid Nexstorm Hex-Vortex Icon */}
-        <a
-          href="#overview"
-          onClick={(e) => {
-            e.preventDefault()
-            onSelectTab('overview')
-          }}
-          className="brand-logo"
-          id="brandLogoBtn"
-          aria-label="NEXSTORM Home"
-        >
-          <div className="logo-wrapper">
-            <svg
-              className="logo-mark"
-              width="38"
-              height="38"
-              viewBox="0 0 40 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="2" y="2" width="36" height="36" rx="10" fill="#0f172a" />
-              <path
-                d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
-                stroke="#94a3b8"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-              />
-              <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
-              <circle cx="20" cy="20" r="2.2" fill="#2563eb" />
-            </svg>
-          </div>
-          <div className="brand-name-group">
-            <span className="brand-text">
-              NEXSTORM<span className="brand-dot">.</span>
-            </span>
-            <span className="brand-subtag">URBAN RESILIENCE PLATFORM</span>
-          </div>
-        </a>
+        {onSelectTab ? (
+          <a
+            href="#overview"
+            onClick={(e) => {
+              e.preventDefault()
+              onSelectTab('overview')
+            }}
+            className="brand-logo"
+            id="brandLogoBtn"
+            aria-label="NEXSTORM Home"
+          >
+            <div className="logo-wrapper">
+              <svg
+                className="logo-mark"
+                width="38"
+                height="38"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2" y="2" width="36" height="36" rx="10" fill="#0f172a" />
+                <path
+                  d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
+                  stroke="#94a3b8"
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+                <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
+                <circle cx="20" cy="20" r="2.2" fill="#2563eb" />
+              </svg>
+            </div>
+            <div className="brand-name-group">
+              <span className="brand-text">
+                NEXSTORM<span className="brand-dot">.</span>
+              </span>
+              <span className="brand-subtag">URBAN RESILIENCE PLATFORM</span>
+            </div>
+          </a>
+        ) : (
+          <Link href="/" className="brand-logo" id="brandLogoBtn" aria-label="NEXSTORM Home">
+            <div className="logo-wrapper">
+              <svg
+                className="logo-mark"
+                width="38"
+                height="38"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="2" y="2" width="36" height="36" rx="10" fill="#0f172a" />
+                <path
+                  d="M20 7L29 12.5V23.5L20 29L11 23.5V12.5L20 7Z"
+                  stroke="#94a3b8"
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+                <path d="M22 11L14 21H21L18 29L26 19H20L22 11Z" fill="#ffffff" />
+                <circle cx="20" cy="20" r="2.2" fill="#2563eb" />
+              </svg>
+            </div>
+            <div className="brand-name-group">
+              <span className="brand-text">
+                NEXSTORM<span className="brand-dot">.</span>
+              </span>
+              <span className="brand-subtag">URBAN RESILIENCE PLATFORM</span>
+            </div>
+          </Link>
+        )}
 
         {/* Navigation Links: Overview -> Buildings -> Roads -> About Us */}
         <nav aria-label="Main Navigation">
           <ul className="nav-links">
-            <li>
-              <button
-                type="button"
-                className={`nav-item ${activeTab === 'overview' ? 'active-nav' : ''}`}
-                data-tab="overview"
-                onClick={() => onSelectTab('overview')}
-              >
-                Overview
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={`nav-item ${activeTab === 'buildings' ? 'active-nav' : ''}`}
-                data-tab="buildings"
-                onClick={() => onSelectTab('buildings')}
-              >
-                Buildings
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={`nav-item ${activeTab === 'roads' ? 'active-nav' : ''}`}
-                data-tab="roads"
-                onClick={() => onSelectTab('roads')}
-              >
-                Roads
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={`nav-item ${activeTab === 'about' ? 'active-nav' : ''}`}
-                data-tab="about"
-                aria-label="About Us"
-                onClick={() => onSelectTab('about')}
-              >
-                About
-              </button>
-            </li>
+            <li>{renderNavButton('overview', 'Overview')}</li>
+            <li>{renderNavButton('buildings', 'Buildings')}</li>
+            <li>{renderNavButton('roads', 'Roads')}</li>
+            <li>{renderNavButton('about', 'About', 'About Us')}</li>
             <li>
               <Link
                 href="/city/amritsar"
-                className="nav-item text-blue-700 hover:text-blue-900 font-bold flex items-center gap-1 transition"
+                className={`nav-item flex items-center gap-1 transition ${
+                  activeTab === 'console'
+                    ? 'active-nav font-bold'
+                    : 'text-blue-700 hover:text-blue-900 font-semibold'
+                }`}
                 title="Open 250m Macro Grid Operations Console"
               >
                 <span>250m Console</span>

@@ -329,6 +329,16 @@ export function RoadRiskPanel({
                         <span>{route.underpassCrossings} Underpass Bottleneck</span>
                       </span>
                     )}
+                    {route.visuallyConfirmedFloodedSegmentsCount !== undefined &&
+                      route.visuallyConfirmedFloodedSegmentsCount > 0 && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-700 dark:text-rose-300 font-semibold flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3 text-rose-500" />
+                          <span>
+                            📸 {route.visuallyConfirmedFloodedSegmentsCount} Flooded Road Photo
+                            {route.visuallyConfirmedFloodedSegmentsCount > 1 ? 's' : ''}
+                          </span>
+                        </span>
+                      )}
                     {route.activeObservationCount > 0 && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 font-semibold">
                         💧 {route.activeObservationCount} Reports

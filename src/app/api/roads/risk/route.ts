@@ -8,6 +8,7 @@ import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { roadRiskService } from '@/lib/roads/service'
 import { roadRiskQuerySchema } from '@/lib/validations/roads'
 import { ValueMetaPresets } from '@/lib/metadata'
+import { isCitySupported } from '@/lib/city/registry'
 
 export async function GET(req: NextRequest) {
   try {
@@ -45,9 +46,10 @@ export async function GET(req: NextRequest) {
     }
 
     const query = parsed.data
-    if (query.cityId?.toLowerCase() !== 'amritsar') {
+    const normalizedCity = (query.cityId || 'amritsar').toLowerCase()
+    if (!isCitySupported(normalizedCity)) {
       return apiError(
-        `Road network data is currently only prepared for Amritsar (requested '${query.cityId}')`,
+        `Road network data is currently only prepared for Amritsar and Jalandhar (requested '${query.cityId}')`,
         {
           status: 404,
           code: 'CITY_NOT_PREPARED',
@@ -56,6 +58,9 @@ export async function GET(req: NextRequest) {
     }
 
     const result = roadRiskService.queryRoads(query)
+    const provenanceSource = normalizedCity === 'jalandhar'
+      ? 'OpenStreetMap Road Network (17,358 segments, 30,876 nodes) + NEXSTORM 250m Susceptibility Grid'
+      : 'OpenStreetMap Road Network (14,853 segments) + NEXSTORM 250m Susceptibility Grid'
 
     return apiSuccess({
       cityId: query.cityId,
@@ -66,8 +71,7 @@ export async function GET(req: NextRequest) {
       totalMatching: result.total,
       roads: result.items,
       provenance: {
-        sourceName:
-          'OpenStreetMap Road Network (14,853 segments) + NEXSTORM 250m Susceptibility Grid',
+        sourceName: provenanceSource,
         retrievalDate: new Date().toISOString(),
         license: 'ODbL 1.0',
         evidenceKind: 'modeled',

@@ -8,6 +8,7 @@ import { apiError, apiSuccess, handleApiCatch } from '@/lib/api/response'
 import { buildingExposureService } from '@/lib/buildings/service'
 import { buildingQuerySchema } from '@/lib/validations/buildings'
 import { ValueMetaPresets } from '@/lib/metadata'
+import { isCitySupported } from '@/lib/city/registry'
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,9 +42,10 @@ export async function GET(req: NextRequest) {
     }
 
     const query = parsed.data
-    if (query.cityId?.toLowerCase() !== 'amritsar') {
+    const normalizedCity = (query.cityId || 'amritsar').toLowerCase()
+    if (normalizedCity !== 'amritsar') {
       return apiError(
-        `Building footprint data is currently only prepared for Amritsar (requested '${query.cityId}')`,
+        `Building footprint data is currently only prepared for Amritsar (requested '${query.cityId}'; Google Open Buildings V3 S2-391 7.18 GB unindexed archive blocker)`,
         {
           status: 404,
           code: 'CITY_NOT_PREPARED',

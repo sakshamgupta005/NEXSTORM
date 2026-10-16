@@ -11,6 +11,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { observationService } from '../observations/service'
+import { imageEvidenceService } from '../images/service'
+import { RiskFusionEngine, DEFAULT_FUSION_CONFIG, type FusedRiskResult } from '../images/fusion'
 import type { RiskClass } from '../risk/types'
 import type { RouteSegmentExposure } from '../spatial/types'
 import type {
@@ -26,9 +28,9 @@ import type {
 
 export class RoadRiskService {
   private static instance: RoadRiskService
-  private segmentsIndexCache: Map<string, RoadSegmentRecord> | null = null
-  private graphCache: RoadNetworkGraph | null = null
-  private majorCorridorsCache: GeoJSON.FeatureCollection | null = null
+  private segmentsIndexCache = new Map<string, Map<string, RoadSegmentRecord>>()
+  private graphCache = new Map<string, RoadNetworkGraph>()
+  private majorCorridorsCache = new Map<string, GeoJSON.FeatureCollection>()
 
   private constructor() {}
 
@@ -40,11 +42,13 @@ export class RoadRiskService {
   }
 
   /**
-   * Loads the indexed 14,853 Amritsar road segments from disk into a memory Map.
+   * Loads the indexed road segments from disk into a memory Map.
    */
   public loadSegmentsIndex(cityId: string = 'amritsar'): Map<string, RoadSegmentRecord> {
-    if (this.segmentsIndexCache) {
-      return this.segmentsIndexCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.segmentsIndexCache.get(cityKey)
+    if (cached) {
+      return cached
     }
 
     const indexPath = path.join(
@@ -52,34 +56,37 @@ export class RoadRiskService {
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      cityKey,
       'roads',
       'road_segments_index.json'
     )
 
-    this.segmentsIndexCache = new Map<string, RoadSegmentRecord>()
+    const map = new Map<string, RoadSegmentRecord>()
 
     if (fs.existsSync(indexPath)) {
       try {
         const raw = fs.readFileSync(indexPath, 'utf-8')
         const data = JSON.parse(raw) as Record<string, RoadSegmentRecord>
         for (const [id, record] of Object.entries(data)) {
-          this.segmentsIndexCache.set(id, record)
+          map.set(id, record)
         }
       } catch (err) {
         console.error('[ROAD_RISK_SERVICE] Failed to parse road segments index:', err)
       }
     }
 
-    return this.segmentsIndexCache
+    this.segmentsIndexCache.set(cityKey, map)
+    return map
   }
 
   /**
-   * Loads the 773 major arterial/highway/underpass corridors GeoJSON.
+   * Loads major arterial/highway/underpass corridors GeoJSON.
    */
   public loadMajorCorridors(cityId: string = 'amritsar'): GeoJSON.FeatureCollection | null {
-    if (this.majorCorridorsCache) {
-      return this.majorCorridorsCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.majorCorridorsCache.get(cityKey)
+    if (cached) {
+      return cached
     }
 
     const geoJsonPath = path.join(
@@ -87,7 +94,7 @@ export class RoadRiskService {
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      cityKey,
       'roads',
       'major_corridors.geojson'
     )
@@ -95,21 +102,25 @@ export class RoadRiskService {
     if (fs.existsSync(geoJsonPath)) {
       try {
         const raw = fs.readFileSync(geoJsonPath, 'utf-8')
-        this.majorCorridorsCache = JSON.parse(raw) as GeoJSON.FeatureCollection
+        const parsed = JSON.parse(raw) as GeoJSON.FeatureCollection
+        this.majorCorridorsCache.set(cityKey, parsed)
+        return parsed
       } catch (err) {
         console.error('[ROAD_RISK_SERVICE] Failed to parse major corridors GeoJSON:', err)
       }
     }
 
-    return this.majorCorridorsCache
+    return null
   }
 
   /**
    * Loads topological road graph.
    */
   public loadRoadGraph(cityId: string = 'amritsar'): RoadNetworkGraph | null {
-    if (this.graphCache) {
-      return this.graphCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.graphCache.get(cityKey)
+    if (cached) {
+      return cached
     }
 
     const graphPath = path.join(
@@ -117,7 +128,7 @@ export class RoadRiskService {
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      cityKey,
       'roads',
       'road_graph.json'
     )
@@ -125,13 +136,15 @@ export class RoadRiskService {
     if (fs.existsSync(graphPath)) {
       try {
         const raw = fs.readFileSync(graphPath, 'utf-8')
-        this.graphCache = JSON.parse(raw) as RoadNetworkGraph
+        const parsed = JSON.parse(raw) as RoadNetworkGraph
+        this.graphCache.set(cityKey, parsed)
+        return parsed
       } catch (err) {
         console.error('[ROAD_RISK_SERVICE] Failed to parse road graph JSON:', err)
       }
     }
 
-    return this.graphCache
+    return null
   }
 
   /**
@@ -153,7 +166,7 @@ export class RoadRiskService {
     }
     return {
       totalSegments: index.size,
-      totalNodes: graph?.totalNodes || 26155,
+      totalNodes: graph?.totalNodes ?? 0,
       taggedUnderpasses,
       taggedBridges,
     }
@@ -182,6 +195,8 @@ export class RoadRiskService {
         verificationMethod: obs.verification.verificationMethod,
         corroborationCount: obs.corroboration.corroborationCount,
         distanceMeters: obs.spatialMatch.distanceToRoadMeters,
+        hasPhoto: Boolean(obs.photoUrl),
+        photoUrl: obs.photoUrl,
       }
 
       const existing = map.get(segId) || []
@@ -202,18 +217,67 @@ export class RoadRiskService {
     const hasVerifiedIncident = observations.some((o) => o.isVerified)
     const hasCorroboratedIncident = observations.some((o) => o.lifecycleStatus === 'corroborated')
 
-    // Base modeled risk from multi-cell maximum susceptibility
-    let dynamicRisk: RiskClass = segment.modeledRiskClass
+    // Query road-level image evidence (FloodNet & Mapillary integrations) with spatial segment bounds
+    const segmentCoords = { start: segment.startCoord, end: segment.endCoord }
+    const roadImages = imageEvidenceService.getRoadImageSummary(segment.segmentId, segmentCoords, false)
+    const activeRoadImages = roadImages.filter((img) => !img.isHistorical)
+    const hasActiveImageEvidence = activeRoadImages.length > 0
+    const hasVerifiedFloodedImage = activeRoadImages.some(
+      (img) => img.floodedRoad || img.passability === 'impassable'
+    )
 
-    // 1. If an active verified waterlogging observation exists, elevate to high
-    if (hasVerifiedIncident) {
+    // Base modeled risk score R_base (0 - 100)
+    const baseRiskScore = Math.min(
+      100,
+      Math.round(segment.maxCellSusceptibility * 100) + (segment.isUnderpass ? 20 : 0)
+    )
+
+    // Fuse active visual evidence with base score R_final = clamp((1 - w*q)*R_base + (w*q)*R_visual, 0, 100)
+    let bestFusion: FusedRiskResult = {
+      rFinal: baseRiskScore,
+      rBase: baseRiskScore,
+      rVisual: 10,
+      q: 0.0,
+      w: DEFAULT_FUSION_CONFIG.maxVisualWeight,
+      effectiveWeight: 0.0,
+      fusionReason: 'No eligible visual evidence; verified base model score preserved.',
+      isVisuallyElevated: false,
+      activeImageCount: 0,
+      historicalImageCount: roadImages.filter((img) => img.isHistorical).length,
+    }
+
+    if (activeRoadImages.length > 0) {
+      for (const img of activeRoadImages) {
+        const vScore = RiskFusionEngine.computeRoadVisualScore(img)
+        const q = RiskFusionEngine.evaluateRoadReliability(img, img.distanceMeters ?? 0)
+        const fused = RiskFusionEngine.fuseRisk({
+          rBase: baseRiskScore,
+          visualScore: vScore,
+          reliability: q,
+        })
+        if (fused.rFinal > bestFusion.rFinal || (fused.q > bestFusion.q && bestFusion.q === 0)) {
+          bestFusion = {
+            ...fused,
+            activeImageCount: activeRoadImages.length,
+            historicalImageCount: roadImages.filter((r) => r.isHistorical).length,
+          }
+        }
+      }
+    }
+
+    // Dynamic risk classification driven by fused R_final and active ground reports
+    let dynamicRisk: RiskClass = segment.modeledRiskClass
+    if (bestFusion.rFinal >= 66 || hasVerifiedIncident || hasVerifiedFloodedImage) {
       dynamicRisk = 'high'
-    } else if (hasCorroboratedIncident && dynamicRisk === 'low') {
-      // 2. If corroborated by independent community reports, elevate to at least moderate
+    } else if (
+      bestFusion.rFinal >= 33 ||
+      hasCorroboratedIncident ||
+      hasActiveImageEvidence ||
+      segment.isUnderpass
+    ) {
       dynamicRisk = 'moderate'
-    } else if (segment.isUnderpass && dynamicRisk === 'low') {
-      // 3. Underpasses possess physical depression vulnerability; elevate to at least moderate
-      dynamicRisk = 'moderate'
+    } else {
+      dynamicRisk = 'low'
     }
 
     const geometry = segment.geometry || {
@@ -243,12 +307,21 @@ export class RoadRiskService {
       activeObservationsCount: observations.length,
       hasVerifiedIncident,
       observations,
+      hasActiveImageEvidence,
+      hasVerifiedFloodedImage,
+      imageEvidence: roadImages,
       startCoord: segment.startCoord,
       endCoord: segment.endCoord,
       geometry,
       intersectingCells: segment.intersectingCells || [],
+      riskScore: bestFusion.rFinal,
+      baseRiskScore: bestFusion.rBase,
+      visualRiskScore: bestFusion.rVisual,
+      visualReliability: bestFusion.q,
+      visualWeight: bestFusion.effectiveWeight,
+      fusionReason: bestFusion.fusionReason,
       scientificCaveat:
-        'Road segment risk indicates modeled corridor susceptibility and documented reports. It does NOT guarantee current passage status or real-time flood depth.',
+        'Road segment risk indicates modeled corridor susceptibility, documented reports, and geolocated visual evidence. It does NOT guarantee current passage status or real-time flood depth.',
     }
   }
 
@@ -395,6 +468,7 @@ export class RoadRiskService {
       let unknownRiskDistanceM = 0
       let underpassCountOnRoute = 0
       let activeReportsOnRoute = 0
+      let visuallyConfirmedFloodedOnRoute = 0
 
       const segmentExposures: RouteSegmentExposure[] = []
 
@@ -424,6 +498,10 @@ export class RoadRiskService {
           activeReportsOnRoute += evaluated.activeObservationsCount
         }
 
+        if (evaluated.hasVerifiedFloodedImage) {
+          visuallyConfirmedFloodedOnRoute++
+        }
+
         segmentExposures.push({
           segmentId: seg.segmentId,
           roadName: seg.name,
@@ -433,6 +511,7 @@ export class RoadRiskService {
           susceptibility: seg.maxCellSusceptibility,
           hasActiveReport: evaluated.activeObservationsCount > 0,
           underpassAlert: seg.isUnderpass,
+          hasActiveImageEvidence: evaluated.hasActiveImageEvidence,
         })
       }
 
@@ -455,14 +534,21 @@ export class RoadRiskService {
       const underpassPenalty = Math.min(20, underpassCountOnRoute * 10)
       // Missing hazard evidence penalty (up to 15 pts) - missing data is not safe
       const unknownPenalty = Math.min(15, unknownRatio * 15)
+      // Visual ground-truth confirmation of impassable roadway (up to 30 pts)
+      const visualFloodPenalty = Math.min(30, visuallyConfirmedFloodedOnRoute * 25)
 
       const compositePenaltyScore = Math.min(
         100,
-        Math.round(basePenalty + reportPenalty + underpassPenalty + unknownPenalty)
+        Math.round(basePenalty + reportPenalty + underpassPenalty + unknownPenalty + visualFloodPenalty)
       )
 
       let recommendation: 'recommended' | 'caution' | 'avoid' = 'recommended'
-      if (compositePenaltyScore >= 50 || underpassCountOnRoute > 0 || highRatio > 0.3) {
+      if (
+        compositePenaltyScore >= 50 ||
+        underpassCountOnRoute > 0 ||
+        highRatio > 0.3 ||
+        visuallyConfirmedFloodedOnRoute > 0
+      ) {
         recommendation = 'avoid'
       } else if (compositePenaltyScore >= 20 || modRatio > 0.3 || unknownRatio > 0.4) {
         recommendation = 'caution'
@@ -474,6 +560,8 @@ export class RoadRiskService {
 
       // Formulate clear, concise explanation
       const factors: string[] = []
+      if (visuallyConfirmedFloodedOnRoute > 0)
+        factors.push(`${visuallyConfirmedFloodedOnRoute} visually confirmed flooded road segment(s)`)
       if (underpassCountOnRoute > 0) factors.push(`${underpassCountOnRoute} underpass bottleneck(s)`)
       if (highRatio > 0) factors.push(`${Math.round(highRatio * 100)}% high-susceptibility corridor`)
       if (modRatio > 0) factors.push(`${Math.round(modRatio * 100)}% moderate-susceptibility corridor`)
@@ -504,6 +592,7 @@ export class RoadRiskService {
         },
         underpassCrossings: underpassCountOnRoute,
         activeObservationCount: activeReportsOnRoute,
+        visuallyConfirmedFloodedSegmentsCount: visuallyConfirmedFloodedOnRoute,
         compositePenaltyScore,
         recommendation,
         explanation,

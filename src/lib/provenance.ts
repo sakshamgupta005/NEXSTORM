@@ -21,7 +21,13 @@ export const EXTENDED_LIMITATION_DISCLAIMER =
 export interface DatasetProvenanceInfo {
   id: string
   name: string
-  category: 'numerical_forecast' | 'terrain_model' | 'building_overlay' | 'road_network' | 'crowdsourced_evidence'
+  category:
+    | 'numerical_forecast'
+    | 'terrain_model'
+    | 'building_overlay'
+    | 'road_network'
+    | 'crowdsourced_evidence'
+    | 'image_evidence'
   source: string
   license: string
   spatialResolution: string
@@ -99,6 +105,20 @@ export const DATASET_PROVENANCE_REGISTRY: Record<string, DatasetProvenanceInfo> 
       'Corroboration indicates multiple matching reports from citizens within 250m; it does not equal independent municipal verification.',
       'Only records reviewed with authorized moderator credentials bear verified status.',
       'Reporter identities are pseudonymized via SHA-256 salt-hashing; IPs are never stored in plain text.',
+    ],
+  },
+  image_evidence: {
+    id: 'image_evidence',
+    name: 'Geolocated Image Evidence & Flood-Impact Scene Analysis',
+    category: 'image_evidence',
+    source: 'Mapillary street-level API, citizen field photos, and verified municipal incident reports',
+    license: 'CC-BY-SA-4.0 (Mapillary) / Fair Dealing (Municipal Archives) / Proprietary Community',
+    spatialResolution: 'Sub-meter camera perspectives georeferenced to WGS84 and snapped to 250m grid/roads',
+    freshnessTTLSeconds: 86400, // 24 hours (distinguishes current observations from historical baseline surveys)
+    primaryLimitations: [
+      'Historical street survey imagery (e.g. Mapillary baseline) serves only as infrastructure context and does not indicate current waterlogging.',
+      'Visual classification adapts FloodNet taxonomy (flooded road/building, passability, depth proxy); it cannot replace calibrated physical gauge telemetry.',
+      'Satellite remote sensing suffers severe cloud blindness during active rainstorms and is unsuitable for real-time street passability.',
     ],
   },
 }

@@ -10,6 +10,7 @@
  */
 
 import type { ProvenanceMetadata, Wgs84Coordinates } from '../spatial/types'
+import type { VisualRiskFeaturesV1 } from '../images/types'
 
 export type BuildingExposureCategory =
   | 'high_catchment' // Footprint intersects high-susceptibility cell (s >= 0.66)
@@ -41,8 +42,28 @@ export interface BuildingExposureRecord {
   maxCellSusceptibility: number // Conservative spatial exposure indicator
   unmatchedFraction: number // Proportion of footprint outside grid extent
   exposureCategory: BuildingExposureCategory
+  hasActiveImageEvidence?: boolean
+  imageConfirmedFlooding?: boolean
+  dynamicExposureCategory?: BuildingExposureCategory
+  imageEvidence?: Array<{
+    imageId: string
+    source: string
+    capturedAt: string
+    isHistorical: boolean
+    floodedBuilding: boolean
+    waterDetected: boolean
+    confidence: number
+    thumbnailUrl?: string
+    riskFeatures?: VisualRiskFeaturesV1
+  }>
   provenance: ProvenanceMetadata
   scientificCaveat: string
+  riskScore?: number
+  baseRiskScore?: number
+  visualRiskScore?: number
+  visualReliability?: number
+  visualWeight?: number
+  fusionReason?: string
 }
 
 export interface BuildingQueryFilters {

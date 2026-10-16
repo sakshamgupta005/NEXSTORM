@@ -21,14 +21,16 @@ import type {
   CellBuildingSummary,
 } from './types'
 import type { ProvenanceMetadata } from '../spatial/types'
+import { imageEvidenceService } from '../images/service'
+import { RiskFusionEngine, DEFAULT_FUSION_CONFIG, type FusedRiskResult } from '../images/fusion'
 
 const SCIENTIFIC_CAVEAT =
   'Macro-catchment flood exposure only. Does not predict indoor water depth, structural damage, or plinth clearance.'
 
 export class BuildingExposureService {
   private static instance: BuildingExposureService
-  private cellIndexCache: Map<string, CellBuildingSummary> | null = null
-  private buildingsCache: BuildingExposureRecord[] | null = null
+  private cellIndexCaches = new Map<string, Map<string, CellBuildingSummary>>()
+  private buildingsCaches = new Map<string, BuildingExposureRecord[]>()
 
   private constructor() {}
 
@@ -40,11 +42,13 @@ export class BuildingExposureService {
   }
 
   /**
-   * Loads the aggregated cell index (`cell_index.json`) mapping 1,893 cells to building summaries.
+   * Loads the aggregated cell index (`cell_index.json`) mapping cells to building summaries.
    */
   public loadCellIndex(cityId: string = 'amritsar'): Map<string, CellBuildingSummary> {
-    if (this.cellIndexCache) {
-      return this.cellIndexCache
+    const key = cityId.toLowerCase()
+    const cached = this.cellIndexCaches.get(key)
+    if (cached) {
+      return cached
     }
 
     const indexPath = path.join(
@@ -52,12 +56,12 @@ export class BuildingExposureService {
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      key,
       'buildings',
       'cell_index.json'
     )
 
-    this.cellIndexCache = new Map<string, CellBuildingSummary>()
+    const map = new Map<string, CellBuildingSummary>()
 
     if (fs.existsSync(indexPath)) {
       try {
@@ -66,7 +70,7 @@ export class BuildingExposureService {
         if (data.cells) {
           for (const [cellId, entry] of Object.entries(data.cells)) {
             const e = entry as Record<string, unknown>
-            this.cellIndexCache.set(cellId, {
+            map.set(cellId, {
               cellId,
               buildingCount: Number(e.buildingCount || 0),
               totalFootprintAreaM2: Number(e.totalFootprintAreaM2 || 0),
@@ -82,7 +86,8 @@ export class BuildingExposureService {
       }
     }
 
-    return this.cellIndexCache
+    this.cellIndexCaches.set(key, map)
+    return map
   }
 
   /**
@@ -97,11 +102,13 @@ export class BuildingExposureService {
   }
 
   /**
-   * Loads and caches building footprints from hotspot clusters and GNDU campus GeoJSON files.
+   * Loads and caches building footprints from hotspot clusters and campus GeoJSON files.
    */
   public loadIndexedBuildings(cityId: string = 'amritsar'): BuildingExposureRecord[] {
-    if (this.buildingsCache) {
-      return this.buildingsCache
+    const key = cityId.toLowerCase()
+    const cached = this.buildingsCaches.get(key)
+    if (cached) {
+      return cached
     }
 
     const records: BuildingExposureRecord[] = []
@@ -113,13 +120,13 @@ export class BuildingExposureService {
       evidenceKind: 'modeled',
     }
 
-    // 1. Load Hotspot buildings GeoJSON (17,961 buildings around historical flood hotspots)
+    // 1. Load Hotspot buildings GeoJSON
     const hotspotPath = path.join(
       process.cwd(),
       'public',
       'data',
       'cities',
-      cityId.toLowerCase(),
+      key,
       'buildings',
       'hotspot_buildings.geojson'
     )
@@ -180,8 +187,8 @@ export class BuildingExposureService {
       }
     }
 
-    this.buildingsCache = records
-    return this.buildingsCache
+    this.buildingsCaches.set(key, records)
+    return records
   }
 
   /**
@@ -214,7 +221,7 @@ export class BuildingExposureService {
    */
   private computePolygonCentroid(coords: number[][][]): { lng: number; lat: number } {
     const ring = coords[0] || []
-    if (ring.length === 0) return { lng: 74.872, lat: 31.634 }
+    if (ring.length === 0) return { lng: 0, lat: 0 }
 
     let sumLng = 0
     let sumLat = 0
@@ -290,6 +297,54 @@ export class BuildingExposureService {
       exposureCategory = 'moderate_catchment'
     }
 
+    const baseRiskScore = Math.min(100, Math.round(maxCellSusceptibility * 100))
+
+    // Strictly localized spatial matching using centroid (<= 35m) to avoid cell-wide indiscriminate bleed
+    const imageEvidence = imageEvidenceService.getBuildingImageSummary(params.buildingId, centroid, false)
+    const activeImages = imageEvidence.filter((img) => !img.isHistorical)
+    const hasActiveImageEvidence = activeImages.length > 0
+    const imageConfirmedFlooding = activeImages.some((img) => img.floodedBuilding || img.waterDetected)
+
+    // Fused risk calculation: R_final = clamp((1 - w*q)*R_base + (w*q)*R_visual, 0, 100)
+    let bestFusion: FusedRiskResult = {
+      rFinal: baseRiskScore,
+      rBase: baseRiskScore,
+      rVisual: 10,
+      q: 0.0,
+      w: DEFAULT_FUSION_CONFIG.maxVisualWeight,
+      effectiveWeight: 0.0,
+      fusionReason: 'No eligible visual evidence; verified base model score preserved.',
+      isVisuallyElevated: false,
+      activeImageCount: 0,
+      historicalImageCount: imageEvidence.filter((img) => img.isHistorical).length,
+    }
+
+    if (activeImages.length > 0) {
+      for (const img of activeImages) {
+        const vScore = RiskFusionEngine.computeBuildingVisualScore(img)
+        const q = RiskFusionEngine.evaluateBuildingReliability(img, img.distanceMeters ?? 0)
+        const fused = RiskFusionEngine.fuseRisk({
+          rBase: baseRiskScore,
+          visualScore: vScore,
+          reliability: q,
+        })
+        if (fused.rFinal > bestFusion.rFinal || (fused.q > bestFusion.q && bestFusion.q === 0)) {
+          bestFusion = {
+            ...fused,
+            activeImageCount: activeImages.length,
+            historicalImageCount: imageEvidence.filter((r) => r.isHistorical).length,
+          }
+        }
+      }
+    }
+
+    let dynamicExposureCategory: BuildingExposureCategory = exposureCategory
+    if (bestFusion.rFinal >= 66 || imageConfirmedFlooding) {
+      dynamicExposureCategory = 'high_catchment'
+    } else if (bestFusion.rFinal >= 33 && dynamicExposureCategory === 'low_catchment') {
+      dynamicExposureCategory = 'moderate_catchment'
+    }
+
     return {
       buildingId: params.buildingId,
       source: 'Google Open Buildings V3',
@@ -307,6 +362,16 @@ export class BuildingExposureService {
       maxCellSusceptibility: Math.round(maxCellSusceptibility * 1000) / 1000,
       unmatchedFraction,
       exposureCategory,
+      hasActiveImageEvidence,
+      imageConfirmedFlooding,
+      dynamicExposureCategory,
+      imageEvidence: imageEvidence.length > 0 ? imageEvidence : undefined,
+      riskScore: bestFusion.rFinal,
+      baseRiskScore: bestFusion.rBase,
+      visualRiskScore: bestFusion.rVisual,
+      visualReliability: bestFusion.q,
+      visualWeight: bestFusion.effectiveWeight,
+      fusionReason: bestFusion.fusionReason,
       provenance: {
         sourceName: 'Google Open Buildings V3 (S2 Cell 391)',
         sourceUrl: 'https://sites.research.google/open-buildings/',
@@ -385,7 +450,66 @@ export class BuildingExposureService {
 
     const offset = filters.offset || 0
     const limit = Math.min(filters.limit || 100, 500)
-    const paginated = matched.slice(offset, offset + limit)
+    const paginated = matched.slice(offset, offset + limit).map((b) => {
+      const baseRiskScore = Math.min(100, Math.round(b.maxCellSusceptibility * 100))
+      const imageEvidence = imageEvidenceService.getBuildingImageSummary(b.buildingId, b.centroid, false)
+      const activeImages = imageEvidence.filter((img) => !img.isHistorical)
+      const hasActiveImageEvidence = activeImages.length > 0
+      const imageConfirmedFlooding = activeImages.some((img) => img.floodedBuilding || img.waterDetected)
+
+      let bestFusion: FusedRiskResult = {
+        rFinal: baseRiskScore,
+        rBase: baseRiskScore,
+        rVisual: 10,
+        q: 0.0,
+        w: DEFAULT_FUSION_CONFIG.maxVisualWeight,
+        effectiveWeight: 0.0,
+        fusionReason: 'No eligible visual evidence; verified base model score preserved.',
+        isVisuallyElevated: false,
+        activeImageCount: 0,
+        historicalImageCount: imageEvidence.filter((img) => img.isHistorical).length,
+      }
+
+      if (activeImages.length > 0) {
+        for (const img of activeImages) {
+          const vScore = RiskFusionEngine.computeBuildingVisualScore(img)
+          const q = RiskFusionEngine.evaluateBuildingReliability(img, img.distanceMeters ?? 0)
+          const fused = RiskFusionEngine.fuseRisk({
+            rBase: baseRiskScore,
+            visualScore: vScore,
+            reliability: q,
+          })
+          if (fused.rFinal > bestFusion.rFinal || (fused.q > bestFusion.q && bestFusion.q === 0)) {
+            bestFusion = {
+              ...fused,
+              activeImageCount: activeImages.length,
+              historicalImageCount: imageEvidence.filter((r) => r.isHistorical).length,
+            }
+          }
+        }
+      }
+
+      let dynamicExposureCategory: BuildingExposureCategory = b.exposureCategory
+      if (bestFusion.rFinal >= 66 || imageConfirmedFlooding) {
+        dynamicExposureCategory = 'high_catchment'
+      } else if (bestFusion.rFinal >= 33 && dynamicExposureCategory === 'low_catchment') {
+        dynamicExposureCategory = 'moderate_catchment'
+      }
+
+      return {
+        ...b,
+        hasActiveImageEvidence,
+        imageConfirmedFlooding,
+        dynamicExposureCategory,
+        imageEvidence: imageEvidence.length > 0 ? imageEvidence : undefined,
+        riskScore: bestFusion.rFinal,
+        baseRiskScore: bestFusion.rBase,
+        visualRiskScore: bestFusion.rVisual,
+        visualReliability: bestFusion.q,
+        visualWeight: bestFusion.effectiveWeight,
+        fusionReason: bestFusion.fusionReason,
+      }
+    })
 
     return {
       total: matched.length,

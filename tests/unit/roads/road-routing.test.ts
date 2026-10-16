@@ -97,11 +97,11 @@ describe('RoadRoutingEngine - Candidate Path Generation & Comparison', () => {
   it('rejects unsupported city with explicit error', async () => {
     await expect(
       roadRoutingEngine.planRoutes({
-        cityId: 'jalandhar',
+        cityId: 'ludhiana',
         origin: [74.8765, 31.62],
         destination: [74.8655, 31.634],
       })
-    ).rejects.toThrow(/only available for Amritsar/)
+    ).rejects.toThrow(/only available for amritsar/i)
   })
 })
 

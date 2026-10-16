@@ -26,6 +26,7 @@ import type {
 } from './types'
 import { getObservationRepository, type IObservationRepository } from './repository'
 import { getCityHotspots } from '../city/registry'
+import { imageEvidenceService } from '../images/service'
 import { logger } from '../logging/logger'
 
 const MAX_OBSERVATIONS_STORED = 1000
@@ -34,9 +35,9 @@ export class ObservationService {
   private static instance: ObservationService
   private static ephemeralProdSalt: string | null = null
   private repository: IObservationRepository = getObservationRepository()
-  private observationsCache: WaterloggingObservation[] | null = null
-  private gridCache: GridCellFeature[] | null = null
-  private roadsCache: RoadSegmentGeometry[] | null = null
+  private observationsCaches: Map<string, WaterloggingObservation[]> = new Map()
+  private gridCaches: Map<string, GridCellFeature[]> = new Map()
+  private roadsCaches: Map<string, RoadSegmentGeometry[]> = new Map()
 
   private constructor() {}
 
@@ -104,13 +105,16 @@ export class ObservationService {
    * Loads the 250m susceptibility grid for spatial snapping.
    */
   private getGridFeatures(cityId: string = 'amritsar'): GridCellFeature[] {
-    if (this.gridCache) return this.gridCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.gridCaches.get(cityKey)
+    if (cached) return cached
     try {
-      const gridPath = path.join(process.cwd(), 'public', 'data', 'cities', cityId, 'susceptibility.geojson')
+      const gridPath = path.join(process.cwd(), 'public', 'data', 'cities', cityKey, 'susceptibility.geojson')
       if (fs.existsSync(gridPath)) {
         const parsed = JSON.parse(fs.readFileSync(gridPath, 'utf-8'))
-        this.gridCache = parsed.features || []
-        return this.gridCache!
+        const features = parsed.features || []
+        this.gridCaches.set(cityKey, features)
+        return features
       }
     } catch {
       // Non-fatal if grid is unavailable
@@ -122,44 +126,50 @@ export class ObservationService {
    * Loads road segments for orthogonal snapping with 30m tolerance.
    */
   private getRoadSegments(cityId: string = 'amritsar'): RoadSegmentGeometry[] {
-    if (this.roadsCache) return this.roadsCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.roadsCaches.get(cityKey)
+    if (cached) return cached
     try {
-      const roadsPath = path.join(process.cwd(), 'public', 'data', 'cities', cityId, 'roads', 'road_network_topology.json')
+      const roadsPath = path.join(process.cwd(), 'public', 'data', 'cities', cityKey, 'roads', 'road_network_topology.json')
       if (fs.existsSync(roadsPath)) {
         // Road network topology is available
         // For spatial snapping we can construct primary segments
-        this.roadsCache = []
+        this.roadsCaches.set(cityKey, [])
       }
     } catch {
       // Non-fatal
     }
-    return this.roadsCache || []
+    return this.roadsCaches.get(cityKey) || []
   }
 
   /**
    * Loads all stored observations, seeding with historical baseline on first run.
    */
   public loadObservations(cityId: string = 'amritsar'): WaterloggingObservation[] {
-    if (this.observationsCache) {
-      return this.observationsCache
+    const cityKey = cityId.toLowerCase()
+    const cached = this.observationsCaches.get(cityKey)
+    if (cached) {
+      return cached
     }
 
-    const filePath = this.getStoragePath(cityId)
+    const filePath = this.getStoragePath(cityKey)
     if (fs.existsSync(filePath)) {
       try {
         const raw = fs.readFileSync(filePath, 'utf-8')
-        this.observationsCache = JSON.parse(raw)
-        return this.observationsCache!
+        const parsed = JSON.parse(raw)
+        this.observationsCaches.set(cityKey, parsed)
+        return parsed
       } catch {
-        this.observationsCache = []
+        this.observationsCaches.set(cityKey, [])
       }
     } else {
       // Seed with 15 documented historical records from hotspots.json
-      this.observationsCache = this.importHistoricalHotspots(cityId)
-      this.saveObservations(this.observationsCache, cityId)
+      const seeded = this.importHistoricalHotspots(cityKey)
+      this.observationsCaches.set(cityKey, seeded)
+      this.saveObservations(seeded, cityKey)
     }
 
-    return this.observationsCache || []
+    return this.observationsCaches.get(cityKey) || []
   }
 
   /**
@@ -229,11 +239,12 @@ export class ObservationService {
    * Atomically writes observations to disk and shared repository.
    */
   private saveObservations(observations: WaterloggingObservation[], cityId: string = 'amritsar'): void {
+    const cityKey = cityId.toLowerCase()
     const trimmed = observations.slice(-MAX_OBSERVATIONS_STORED)
-    this.observationsCache = trimmed
+    this.observationsCaches.set(cityKey, trimmed)
 
     // Delegate to repository for atomic/durable persistence
-    this.repository.saveAll(trimmed, cityId).catch((err) => {
+    this.repository.saveAll(trimmed, cityKey).catch((err) => {
       logger.error('[OBSERVATION_SERVICE] Failed to persist observations via repository:', {
         error: String(err),
       })
@@ -378,6 +389,24 @@ export class ObservationService {
         'Community waterlogging observation. Does NOT represent an official emergency broadcast or verified flood depth.',
     }
 
+    // Ingest photo evidence into image evidence system if provided
+    if (input.photoUrl) {
+      try {
+        imageEvidenceService.ingestFieldPhoto({
+          cityId,
+          imageUrl: input.photoUrl,
+          coordinates: input.coordinates,
+          capturedAt: input.observedAt,
+          categoryHint: input.category,
+          severityHint: input.severity,
+          description: input.description,
+          roadSegmentId: roadMatch.matchedSegmentId || undefined,
+        })
+      } catch (err) {
+        logger.warn('[OBSERVATION] Failed to ingest photo evidence into image service', { err })
+      }
+    }
+
     // Update corroboration links on existing reports
     if (corroboratingIds.length > 0) {
       for (const other of all) {
@@ -481,9 +510,12 @@ export class ObservationService {
    * Resets observations cache and repository to baseline seeded records (for test isolation).
    */
   public resetForTesting(cityId: string = 'amritsar'): void {
-    this.observationsCache = null
-    this.repository.reset(cityId).catch(() => {})
-    const filePath = this.getStoragePath(cityId)
+    const cityKey = cityId.toLowerCase()
+    this.observationsCaches.delete(cityKey)
+    this.gridCaches.delete(cityKey)
+    this.roadsCaches.delete(cityKey)
+    this.repository.reset(cityKey).catch(() => {})
+    const filePath = this.getStoragePath(cityKey)
     if (fs.existsSync(filePath)) {
       try {
         fs.unlinkSync(filePath)

@@ -73,6 +73,10 @@ export function RiskMap({
   const routeLayerRef = useRef<L.LayerGroup | null>(null)
   const [tileError, setTileError] = useState(false)
 
+  const centerLat = center[0]
+  const centerLng = center[1]
+  const lastGeoJsonRef = useRef<GeoJsonObject | null>(null)
+
   // Fast cell risk lookup map
   const riskLookup = useRef<Map<string, CellRisk>>(new Map())
   useEffect(() => {
@@ -82,7 +86,7 @@ export function RiskMap({
     }
   }, [cells])
 
-  // Initialize Leaflet map
+  // Initialize Leaflet map ONCE on mount
   useEffect(() => {
     if (!mapContainerRef.current) return
 
@@ -92,10 +96,10 @@ export function RiskMap({
     }
 
     const mapInstance = L.map(container, {
-      center,
+      center: [centerLat, centerLng],
       zoom,
       zoomControl: true,
-      preferCanvas: false, // Use SVG paths to allow DOM inspection and Playwright tests
+      preferCanvas: false, // SVG paths for testing and crisp rendering
     })
 
     const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -112,19 +116,42 @@ export function RiskMap({
     setMap(mapInstance)
 
     return () => {
-      mapInstance.remove()
+      try {
+        mapInstance.remove()
+      } catch {
+        // Safe cleanup
+      }
       container._leaflet_id = null
       setMap(null)
       geoJsonLayerRef.current = null
       hotspotsLayerRef.current = null
+      observationsLayerRef.current = null
+      roadsLayerRef.current = null
+      buildingsLayerRef.current = null
+      routeLayerRef.current = null
     }
-  }, [center, zoom])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Smoothly pan/zoom when center or zoom changes without destroying the map
+  useEffect(() => {
+    if (!map) return
+    try {
+      const currentCenter = map.getCenter()
+      const dist = Math.hypot(currentCenter.lat - centerLat, currentCenter.lng - centerLng)
+      if (dist > 0.001 || map.getZoom() !== zoom) {
+        map.setView([centerLat, centerLng], zoom, { animate: true })
+      }
+    } catch {
+      // Non-blocking
+    }
+  }, [map, centerLat, centerLng, zoom])
 
   // Helper function to calculate layer style
   const getFeatureStyle = useCallback(
     (feature: Feature | undefined) => {
       const id = feature?.properties?.id
-      const s = feature?.properties?.s ?? 0.5
+      const s = Number(feature?.properties?.s ?? 0.5)
       const isSelected = Boolean(id && selectedCellId && id === selectedCellId)
 
       if (activeLayer === 'susceptibility') {
@@ -140,7 +167,7 @@ export function RiskMap({
 
         return {
           fillColor: fill,
-          color: isSelected ? '#06b6d4' : stroke,
+          color: isSelected ? '#0284c7' : stroke,
           weight: isSelected ? 3 : 0.6,
           opacity: isSelected ? 1 : 0.8,
           fillOpacity: isSelected ? 0.85 : 0.62,
@@ -149,12 +176,12 @@ export function RiskMap({
 
       // Default: 'risk' layer
       const cell = id ? riskLookup.current.get(id) : undefined
-      const risk = cell?.class || 'low'
-      const color = RISK_COLORS[risk]
+      const risk = (cell?.class && RISK_COLORS[cell.class]) ? cell.class : 'low'
+      const color = RISK_COLORS[risk] || RISK_COLORS.low
 
       return {
         fillColor: color.fill,
-        color: isSelected ? '#06b6d4' : color.stroke,
+        color: isSelected ? '#0284c7' : color.stroke,
         weight: isSelected ? 3 : 0.6,
         opacity: isSelected ? 1 : 0.8,
         fillOpacity: isSelected ? 0.85 : 0.62,
@@ -167,76 +194,81 @@ export function RiskMap({
   useEffect(() => {
     if (!map || !geoJsonData) return
 
-    // If layer already exists, update style
-    if (geoJsonLayerRef.current) {
-      geoJsonLayerRef.current.eachLayer((layer: L.Layer) => {
-        const pathLayer = layer as L.Path & { feature?: Feature }
-        const style = getFeatureStyle(pathLayer.feature)
-        pathLayer.setStyle(style)
-      })
+    // If the geometry reference hasn't changed, only update styles
+    if (geoJsonLayerRef.current && lastGeoJsonRef.current === geoJsonData) {
+      try {
+        geoJsonLayerRef.current.eachLayer((layer: L.Layer) => {
+          const pathLayer = layer as L.Path & { feature?: Feature }
+          if (pathLayer && typeof pathLayer.setStyle === 'function') {
+            const style = getFeatureStyle(pathLayer.feature)
+            pathLayer.setStyle(style)
+          }
+        })
+      } catch {
+        // Non-blocking
+      }
       return
     }
 
-    // Initial GeoJSON layer creation
-    const layer = L.geoJSON(geoJsonData, {
-      style: (feature) => getFeatureStyle(feature as Feature),
-      onEachFeature: (feature, l) => {
-        const id = feature?.properties?.id
-        const s = feature?.properties?.s ?? 0.5
-        const road = feature?.properties?.nearestRoad
-
-        // Attach click handler for cell selection
-        l.on('click', () => {
-          if (onSelectCell && id) {
-            onSelectCell(id)
-          }
-        })
-
-        // Tooltip
-        l.bindTooltip(
-          () => {
-            const cell = id ? riskLookup.current.get(id) : undefined
-            const risk = cell?.class || 'low'
-            return `<div class="p-1 space-y-1">
-              <div><strong>Cell:</strong> ${id}</div>
-              <div><strong>Susceptibility (s):</strong> ${s}</div>
-              <div><strong>Current Risk:</strong> <span class="font-bold text-uppercase">${risk.toUpperCase()}</span></div>
-              ${road ? `<div class="text-[11px] text-slate-300"><strong>Road:</strong> ${road}</div>` : ''}
-              <div class="text-[10px] text-sky-400 italic">Click to inspect factor contributions</div>
-            </div>`
-          },
-          { sticky: true, className: 'leaflet-custom-tooltip' }
-        )
-      },
-    })
-
-    layer.addTo(map)
-    geoJsonLayerRef.current = layer
-
-    // Fit map bounds to generated grid
-    try {
-      const bounds = layer.getBounds()
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [20, 20] })
-      }
-    } catch {
-      // Fallback
-    }
-  }, [map, geoJsonData, cells, getFeatureStyle, onSelectCell])
-
-  // Re-fit map bounds when geoJsonData changes (e.g. view switch between city and campus)
-  useEffect(() => {
-    if (map && geoJsonLayerRef.current) {
+    // Geometry data changed (e.g. view switch between city and campus) -> recreate layer
+    if (geoJsonLayerRef.current) {
       try {
-        const bounds = geoJsonLayerRef.current.getBounds()
-        if (bounds.isValid()) {
-          map.fitBounds(bounds, { padding: [25, 25] })
+        if (map.hasLayer(geoJsonLayerRef.current)) {
+          map.removeLayer(geoJsonLayerRef.current)
         }
       } catch {
-        // Fallback
+        // Safe removal
       }
+      geoJsonLayerRef.current = null
     }
-  }, [map, geoJsonData])
+
+    lastGeoJsonRef.current = geoJsonData
+
+    try {
+      const layer = L.geoJSON(geoJsonData, {
+        style: (feature) => getFeatureStyle(feature as Feature),
+        onEachFeature: (feature, l) => {
+          const id = feature?.properties?.id
+          const s = feature?.properties?.s ?? 0.5
+          const road = feature?.properties?.nearestRoad
+
+          // Attach click handler for cell selection
+          l.on('click', () => {
+            if (onSelectCell && id) {
+              onSelectCell(id)
+            }
+          })
+
+          // Tooltip
+          l.bindTooltip(
+            () => {
+              const cell = id ? riskLookup.current.get(id) : undefined
+              const risk = (cell?.class && RISK_COLORS[cell.class]) ? cell.class : 'low'
+              return `<div class="p-1 space-y-1 font-sans text-xs">
+                <div><strong>Cell:</strong> ${id}</div>
+                <div><strong>Susceptibility (s):</strong> ${Number(s).toFixed(3)}</div>
+                <div><strong>Current Risk:</strong> <span class="font-bold uppercase">${risk.toUpperCase()}</span></div>
+                ${road ? `<div class="text-[11px] text-slate-500"><strong>Road:</strong> ${road}</div>` : ''}
+                <div class="text-[10px] text-blue-600 italic">Click to inspect factor contributions</div>
+              </div>`
+            },
+            { sticky: true, className: 'leaflet-custom-tooltip' }
+          )
+        },
+      })
+
+      layer.addTo(map)
+      geoJsonLayerRef.current = layer
+
+      // Fit map bounds to generated grid
+      const bounds = layer.getBounds()
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [25, 25] })
+      }
+    } catch (e) {
+      console.warn('Failed to render GeoJSON grid layer:', e)
+    }
+  }, [map, geoJsonData, cells, getFeatureStyle, onSelectCell])
 
   // Render or update Hotspots Layer
   useEffect(() => {

@@ -81,8 +81,8 @@ NEXSTORM is an experimental, deterministic environmental-intelligence and geospa
 - **Mapping & Basemaps**: Leaflet.js with clean, reliable OpenStreetMap standard tiles (zero watermarks, zero API key dependencies).
 - **Hydrological Engine**: TypeScript in-memory risk matrix engine ($<40\text{ ms}$ for 51 members $\times$ 2,500 cells $\times$ 48 hours).
 - **Data Pipeline**: Python 3.11 (`pipeline/`) using GeoPandas, Shapely, Rasterio, SciPy.
-- **Validation & Integrity**: Zod schemas on all API boundaries; canonical SHA-256 frozen configuration verification (`74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49`).
-- **Testing**: Vitest (94 test suites, 895 passing tests), Playwright (E2E browser smoke tests), and Pytest (38 geospatial pipeline tests).
+- **Validation, Provenance & Integrity**: Zod schemas on all API boundaries; canonical SHA-256 frozen configuration verification (`74f463261a4c15cdc850b8d5be687bee4e59fd2950b7b93395449f3dacefcd49`); value-level data provenance metadata (`Observed`, `Estimated`, `Fallback`) attached to all telemetry fields.
+- **Testing**: Vitest (80 test files, 721 passing unit & component tests), Playwright (E2E browser smoke tests), and Pytest (57 geospatial pipeline tests).
 
 ---
 
@@ -139,68 +139,109 @@ Cities advance through a strict 6-stage gate:
 
 ---
 
-## 5. How to Launch Everything Perfectly
+## 6. How to Run the Project & Launch Everything Perfectly
 
 ### Prerequisites
 - **Node.js**: `v20.x` or higher (tested on Node 22 & 24)
 - **npm**: `v10.x` or higher
 - **Git**
-- *(Optional)* **Python**: `3.11+` with virtualenv (only needed if re-generating raw DEM tiles or spatial indices from scratch)
+- *(Optional)* **Python**: `3.11+` with virtualenv (only needed if running the offline geospatial data pipeline or tests in `pipeline/`)
 
-### Step 1: Clone the Repository
+---
+
+### Quick Start (Zero-Config, Runs Completely Out of the Box)
+
+NEXSTORM is engineered to run immediately with **zero required API keys or external services**. Public Open-Meteo weather APIs, pre-packaged geospatial datasets (`public/data/`), and local file-based persistence run automatically.
+
 ```bash
+# 1. Clone the repository
 git clone https://github.com/sakshamgupta005/NEXSTORM.git
 cd NEXSTORM
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the local development server (Turbopack)
+npm run dev
 ```
 
-### Step 2: Environment Configuration
-NEXSTORM runs completely out of the box with safe zero-config defaults (utilizing local cached snapshots and public Open-Meteo endpoints). To configure custom ports or Supabase authentication:
+The application will be live at [http://localhost:3000](http://localhost:3000).
 
+---
+
+### Step-by-Step Execution Guide
+
+#### Step 1: Environment Configuration (Optional)
+If you wish to configure optional cloud persistence (Supabase) or alert credentials:
 ```bash
-# Copy the example environment file
 cp .env.example .env.local
 ```
+Key configuration parameters in `.env.local`:
+- `NEXT_PUBLIC_SITE_URL`: Base URL (default: `http://localhost:3000`)
+- `OBSERVATION_SALT`: Stable salt for privacy-preserving reporter hashing (auto-generated ephemeral fallback if unset)
+- `MODERATOR_SECRET`: Bearer token for verifying community waterlogging observations via `/api/observations/[id]/verify`
+- `ALERT_OPERATOR_KEY`: Security token for executing alert dispatches via `/api/alerts/dispatch`
+- `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase authentication & persistent storage (offline file mutex used if unset)
 
-Key variables in `.env.local`:
-```env
-# Optional: Site base URL
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Optional: Supabase Auth (if using cloud persistence)
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+Verify your configuration safely at any time:
+```bash
+npm run env:check
 ```
 
-### Step 3: Install Dependencies
+#### Step 2: Install Node Dependencies
 ```bash
 npm install
 ```
 
-### Step 4: Launch Development Server
+#### Step 3: Run the Development Server
 ```bash
 npm run dev
 ```
-The server will boot with Next.js Turbopack in ~1 second.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Step 5: Access the Key URLs
-Open your browser to:
-- **Main Platform Landing & 3-Pillar Experience**: [http://localhost:3000](http://localhost:3000)
-  - **Overview**: Hero, hyetograph scenario simulator, and system architecture.
-  - **Buildings**: Interactive building exposure map, hotspot selectors, and structure dossiers.
-  - **Roads**: Dynamic road routing, Route A (Bypass) vs Route B (Rego Underpass) flood exposure comparison.
-  - **About**: 6-stage scientific processing pipeline and technology provenance.
-  - **Live Diagnostics Modal**: Click `Live Pipeline Status` in the navbar or query `/api/health`.
-  - **Community Reporting Modal**: Click `Report Waterlogging` in the navbar.
-- **City Console Grid View**: [http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) (250m cell inspector, NDMA SACHET alert feed, and factor contributions).
-
-### Step 6: Production Build & Deployment Preview
-To verify production optimization and server-side rendering:
+#### Step 4: Run in Production Mode
+To test production compilation, bundle size, and server-side rendering:
 ```bash
-# 1. Build the production bundle
+# Compile optimized production bundle
 npm run build
 
-# 2. Launch production server
+# Start production server
 npm run start
+```
+
+---
+
+### Key URLs & User Journey Walkthrough
+
+| URL / Screen | Key Features & Interactions |
+|---|---|
+| **Main Platform**<br>[http://localhost:3000](http://localhost:3000) | • **Overview Tab**: System hero, synthetic hyetograph scenario simulator ($0–80\text{ mm/h}$), and 3-pillar architectural cards.<br>• **Buildings Tab**: Interactive Google Open Buildings V3 footprint layer, high-risk hotspot selectors, and building dossiers with elevation & catchment susceptibility.<br>• **Roads Tab**: Dynamic flood-aware routing engine, comparing Route A (Bypass) vs Route B (Rego Underpass chokepoint) with exposure penalty scores.<br>• **About Tab**: 6-stage scientific processing pipeline and technology provenance.<br>• **Navbar Actions**: Click **Live Pipeline Status** for live diagnostic telemetry (`/api/health`) or **Report Waterlogging** to submit a ground-truth observation. |
+| **Amritsar City Console**<br>[http://localhost:3000/city/amritsar](http://localhost:3000/city/amritsar) | Calibrated reference baseline console: interactive 250m cell inspector, live NDMA SACHET warning feed, rainfall intensity timelines, and cell factor breakdowns. |
+| **Jalandhar Pilot Console**<br>[http://localhost:3000/city/jalandhar](http://localhost:3000/city/jalandhar) | Secondary physical terrain pilot: demonstrates the `evidence_insufficient` safety gate, displaying physical Copernicus DEM & ESA WorldCover data while strictly suppressing uncalibrated alerts. |
+| **Authentication (Optional)**<br>[http://localhost:3000/login](http://localhost:3000/login) | Clean sign-in and sign-up flows with Supabase auth or fallback demo preview modes. |
+
+---
+
+### Developer & Operational Command Reference
+
+| Command | Purpose | When to Run |
+|---|---|---|
+| `npm run dev` | Boots local Next.js 16 development server with Turbopack | Local development |
+| `npm run build` | Compiles optimized production bundle and checks SSR/route contracts | Before deployment |
+| `npm run start` | Boots the compiled production server | Production testing |
+| `npm test` | Runs Vitest unit and component test suites (80 files, 721 tests) | Code changes / pre-commit |
+| `npm run typecheck` | Strict TypeScript compilation check (`tsc --noEmit`) | Type safety verification |
+| `npm run lint` | Runs ESLint static analysis | Style and lint verification |
+| `npm run verify` | Runs all master quality gates (env check, lint, typecheck, tests, build) | CI/CD and pre-submission |
+| `npm run smoke` | Probes `/api/health`, `/`, headers, and 404 isolation against a running server | Post-deployment smoke check |
+| `npm run preflight:alerts` | Runs alert subsystem readiness & safety checks across all cities | Before alert rollout |
+| `npm run env:check` | Diagnostics report for environment variables (masked secrets) | Configuration audit |
+
+*(Optional)* Run Python geospatial pipeline tests (requires Python 3.11+ virtual environment):
+```bash
+.venv\Scripts\python.exe -m pytest pipeline/tests/ -v
+# or on Linux/macOS:
+# pytest pipeline/tests/ -v
 ```
 
 ---
@@ -216,7 +257,7 @@ npm run typecheck
 # 2. ESLint Code Quality (zero errors, zero warnings)
 npm run lint
 
-# 3. Vitest Unit, Component, and Integration Tests (103 test suites, 1,031 tests)
+# 3. Vitest Unit, Component, and Integration Tests (80 test files, 721 tests)
 npm test
 
 # 4. Next.js Production Build Verification (compiles 33 routes)
@@ -225,7 +266,7 @@ npm run build
 # 5. Playwright E2E Browser Smoke Tests
 npm run test:e2e
 
-# 6. Python Geospatial Pipeline & Quality Audit Test Suite (9 tests)
+# 6. Python Geospatial Pipeline & Quality Audit Test Suite (57 tests)
 .venv\Scripts\python.exe -m pytest pipeline/tests/ -v
 ```
 
@@ -235,15 +276,23 @@ npm run test:e2e
 
 | Endpoint | Method | Description |
 |---|---|---|
+| `/api/rainfall?cityId=amritsar` | `GET` | Normalised precipitation forecast & observations with value-level provenance metadata (`Observed`, `Estimated`, `Fallback`). |
 | `/api/risk?cityId=amritsar&mode=live` | `GET` | Evaluates real-time risk grid and timeline from live ensemble weather forecasts. |
 | `/api/risk?cityId=amritsar&mode=replay&event=2025-09-01_amritsar&t=1` | `GET` | Evaluates 72-hour historical monsoon event replay with verified golden outputs. |
 | `/api/risk?cityId=amritsar&mode=scenario&peakMm1h=40&durationH=4` | `GET` | Evaluates synthetic triangular hyetograph scenario over verified susceptibility grid. |
+| `/api/scenario` | `POST` | Computes hyetograph scenarios with custom peak rainfall and storm duration parameters. |
 | `/api/cell/[cellId]?cityId=amritsar` | `GET` | Returns cell factor contributions, terrain override note, nearest historical hotspot ($\le 500\text{ m}$), and scientific limitations. |
 | `/api/buildings?cityId=amritsar` | `GET` | Viewport-bounded building footprint query with metric areas and multi-cell susceptibility. |
 | `/api/roads/risk?cityId=amritsar` | `GET` | Road segment risk query with bounding box, highway classification, and underpass filters. |
 | `/api/roads/route-compare` | `POST` | Multi-candidate route flood exposure evaluation and safety ranking. |
 | `/api/roads/plan` | `GET`, `POST` | Origin-to-destination flood-aware route planning with A* pathfinding and candidate comparison. |
 | `/api/observations?cityId=amritsar` | `GET`, `POST` | Query filtered observations or submit a community report with rate-limiting and spatial snapping. |
+| `/api/observations/[id]/verify` | `PATCH` | Verify or reject a community observation (requires `MODERATOR_SECRET` bearer token). |
+| `/api/alerts/subscribe` | `POST` | Register a new alert subscriber (SMS, email, webhook) with city boundary validation. |
+| `/api/alerts/unsubscribe` | `POST` | Deregister an alert subscriber. |
+| `/api/alerts/preview?cityId=amritsar` | `GET` | Preview current alert decision state and target audience for a city. |
+| `/api/alerts/status?cityId=amritsar` | `GET` | Inspect operational dispatch status, suppression state, and delivery statistics. |
+| `/api/alerts/dispatch` | `POST` | Trigger authorized alert delivery cycle (requires `ALERT_OPERATOR_KEY`). |
 | `/api/official-alerts?state=Punjab` | `GET` | Normalized NDMA SACHET CAP alert feed for official flood/weather advisories. |
 | `/api/evaluation?cityId=amritsar` | `GET` | Serves offline pipeline evaluation summary verified against frozen configuration hash. |
 | `/api/evaluation/backtest?cityId=amritsar&season=2024` | `GET` | Runs chronological historical backtesting against genuine ERA5 reanalysis and Tribune incident records. |

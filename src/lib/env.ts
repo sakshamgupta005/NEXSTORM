@@ -46,6 +46,7 @@ export type ProviderKey =
   | 'TAVILY_API_KEY'
   | 'ELEVENLABS_API_KEY'
   | 'SUPABASE_SERVICE_ROLE_KEY'
+  | 'MAPILLARY_ACCESS_TOKEN'
 
 export interface EnvVariableMeta {
   key: string
@@ -135,6 +136,14 @@ export const ENV_REGISTRY: Record<string, EnvVariableMeta> = {
     scope: 'server',
     description: 'Privileged admin service-role key (server-only)',
     dashboardUrl: 'https://supabase.com/dashboard',
+    isOptional: true,
+  },
+  MAPILLARY_ACCESS_TOKEN: {
+    key: 'MAPILLARY_ACCESS_TOKEN',
+    provider: 'Mapillary',
+    scope: 'server',
+    description: 'Mapillary Graph API v4 access token for street-level imagery and spatial metadata',
+    dashboardUrl: 'https://www.mapillary.com/dashboard/developers',
     isOptional: true,
   },
 }

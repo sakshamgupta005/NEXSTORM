@@ -29,8 +29,31 @@
       "susceptibility.geojson": "11f5615b545c9be10268fda63beab0f73699e13703cf985da9e5d920127d3633",
       "city.config.json": "5c39f95a29c5de70fce50342d2d9c3ff0b017e9a438901f5376a043bb2970971",
       "incidents_inventory.json": "b1daa6f0932c6f6f76702bb20650877c442a2354c5314365579e26914618a0b8",
-      "physical_sources.json": "e1eb1c6137cf1fc27869a5dc319a3c226ba75d1290efc4a5d4743f04b3218a45"
+      "physical_sources.json": "e1eb1c6137cf1fc27869a5dc319a3c226ba75d1290efc4a5d4743f04b3218a45",
+      "roads/major_corridors.geojson": "fc481316e7a2a264ecddd6f43e4e5c2f65d8b938a6db11dbed6866f31e18f9e4",
+      "roads/road_graph.json": "cd4a485df2baefa8293240adc75d553a00ebb7c46fdcb5d7fbe24c8819aa0211",
+      "roads/road_network_topology.json": "385f0af6c21ca2c67595252732712d8ac2f6001cece9ec7c3889725aa56c7fc2",
+      "roads/road_segments_index.json": "ee2bfc9a9dd09a60f7a6d36ec37bd5e755ceea17e964dbb59c340004f084f370",
+      "roads/routing_graph.json": "9efdbccc3bb63462784499bf74c0f7bc1e4889c1595b6de5528a6373900b205f"
     }
+  },
+  "roadNetwork": {
+    "totalSegments": 17358,
+    "totalNodes": 30876,
+    "routingNodes": 81688,
+    "routingEdges": 93031,
+    "majorCorridors": 821,
+    "underpasses": 13,
+    "bridges": 132,
+    "totalLengthKm": 2883.76,
+    "source": "OpenStreetMap contributors (ODbL 1.0)",
+    "status": "ready"
+  },
+  "buildingExposure": {
+    "totalBuildings": 0,
+    "status": "unavailable",
+    "source": "Google Open Buildings V3 / OSM",
+    "coverageAssessment": "Google Open Buildings V3 Punjab regional polygon archive (S2 cell 391) is an unindexed 7.18 GB monolithic archive (25M+ polygons) exceeding edge compute constraints without spatial partitioning; OSM footprints for Jalandhar are unmapped (<100 footprints). Synthetic footprints strictly prohibited under zero-fabrication protocol. Building exposure calculation defaults to honest unavailable/degraded state."
   },
   "featureDistributionSummary": {
     "meanSusceptibility": 0.4437,
@@ -57,6 +80,8 @@
   },
   "warnings": [
     "Jalandhar features derived from genuine Copernicus DEM and ESA WorldCover rasters.",
+    "Road network derived from genuine OpenStreetMap vector dataset (17,358 segments, 30,876 nodes).",
+    "Building footprints currently unavailable; zero synthetic structures generated.",
     "Incident inventory based on journalistic reports (source_reported); independent field verification required.",
     "Susceptibility scores are purely relative within this municipal Area of Interest (AOI).",
     "Amritsar calibrated metrics MUST NOT be attributed to this geography."
@@ -67,6 +92,9 @@
     "METRIC_GRID_DIMENSIONS_VERIFIED",
     "SUSCEPTIBILITY_WEIGHTS_NORMALIZED",
     "CANONICAL_CONFIG_HASH_VERIFIED",
-    "NON_SYNTHETIC_INTEGRITY_CHECK_PASSED"
+    "NON_SYNTHETIC_INTEGRITY_CHECK_PASSED",
+    "ROAD_NETWORK_TOPOLOGY_VERIFIED",
+    "ROAD_ROUTING_GRAPH_CONSISTENT",
+    "BUILDING_EXPOSURE_HONEST_DEGRADATION"
   ]
 }

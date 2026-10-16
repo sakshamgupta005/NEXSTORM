@@ -69,13 +69,13 @@ export const routingPlanSchema = z.object({
   cityId: z.string().optional().default('amritsar'),
   origin: z
     .tuple([
-      z.number().min(74.5).max(75.5, 'Origin longitude must be within Amritsar region (74.5 - 75.5)'),
-      z.number().min(31.3).max(32.0, 'Origin latitude must be within Amritsar region (31.3 - 32.0)'),
+      z.number().min(74.0).max(76.5, 'Origin longitude must be within Punjab study area (74.0 - 76.5)'),
+      z.number().min(30.5).max(32.5, 'Origin latitude must be within Punjab study area (30.5 - 32.5)'),
     ]),
   destination: z
     .tuple([
-      z.number().min(74.5).max(75.5, 'Destination longitude must be within Amritsar region (74.5 - 75.5)'),
-      z.number().min(31.3).max(32.0, 'Destination latitude must be within Amritsar region (31.3 - 32.0)'),
+      z.number().min(74.0).max(76.5, 'Destination longitude must be within Punjab study area (74.0 - 76.5)'),
+      z.number().min(30.5).max(32.5, 'Destination latitude must be within Punjab study area (30.5 - 32.5)'),
     ]),
   originName: z.string().max(100).optional(),
   destinationName: z.string().max(100).optional(),

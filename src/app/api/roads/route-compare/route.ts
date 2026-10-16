@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { routeCompareRequestSchema } from '@/lib/validations/roads';
 import { roadRiskService } from '@/lib/roads/service';
+import { isCitySupported } from '@/lib/city/registry';
 
 export async function POST(request: Request) {
   try {
@@ -18,21 +19,21 @@ export async function POST(request: Request) {
     }
 
     const { cityId, routes } = parseResult.data;
+    const normalizedCity = (cityId || 'amritsar').toLowerCase();
 
-    // Currently only Amritsar is supported for road-network risk evaluation
-    if (cityId !== 'amritsar') {
+    if (!isCitySupported(normalizedCity)) {
       return NextResponse.json(
         {
-          error: `Road network data is currently only prepared for Amritsar (requested '${cityId}')`,
+          error: `Road network data is not supported for city '${cityId}'`,
         },
         { status: 404 }
       );
     }
 
-    const comparison = await roadRiskService.evaluateCandidateRoutes(routes);
+    const comparison = await roadRiskService.evaluateCandidateRoutes(routes, normalizedCity);
 
     return NextResponse.json({
-      cityId,
+      cityId: normalizedCity,
       timestamp: new Date().toISOString(),
       provenance: {
         source: 'NEXSTORM Road Risk Engine P11',

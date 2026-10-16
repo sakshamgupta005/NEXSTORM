@@ -24,22 +24,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from utils import WGS84, UTM43N, get_repo_root, exit_with_error
 
 
-def prepare_roads(source_gpkg: str = None) -> dict:
+def prepare_roads(source_gpkg: str = None, city: str = "amritsar") -> dict:
     start_time = time.time()
+    city_id = city.lower()
+    city_prefix = "JAL" if city_id == "jalandhar" else "AMR"
     repo_root = get_repo_root()
     inputs_dir = repo_root / "pipeline" / "inputs"
     outputs_dir = repo_root / "pipeline" / "outputs"
-    public_amritsar_dir = repo_root / "public" / "data" / "cities" / "amritsar"
-    public_roads_dir = public_amritsar_dir / "roads"
+    public_city_dir = repo_root / "public" / "data" / "cities" / city_id
+    public_roads_dir = public_city_dir / "roads"
 
     outputs_dir.mkdir(parents=True, exist_ok=True)
     public_roads_dir.mkdir(parents=True, exist_ok=True)
 
-    actual_source = source_gpkg or str(inputs_dir / "osm_features.gpkg")
+    default_city_source = inputs_dir / city_id / "osm_features.gpkg"
+    default_root_source = inputs_dir / "osm_features.gpkg"
+    actual_source = source_gpkg or (str(default_city_source) if default_city_source.exists() else str(default_root_source))
     if not Path(actual_source).exists():
         exit_with_error(f"OSM road source not found at {actual_source}")
 
-    print(f"[ROADS] Loading road segments from {actual_source} (layer: roads)...")
+    print(f"[ROADS] Loading road segments for {city_id} from {actual_source} (layer: roads)...")
     try:
         raw_gdf = gpd.read_file(actual_source, layer="roads")
     except Exception as e:
@@ -91,7 +95,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     print(f"[ROADS] Identified {underpass_count} underpass segments and {bridge_count} bridge segments.")
 
     # 3. Deterministic Segment ID
-    gdf["segmentId"] = [f"AMR-ROAD-{osmid}-{i}" for i, osmid in enumerate(gdf["osmid"])]
+    gdf["segmentId"] = [f"{city_prefix}-ROAD-{osmid}-{i}" for i, osmid in enumerate(gdf["osmid"])]
 
     # 4. Topological Node Extraction (Endpoints rounding to 5 decimal places ~1m)
     print("[ROADS] Extracting topological nodes and junction connectivity...")
@@ -133,7 +137,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     print(f"[ROADS] Topological Graph: {total_unique_nodes} nodes ({junction_nodes} junctions, {dead_end_nodes} dead ends).")
 
     # 5. Exact Multi-Cell Spatial Intersections with 250m Susceptibility Grid
-    grid_path = public_amritsar_dir / "susceptibility.geojson"
+    grid_path = public_city_dir / "susceptibility.geojson"
     intersections_by_segment = {}
 
     if grid_path.exists():
@@ -237,8 +241,8 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     )
 
     # 6. Save Canonical Parquet
-    parquet_out = outputs_dir / "amritsar_roads_prepared.parquet"
-    parquet_tmp = outputs_dir / "amritsar_roads_prepared.parquet.tmp"
+    parquet_out = outputs_dir / f"{city_id}_roads_prepared.parquet"
+    parquet_tmp = outputs_dir / f"{city_id}_roads_prepared.parquet.tmp"
     save_cols = [
         "segmentId", "osmid", "name", "highway", "length_m",
         "is_underpass", "is_bridge", "from_node", "to_node",
@@ -251,7 +255,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
         parquet_out.unlink()
     parquet_tmp.rename(parquet_out)
 
-    # 7. Export Major Corridors GeoJSON for Interactive Map (773 major arterial/highway/underpass segments)
+    # 7. Export Major Corridors GeoJSON for Interactive Map
     major_mask = (
         gdf["highway"].isin([
             "primary", "trunk", "secondary", "tertiary",
@@ -268,7 +272,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     ]].to_file(major_geojson_path, driver="GeoJSON")
     print(f"[ROADS] Exported {len(major_gdf)} major corridors to {major_geojson_path}")
 
-    # 8. Export Lightweight Road Segments Index (all 14,853 segments for API & client queries)
+    # 8. Export Lightweight Road Segments Index
     segments_index = {}
     for row in gdf.itertuples():
         coords = list(row.geometry.coords)
@@ -297,7 +301,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
         json.dump(segments_index, f)
     print(f"[ROADS] Exported {len(segments_index)} segments index to {index_out}")
 
-    # 9. Export Topological Road Graph for Routing
+    # 9. Export Topological Road Graph
     graph_edges = []
     for row in gdf.itertuples():
         graph_edges.append({
@@ -312,10 +316,9 @@ def prepare_roads(source_gpkg: str = None) -> dict:
             "riskClass": row.modeledRiskClass,
         })
 
-    # Only include nodes that are part of junctions or major routes to keep graph tight
     road_graph = {
         "status": "success",
-        "cityId": "amritsar",
+        "cityId": city_id,
         "totalNodes": total_unique_nodes,
         "totalEdges": len(graph_edges),
         "junctionNodesCount": junction_nodes,
@@ -328,6 +331,53 @@ def prepare_roads(source_gpkg: str = None) -> dict:
         json.dump(road_graph, f)
     print(f"[ROADS] Exported road network graph to {graph_out}")
 
+    # 9b. Export Routing Graph for A* / Dijkstra path calculation
+    routing_node_reg = {}
+    routing_nodes = []
+    routing_edges = []
+
+    for row in gdf.itertuples():
+        coords = list(row.geometry.coords)
+        for j in range(len(coords) - 1):
+            pt1 = (round(coords[j][0], 5), round(coords[j][1], 5))
+            pt2 = (round(coords[j + 1][0], 5), round(coords[j + 1][1], 5))
+            if pt1 not in routing_node_reg:
+                routing_node_reg[pt1] = len(routing_nodes)
+                routing_nodes.append([pt1[0], pt1[1]])
+            if pt2 not in routing_node_reg:
+                routing_node_reg[pt2] = len(routing_nodes)
+                routing_nodes.append([pt2[0], pt2[1]])
+            u = routing_node_reg[pt1]
+            v = routing_node_reg[pt2]
+
+            d_lng = (pt2[0] - pt1[0]) * 111320.0 * np.cos(np.radians(pt1[1]))
+            d_lat = (pt2[1] - pt1[1]) * 110540.0
+            sub_len_m = round(float(np.hypot(d_lng, d_lat)), 1)
+            if sub_len_m < 0.1:
+                sub_len_m = 0.5
+
+            routing_edges.append({
+                "from": u,
+                "to": v,
+                "lengthM": sub_len_m,
+                "segmentId": row.segmentId,
+                "maxS": float(row.maxCellSusceptibility),
+                "isUnderpass": bool(row.is_underpass),
+                "highway": row.highway,
+            })
+
+    routing_graph = {
+        "cityId": city_id,
+        "totalNodes": len(routing_nodes),
+        "totalEdges": len(routing_edges),
+        "nodes": routing_nodes,
+        "edges": routing_edges,
+    }
+    routing_out = public_roads_dir / "routing_graph.json"
+    with open(routing_out, "w", encoding="utf-8") as f:
+        json.dump(routing_graph, f)
+    print(f"[ROADS] Exported routing graph ({len(routing_nodes)} nodes, {len(routing_edges)} edges) to {routing_out}")
+
     # 10. Save summary JSON
     highway_dist = gdf["highway"].value_counts().to_dict()
     risk_dist = gdf["modeledRiskClass"].value_counts().to_dict()
@@ -335,6 +385,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
 
     summary = {
         "status": "success",
+        "cityId": city_id,
         "source": "OpenStreetMap contributors (via Overpass/GPKG)",
         "license": "ODbL 1.0",
         "totalInputSegments": total_input,
@@ -358,7 +409,7 @@ def prepare_roads(source_gpkg: str = None) -> dict:
     with open(summary_out, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 
-    pipeline_summary = outputs_dir / "road_preparation_summary.json"
+    pipeline_summary = outputs_dir / f"{city_id}_road_preparation_summary.json"
     with open(pipeline_summary, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 
@@ -367,8 +418,9 @@ def prepare_roads(source_gpkg: str = None) -> dict:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Prepare and standardize road network for Amritsar.")
+    parser = argparse.ArgumentParser(description="Prepare and standardize road network.")
     parser.add_argument("--source", type=str, default=None, help="Path to input osm_features.gpkg.")
+    parser.add_argument("--city", type=str, default="amritsar", help="Target city ID (amritsar or jalandhar).")
     args = parser.parse_args()
 
-    prepare_roads(source_gpkg=args.source)
+    prepare_roads(source_gpkg=args.source, city=args.city)

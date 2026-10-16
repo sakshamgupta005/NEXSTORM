@@ -1,0 +1,42 @@
+{
+  "status": "success",
+  "cityId": "jalandhar",
+  "source": "OpenStreetMap contributors (via Overpass/GPKG)",
+  "license": "ODbL 1.0",
+  "totalInputSegments": 17358,
+  "validPreparedSegments": 17358,
+  "totalLengthKm": 2883.76,
+  "totalTopologicalNodes": 30876,
+  "junctionNodesCount": 637,
+  "deadEndNodesCount": 27733,
+  "underpassCount": 13,
+  "bridgeCount": 132,
+  "multiCellSegmentsCount": 8519,
+  "majorCorridorsCount": 821,
+  "highwayClassificationCounts": {
+    "residential": 13013,
+    "service": 1776,
+    "living_street": 1454,
+    "tertiary": 415,
+    "trunk": 181,
+    "unclassified": 178,
+    "track": 95,
+    "secondary": 73,
+    "primary": 57,
+    "trunk_link": 44,
+    "tertiary_link": 20,
+    "primary_link": 16,
+    "path": 15,
+    "secondary_link": 13,
+    "footway": 6,
+    "construction": 2
+  },
+  "modeledRiskDistribution": {
+    "moderate": 12705,
+    "high": 3446,
+    "low": 1207
+  },
+  "canonicalParquetPath": "C:\\Users\\rspma\\Downloads\\NEXSTORM\\pipeline\\outputs\\jalandhar_roads_prepared.parquet",
+  "processingDurationSeconds": 11.33,
+  "timestamp": "2026-10-15T23:30:27Z"
+}
